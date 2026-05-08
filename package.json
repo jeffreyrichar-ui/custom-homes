@@ -1,0 +1,30 @@
+{
+  "name": "custom-homes",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Finish-selections system for Todd Campbell Homes (Phase 1)",
+  "scripts": {
+    "dev": "concurrently -n server,web -c blue,magenta \"pnpm --filter @custom-homes/server dev\" \"pnpm --filter @custom-homes/web dev\"",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "db:generate": "pnpm --filter @custom-homes/server db:generate",
+    "db:migrate": "pnpm --filter @custom-homes/server db:migrate",
+    "db:reset": "pnpm --filter @custom-homes/server db:reset",
+    "db:seed": "pnpm --filter @custom-homes/server db:seed"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1",
+    "typescript": "^5.6.3"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@10.33.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3",
+      "esbuild"
+    ]
+  }
+}
