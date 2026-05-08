@@ -86,4 +86,63 @@ export const api = {
       body: payload,
       admin: true,
     }),
+
+  // Phase 2 — suggestions
+  suggestBrands: (trade?: string) =>
+    request<{ brands: { value: string; count: number }[] }>(
+      `/api/suggest/brands${trade ? `?trade=${encodeURIComponent(trade)}` : ""}`,
+    ),
+  suggestStyles: (trade: string, brand: string) =>
+    request<{ styles: { value: string; count: number }[] }>(
+      `/api/suggest/styles?trade=${encodeURIComponent(trade)}&brand=${encodeURIComponent(brand)}`,
+    ),
+  suggestColors: (trade: string, brand: string, style?: string) =>
+    request<{
+      colors: { value: string; image_url: string | null; count: number }[];
+    }>(
+      `/api/suggest/colors?trade=${encodeURIComponent(trade)}&brand=${encodeURIComponent(brand)}${
+        style ? `&style=${encodeURIComponent(style)}` : ""
+      }`,
+    ),
+  suggestSkus: (trade: string, brand: string, color?: string) =>
+    request<{ skus: { value: string; count: number }[] }>(
+      `/api/suggest/skus?trade=${encodeURIComponent(trade)}&brand=${encodeURIComponent(brand)}${
+        color ? `&color=${encodeURIComponent(color)}` : ""
+      }`,
+    ),
+  skuForColor: (trade: string, brand: string, color: string) =>
+    request<{ sku: string | null }>(
+      `/api/suggest/sku-for-color?trade=${encodeURIComponent(trade)}&brand=${encodeURIComponent(brand)}&color=${encodeURIComponent(color)}`,
+    ),
+
+  // Phase 2 — selections writes
+  createProject: (name: string, address?: string) =>
+    request<{ id: string; name: string; address: string | null }>(
+      "/api/selections/projects",
+      { method: "POST", body: { name, address }, admin: true },
+    ),
+  addRoom: (projectId: string, room_name: string) =>
+    request<{ id: string; room_name: string; project_id: string }>(
+      `/api/selections/projects/${projectId}/rooms`,
+      { method: "POST", body: { room_name }, admin: true },
+    ),
+  saveEntry: (roomId: string, entry: Record<string, unknown>) =>
+    request<{ id: string; trade: string; is_new_entry: boolean }>(
+      `/api/selections/rooms/${roomId}/entries`,
+      { method: "POST", body: entry, admin: true },
+    ),
+  updateEntry: (
+    trade: string,
+    entryId: string,
+    entry: Record<string, unknown>,
+  ) =>
+    request<{ id: string; trade: string; is_new_entry: boolean }>(
+      `/api/selections/entries/${trade}/${entryId}`,
+      { method: "PUT", body: entry, admin: true },
+    ),
+  deleteEntry: (trade: string, entryId: string) =>
+    request<void>(`/api/selections/entries/${trade}/${entryId}`, {
+      method: "DELETE",
+      admin: true,
+    }),
 };

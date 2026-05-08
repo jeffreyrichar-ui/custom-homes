@@ -43,6 +43,9 @@ export function ProjectDetail() {
       </p>
       <h1>{project.name}</h1>
       {project.address && <p>{project.address}</p>}
+      <p>
+        <Link to={`/selections/${project.id}`}>Edit selections →</Link>
+      </p>
       {project.external_id && (
         <p>
           <code>

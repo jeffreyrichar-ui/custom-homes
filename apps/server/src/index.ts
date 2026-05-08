@@ -8,6 +8,8 @@ import { runMigrations } from "./db/migrate.js";
 import { healthRouter } from "./routes/health.js";
 import { makeProjectsRouter } from "./routes/projects.js";
 import { makeAdminImportRouter } from "./routes/adminImport.js";
+import { makeSuggestRouter } from "./routes/suggest.js";
+import { makeSelectionsRouter } from "./routes/selections.js";
 
 export async function buildApp() {
   const db = getDb();
@@ -24,6 +26,8 @@ export async function buildApp() {
   app.use("/api/health", healthRouter);
   app.use("/api/projects", makeProjectsRouter(getDbi));
   app.use("/api/admin", makeAdminImportRouter(getDbi));
+  app.use("/api/suggest", makeSuggestRouter(getDbi));
+  app.use("/api/selections", makeSelectionsRouter(getDbi));
 
   // 404
   app.use((req, res) => {
