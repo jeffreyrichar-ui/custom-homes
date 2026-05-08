@@ -24,6 +24,7 @@ pnpm-debug.log*
 
 # Vite
 apps/web/dist
+apps/web/.vite
 apps/server/dist
 
 # Coverage
