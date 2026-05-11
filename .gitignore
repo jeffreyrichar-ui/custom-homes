@@ -32,3 +32,9 @@ coverage/
 
 # Uploaded / scraped manufacturer images (Phase 3 dev storage)
 apps/server/uploads/
+
+# Generated PDFs (Phase 5 dev storage)
+apps/server/pdfs/
+
+# Puppeteer-managed Chromium download
+.cache/puppeteer/

@@ -5,6 +5,7 @@ import { api, type ProjectDetailResponse } from "../lib/api.js";
 import { TradeForm } from "../components/TradeForm.js";
 import { EntryImage } from "../components/EntryImage.js";
 import { TileEntryPreview } from "../components/TileEntryPreview.js";
+import { PdfActions } from "../components/PdfActions.js";
 
 const HIDE = new Set([
   "id",
@@ -91,6 +92,8 @@ export function SelectionsEdit() {
       </p>
       <h1>{project.name}</h1>
       {project.address && <p>{project.address}</p>}
+
+      <PdfActions projectId={project.id} />
 
       {rooms.map((room) => (
         <div key={room.id} className="room-block">

@@ -11,8 +11,10 @@ import { makeAdminImportRouter } from "./routes/adminImport.js";
 import { makeSuggestRouter } from "./routes/suggest.js";
 import { makeSelectionsRouter } from "./routes/selections.js";
 import { makeManufacturerImagesRouter } from "./routes/manufacturerImages.js";
+import { makePdfsRouter, pdfServeConfig } from "./routes/pdfs.js";
 import { defaultLocalStorage } from "./services/imageStorage.js";
 import { makeScrapeQueue } from "./services/scrapeQueue.js";
+import { closePdfBrowser } from "./services/pdf/generate.js";
 
 export async function buildApp() {
   const db = getDb();
@@ -30,6 +32,8 @@ export async function buildApp() {
   }
 
   app.use(publicPrefix, express.static(serveDir));
+  const pdfCfg = pdfServeConfig();
+  app.use(pdfCfg.prefix, express.static(pdfCfg.dir));
 
   app.use("/api/health", healthRouter);
   app.use("/api/projects", makeProjectsRouter(getDbi));
@@ -37,6 +41,7 @@ export async function buildApp() {
   app.use("/api/suggest", makeSuggestRouter(getDbi));
   app.use("/api/selections", makeSelectionsRouter(getDbi, scrapeQueue));
   app.use("/api/manufacturer-images", makeManufacturerImagesRouter(getDbi, storage, scrapeQueue));
+  app.use("/api/pdfs", makePdfsRouter(getDbi));
 
   // 404
   app.use((req, res) => {
@@ -72,6 +77,7 @@ async function main() {
 
   const shutdown = async () => {
     server.close();
+    await closePdfBrowser().catch(() => {});
     await closeDb();
     process.exit(0);
   };

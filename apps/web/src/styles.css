@@ -393,3 +393,16 @@ button.link.danger { color: #cf222e; font-size: 12px; margin-top: 8px; }
   max-height: 140px;
   margin-bottom: 4px;
 }
+
+.pdf-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 16px 0;
+  padding: 12px;
+  background: #f6f8fa;
+  border-radius: 6px;
+}
+.pdf-status { font-size: 13px; color: #57606a; }
+.pdf-status.error { color: #cf222e; }
+.pdf-status a { font-weight: 500; }

@@ -173,4 +173,16 @@ export const api = {
       body: { brand, sku, data_url: dataUrl },
       admin: true,
     }),
+
+  // Phase 5 — PDFs
+  generateFullPdf: (projectId: string) =>
+    request<{ pdf_url: string }>(`/api/pdfs/projects/${projectId}/full`, {
+      method: "POST",
+      admin: true,
+    }),
+  generateTradePdf: (projectId: string, trade: string) =>
+    request<{ pdf_url: string }>(
+      `/api/pdfs/projects/${projectId}/trade/${trade}`,
+      { method: "POST", admin: true },
+    ),
 };
