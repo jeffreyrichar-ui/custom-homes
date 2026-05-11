@@ -29,3 +29,6 @@ apps/server/dist
 
 # Coverage
 coverage/
+
+# Uploaded / scraped manufacturer images (Phase 3 dev storage)
+apps/server/uploads/

@@ -9,6 +9,7 @@ import {
 import type { Dbi } from "../db/dbi.js";
 import { adminAuth } from "../middleware/adminAuth.js";
 import { tradeMeta, isTradeKind } from "../lib/tradeRegistry.js";
+import type { ScrapeQueue } from "../services/scrapeQueue.js";
 
 async function detectNovel(
   dbi: Dbi,
@@ -36,7 +37,10 @@ async function detectNovel(
   return rows.length === 0;
 }
 
-export function makeSelectionsRouter(getDbi: () => Dbi): Router {
+export function makeSelectionsRouter(
+  getDbi: () => Dbi,
+  scrapeQueue?: ScrapeQueue,
+): Router {
   const router = Router();
   router.use(adminAuth);
 
@@ -146,6 +150,14 @@ export function makeSelectionsRouter(getDbi: () => Dbi): Router {
         `INSERT INTO ${meta.table} (${insertCols.join(", ")}) VALUES (${placeholders})`,
         insertVals,
       );
+
+      // Trigger background scrape if this entry has brand + sku
+      const brand = typeof entry.brand === "string" ? entry.brand : "";
+      const sku = typeof entry.sku === "string" ? entry.sku : "";
+      if (brand && sku && scrapeQueue) {
+        scrapeQueue.enqueue(brand, sku);
+      }
+
       res.status(201).json({ id, trade, is_new_entry: isNovel });
     } catch (err) {
       next(err);

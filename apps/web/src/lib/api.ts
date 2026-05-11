@@ -145,4 +145,32 @@ export const api = {
       method: "DELETE",
       admin: true,
     }),
+
+  // Phase 3 — manufacturer images
+  getManufacturerImage: (brand: string, sku: string) =>
+    request<{ image_url: string; scraped_at: string }>(
+      `/api/manufacturer-images?brand=${encodeURIComponent(brand)}&sku=${encodeURIComponent(sku)}`,
+    ).catch((err: Error) => {
+      if (err.message === "not cached") return null;
+      throw err;
+    }),
+  triggerScrape: (brand: string, sku: string) =>
+    request<{
+      outcome:
+        | { kind: "cached"; imageUrl: string }
+        | { kind: "scraped"; imageUrl: string }
+        | { kind: "no-scraper"; brand: string }
+        | { kind: "failed"; brand: string; sku: string; reason: string };
+      registered_brands: string[];
+    }>("/api/manufacturer-images/scrape", {
+      method: "POST",
+      body: { brand, sku },
+      admin: true,
+    }),
+  uploadManufacturerImage: (brand: string, sku: string, dataUrl: string) =>
+    request<{ image_url: string }>("/api/manufacturer-images/upload", {
+      method: "POST",
+      body: { brand, sku, data_url: dataUrl },
+      admin: true,
+    }),
 };

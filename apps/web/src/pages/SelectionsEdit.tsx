@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { TRADE_KINDS, type TradeKind } from "@custom-homes/shared";
 import { api, type ProjectDetailResponse } from "../lib/api.js";
 import { TradeForm } from "../components/TradeForm.js";
+import { EntryImage } from "../components/EntryImage.js";
 
 const HIDE = new Set([
   "id",
@@ -138,6 +139,10 @@ export function SelectionsEdit() {
                       {e.is_new_entry === 1 || e.is_new_entry === true ? (
                         <span className="tag created">new</span>
                       ) : null}
+                      <EntryImage
+                        brand={typeof e.brand === "string" ? e.brand : null}
+                        sku={typeof e.sku === "string" ? e.sku : null}
+                      />
                       <dl>
                         {Object.entries(e).map(([k, v]) => {
                           if (HIDE.has(k)) return null;
