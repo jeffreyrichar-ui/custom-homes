@@ -28,6 +28,7 @@ async function request<T>(
   const res = await fetch(path, {
     method: options.method ?? "GET",
     headers,
+    credentials: "include",
     body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
   });
   const text = await res.text();
@@ -185,4 +186,16 @@ export const api = {
       `/api/pdfs/projects/${projectId}/trade/${trade}`,
       { method: "POST", admin: true },
     ),
+
+  // Phase 6 — auth
+  authMe: () =>
+    request<{ user: { id: string; email: string; name: string | null; role: string } }>(
+      "/api/auth/check",
+    ).catch((err: Error) => {
+      if (err.message.includes("401") || err.message.includes("auth required") || err.message.includes("not authenticated")) {
+        return null;
+      }
+      throw err;
+    }),
+  authLogout: () => request<{ ok: boolean }>("/api/auth/logout", { method: "POST" }),
 };

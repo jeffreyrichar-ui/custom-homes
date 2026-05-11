@@ -10,6 +10,7 @@ import { exampleProject } from "@custom-homes/shared";
 import type { AppDb } from "../src/db/client.js";
 import { makeDbi } from "../src/db/dbi.js";
 import * as sqliteSchema from "../src/db/schema.sqlite.js";
+import { adminAuth } from "../src/middleware/adminAuth.js";
 import { healthRouter } from "../src/routes/health.js";
 import { makeProjectsRouter } from "../src/routes/projects.js";
 import { makeAdminImportRouter } from "../src/routes/adminImport.js";
@@ -32,7 +33,7 @@ function buildTestApp() {
   app.use(express.json({ limit: "5mb" }));
   app.use("/api/health", healthRouter);
   app.use("/api/projects", makeProjectsRouter(() => dbi));
-  app.use("/api/admin", makeAdminImportRouter(() => dbi));
+  app.use("/api/admin", adminAuth, makeAdminImportRouter(() => dbi));
   return { app, client };
 }
 

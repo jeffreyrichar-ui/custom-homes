@@ -199,6 +199,23 @@ export const countertop_entries = sqliteTable(
   }),
 );
 
+export const users = sqliteTable(
+  "users",
+  {
+    id: uuidPk(),
+    email: text("email").notNull(),
+    password_hash: text("password_hash").notNull(),
+    name: text("name"),
+    role: text("role").notNull().default("editor"),
+    created_at: text("created_at")
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+  },
+  (t) => ({
+    emailKey: uniqueIndex("users_email_key").on(t.email),
+  }),
+);
+
 export const manufacturer_images = sqliteTable(
   "manufacturer_images",
   {

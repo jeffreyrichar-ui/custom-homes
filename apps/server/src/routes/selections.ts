@@ -7,7 +7,6 @@ import {
   type TradeKind,
 } from "@custom-homes/shared";
 import type { Dbi } from "../db/dbi.js";
-import { adminAuth } from "../middleware/adminAuth.js";
 import { tradeMeta, isTradeKind } from "../lib/tradeRegistry.js";
 import type { ScrapeQueue } from "../services/scrapeQueue.js";
 
@@ -42,7 +41,6 @@ export function makeSelectionsRouter(
   scrapeQueue?: ScrapeQueue,
 ): Router {
   const router = Router();
-  router.use(adminAuth);
 
   // Create an empty project
   router.post("/projects", async (req, res, next) => {

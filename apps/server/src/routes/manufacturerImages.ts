@@ -1,16 +1,16 @@
 import { randomUUID } from "node:crypto";
-import { Router } from "express";
+import { Router, type RequestHandler } from "express";
 import type { Dbi } from "../db/dbi.js";
 import type { ImageStorage } from "../services/imageStorage.js";
 import { imageKey } from "../services/imageStorage.js";
 import type { ScrapeQueue } from "../services/scrapeQueue.js";
 import { registeredBrands } from "../services/scrapers/index.js";
-import { adminAuth } from "../middleware/adminAuth.js";
 
 export function makeManufacturerImagesRouter(
   getDbi: () => Dbi,
   storage: ImageStorage,
   queue: ScrapeQueue,
+  requireAuth: RequestHandler,
 ): Router {
   const router = Router();
 
@@ -40,7 +40,7 @@ export function makeManufacturerImagesRouter(
   });
 
   // Manual upload — admin-only. Body: { brand, sku, data_url } where data_url is "data:image/png;base64,..."
-  router.post("/upload", adminAuth, async (req, res, next) => {
+  router.post("/upload", requireAuth, async (req, res, next) => {
     try {
       const brand = typeof req.body?.brand === "string" ? req.body.brand.trim() : "";
       const sku = typeof req.body?.sku === "string" ? req.body.sku.trim() : "";
@@ -74,7 +74,7 @@ export function makeManufacturerImagesRouter(
   });
 
   // Manual scrape trigger — admin-only. Synchronous (so the UI can show the result).
-  router.post("/scrape", adminAuth, async (req, res, next) => {
+  router.post("/scrape", requireAuth, async (req, res, next) => {
     try {
       const brand = typeof req.body?.brand === "string" ? req.body.brand.trim() : "";
       const sku = typeof req.body?.sku === "string" ? req.body.sku.trim() : "";

@@ -4,7 +4,6 @@ import { fileURLToPath } from "node:url";
 import { Router } from "express";
 import { TRADE_KINDS, ENTRY_TABLE_BY_TRADE, type TradeKind } from "@custom-homes/shared";
 import type { Dbi } from "../db/dbi.js";
-import { adminAuth } from "../middleware/adminAuth.js";
 import { htmlToPdf } from "../services/pdf/generate.js";
 import { renderProjectHtml } from "../services/pdf/html.js";
 
@@ -84,7 +83,7 @@ export function makePdfsRouter(getDbi: () => Dbi): Router {
   const router = Router();
 
   // Generate full project PDF (admin-only)
-  router.post("/projects/:id/full", adminAuth, async (req, res, next) => {
+  router.post("/projects/:id/full", async (req, res, next) => {
     try {
       const dbi = getDbi();
       const data = await loadProject(dbi, req.params.id ?? "");
@@ -110,7 +109,7 @@ export function makePdfsRouter(getDbi: () => Dbi): Router {
   });
 
   // Generate per-trade PDF (admin-only)
-  router.post("/projects/:id/trade/:trade", adminAuth, async (req, res, next) => {
+  router.post("/projects/:id/trade/:trade", async (req, res, next) => {
     try {
       const trade = req.params.trade ?? "";
       const projectId = req.params.id ?? "";

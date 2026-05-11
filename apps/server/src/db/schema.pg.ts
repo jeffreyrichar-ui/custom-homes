@@ -194,6 +194,23 @@ export const countertop_entries = pgTable(
   }),
 );
 
+export const users = pgTable(
+  "users",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    email: text("email").notNull(),
+    password_hash: text("password_hash").notNull(),
+    name: text("name"),
+    role: text("role").notNull().default("editor"),
+    created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => ({
+    emailKey: uniqueIndex("users_email_key").on(t.email),
+  }),
+);
+
 export const manufacturer_images = pgTable(
   "manufacturer_images",
   {
