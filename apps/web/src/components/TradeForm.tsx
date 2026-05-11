@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { TradeKind } from "@custom-homes/shared";
 import { api } from "../lib/api.js";
 import { AutoComplete, type Suggestion } from "./AutoComplete.js";
+import { PatternPreview } from "./PatternPreview.js";
 
 type FieldKind =
   | "text"
@@ -133,12 +134,37 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
   const [skuMismatch, setSkuMismatch] = useState<{ historical: string } | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const brand = values.brand?.trim() ?? "";
   const styleKey = trade === "hardwood" ? "species" : trade === "countertop" ? "material" : "style";
   const colorKey = trade === "paint" ? "color_name" : "color";
   const style = values[styleKey] ?? "";
   const color = values[colorKey] ?? "";
+
+  // Fetch the cached manufacturer image whenever brand+sku change (tile only).
+  useEffect(() => {
+    if (trade !== "tile") {
+      setPreviewImage(null);
+      return;
+    }
+    const sku = values.sku?.trim();
+    if (!brand || !sku) {
+      setPreviewImage(null);
+      return;
+    }
+    let cancelled = false;
+    api
+      .getManufacturerImage(brand, sku)
+      .then((res) => {
+        if (cancelled) return;
+        setPreviewImage(res?.image_url ?? null);
+      })
+      .catch(() => {/* ignore */});
+    return () => {
+      cancelled = true;
+    };
+  }, [trade, brand, values.sku]);
 
   // SKU pre-fill + mismatch detection when color locks
   useEffect(() => {
@@ -331,9 +357,32 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
     );
   };
 
+  const showPreview =
+    trade === "tile" &&
+    values.brand?.trim() &&
+    values.sku?.trim() &&
+    (values.grout_color?.trim() || values.pattern?.trim());
+
   return (
     <form className="trade-form" onSubmit={handleSubmit}>
       <div className="trade-form-grid">{fields.map(renderField)}</div>
+      {showPreview && (
+        <div className="preview-block">
+          <div className="ac-label">Live preview</div>
+          <PatternPreview
+            imageUrl={previewImage}
+            groutColor={values.grout_color}
+            pattern={values.pattern}
+          />
+          {!previewImage && (
+            <small className="hint">
+              No cached image for {values.brand} {values.sku} yet — preview shows pattern
+              + grout only. Save the entry to trigger a scrape, or upload the product
+              image from the entry card.
+            </small>
+          )}
+        </div>
+      )}
       {error && <div className="errors">{error}</div>}
       <div className="button-row">
         <button type="submit" disabled={saving}>

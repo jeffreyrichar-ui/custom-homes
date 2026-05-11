@@ -359,3 +359,37 @@ button.link.danger { color: #cf222e; font-size: 12px; margin-top: 8px; }
   border-color: #ffd7d6;
   color: #cf222e;
 }
+
+.pattern-preview {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  background: #f6f8fa;
+  display: block;
+}
+
+.preview-block {
+  margin-top: 16px;
+  padding: 12px;
+  background: white;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+}
+.preview-block .pattern-preview {
+  max-height: 260px;
+}
+.preview-block .hint {
+  display: block;
+  color: #57606a;
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.tile-entry-preview {
+  margin-bottom: 12px;
+}
+.tile-entry-preview .pattern-preview {
+  max-height: 140px;
+  margin-bottom: 4px;
+}
