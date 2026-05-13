@@ -1,0 +1,28 @@
+{
+  "external_id": "TCCH-1198",
+  "external_source": "toddcampbell-portal",
+  "project": { "name": "Kingswood Est #2 13/2 - Winstead Modified (Gemma)", "address": null },
+  "rooms": [
+    { "room_name": "Master Bath", "entries": [
+      { "trade": "tile", "brand": "Masonry Center", "style": "A Studio Haven", "color": "Espresso SN75 Glossy", "sku": null, "grout_color": "Saddle Brown", "edge_profile": "Jolly to match", "pattern": "24 inch tall splash, set vertical", "location_in_room": "vanity_backsplash", "notes": "4x12; trim Black; butt into mirrors" },
+      { "trade": "tile", "brand": "Masonry Center", "style": "A Studio Haven", "color": "Espresso SN75 Glossy", "sku": null, "grout_color": "Saddle Brown", "edge_profile": "Jolly to match", "pattern": "set vertical", "location_in_room": "shower_niche", "notes": "4x4 in shower niche" },
+      { "trade": "tile", "brand": "Bedrosians", "style": "Magnifico", "color": "Calcutto Oro Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "TS", "pattern": "set straight vertical", "location_in_room": "floor", "notes": "24x48" },
+      { "trade": "tile", "brand": "Bedrosians", "style": "Magnifico", "color": "Calcutto Oro Polished", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "TS", "pattern": "set vertical, all walls", "location_in_room": "shower_walls", "notes": "24x48; full wall behind tub" },
+      { "trade": "tile", "brand": "Emser", "style": "Civillian", "color": "Citizen", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": null, "location_in_room": "shower_floor", "notes": "2x2" }
+    ]},
+    { "room_name": "Main Bath", "entries": [
+      { "trade": "tile", "brand": "Masonry Center", "style": "Studio Haven Shea SN71", "color": "Gloss", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "set vertical straight", "location_in_room": "tub_surround", "notes": null },
+      { "trade": "tile", "brand": "Masonry Center", "style": "Marazzi Curatio CA 13", "color": null, "sku": null, "grout_color": "Warm Gray", "edge_profile": "tbd", "pattern": "3 inch hex / 6 inch splash", "location_in_room": "vanity_backsplash", "notes": null },
+      { "trade": "tile", "brand": "Masonry Center", "style": "Marrazi Curation CA 13", "color": "Splatter Floor Tile Matte", "sku": null, "grout_color": "Warm Gray", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": null }
+    ]},
+    { "room_name": "Powder Bath", "entries": [
+      { "trade": "tile", "brand": "Masonry Center", "style": "Lungarno Zellige Classique", "color": "al Hamra Papillon", "sku": null, "grout_color": "Urban Putty", "edge_profile": null, "pattern": null, "location_in_room": "vanity_backsplash", "notes": "4x4; set to ceiling, no returns" }
+    ]},
+    { "room_name": "Flex Room Ensuite", "entries": [
+      { "trade": "tile", "brand": "Masonry Center", "style": "Ragnos Look", "color": "R8FP Beige", "sku": null, "grout_color": "Urban Putty", "edge_profile": "Jolly to match", "pattern": "set horizontal straight", "location_in_room": "vanity_backsplash", "notes": "2x9" },
+      { "trade": "tile", "brand": "Masonry Center", "style": "Ragnos Look", "color": "R8FP Beige", "sku": null, "grout_color": "Urban Putty", "edge_profile": "Jolly to match", "pattern": "set horizontal straight", "location_in_room": "shower_niche", "notes": "2x9; inside niche" },
+      { "trade": "tile", "brand": "Masonry Center", "style": "Marrazi Crafthouse CH40", "color": "PUMICE", "sku": null, "grout_color": "Bone", "edge_profile": "Jolly to match or Schluter matte", "pattern": "set straight", "location_in_room": "floor", "notes": "8x8 fluted wall tile; advise if over allowance" },
+      { "trade": "tile", "brand": "Masonry Center", "style": "Marrazi Crafthouse CH40", "color": "PUMICE", "sku": null, "grout_color": "Bone", "edge_profile": "Jolly to match or Schluter matte", "pattern": "shower set vertical", "location_in_room": "shower_walls", "notes": "8x8 fluted wall tile" }
+    ]}
+  ]
+}

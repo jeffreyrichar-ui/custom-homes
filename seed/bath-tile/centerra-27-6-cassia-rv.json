@@ -1,0 +1,37 @@
+{
+  "external_id": "TCCH-1160",
+  "external_source": "toddcampbell-portal",
+  "project": {
+    "name": "Centerra 27/6 - Cassia RV",
+    "address": "3394 W Retreat Street"
+  },
+  "rooms": [
+    {
+      "room_name": "Master Bath",
+      "entries": [
+        { "trade": "tile", "brand": "Masonry Center", "style": "Borghini Classico Mos Vial", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Trim to match per spec", "pattern": "set vertical straight", "location_in_room": "vanity_backsplash", "notes": "0.75 x 6 Mosaic" },
+        { "trade": "tile", "brand": "Masonry Center", "style": "Borghini Classico Mos Vial", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Trim to match per spec", "pattern": "set vertical straight", "location_in_room": "shower_niche", "notes": "0.75 x 6 Mosaic; inside niche" },
+        { "trade": "tile", "brand": "Bedrosians", "style": "Thaddeus", "color": "Creme", "sku": null, "grout_color": "Warm Gray", "edge_profile": null, "pattern": "set straight", "location_in_room": "floor", "notes": "24x24" },
+        { "trade": "tile", "brand": "Bedrosians", "style": "Thaddeus", "color": "Creme", "sku": null, "grout_color": "Warm Gray", "edge_profile": null, "pattern": "set straight", "location_in_room": "shower_floor", "notes": "2x2" },
+        { "trade": "tile", "brand": "Masonry Center", "style": "Borghini Classico", "color": "Polished", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "set vertical straight", "location_in_room": "shower_walls", "notes": "12x24" },
+        { "trade": "tile", "brand": "Masonry Center", "style": "Borghini Classico Bucatini", "color": null, "sku": null, "grout_color": null, "edge_profile": "Jolly to match", "pattern": "set vertical", "location_in_room": "tub_surround", "notes": "4x16; tub/shower pony wall" },
+        { "trade": "tile", "brand": "Masonry Center", "style": "Borghini Classico Bucatini", "color": null, "sku": null, "grout_color": null, "edge_profile": "Jolly to match", "pattern": "set vertical", "location_in_room": "shower_walls_accent", "notes": "4x16; pony wall accent" }
+      ]
+    },
+    {
+      "room_name": "Main Bath",
+      "entries": [
+        { "trade": "tile", "brand": "Dal", "style": "Sand and Stone SS70 Summit Rectangle Stone", "color": "Matte", "sku": null, "grout_color": "Urban Putty", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "12x24" },
+        { "trade": "tile", "brand": "Dal", "style": "Contempee CE30 SQU 44 Stagle", "color": "Jasmine Square Star Glossy", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "set straight", "location_in_room": "vanity_backsplash", "notes": "3 inch hex Splatter Polished; 6 inch splash" },
+        { "trade": "tile", "brand": "Dal", "style": "Contempee CE30 SQU 44 Stagle", "color": "Jasmine Square Star Glossy", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": null, "location_in_room": "shower_niche", "notes": "3 inch hex; inside niche" },
+        { "trade": "tile", "brand": "Dal Spirit", "style": "Mesmerist MM30", "color": "Glossy", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "one row straight + one row horizontal repeat", "location_in_room": "tub_surround", "notes": null }
+      ]
+    },
+    {
+      "room_name": "Powder Bath",
+      "entries": [
+        { "trade": "tile", "brand": "Dal", "style": "Remedy Zen Rectangle Fluted", "color": "RD 24 Antidote", "sku": null, "grout_color": "Natural Gray", "edge_profile": null, "pattern": null, "location_in_room": "vanity_backsplash", "notes": "to ceiling, no returns, block out for mirror" }
+      ]
+    }
+  ]
+}

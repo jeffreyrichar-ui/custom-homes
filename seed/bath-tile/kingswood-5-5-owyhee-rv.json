@@ -1,0 +1,19 @@
+{
+  "external_id": "TCCH-1172",
+  "external_source": "toddcampbell-portal",
+  "project": { "name": "Kingswood Est 5/5 - Owyhee RV", "address": null },
+  "rooms": [
+    { "room_name": "Master Bath", "entries": [
+      { "trade": "tile", "brand": "Masonry Center", "style": "AO Studio Haven", "color": "Espresso SN75 Glossy", "sku": null, "grout_color": "Saddle Brown", "edge_profile": "Jolly to match", "pattern": "set horizontal straight", "location_in_room": "vanity_backsplash", "notes": "4x12; 6 inch splash" },
+      { "trade": "tile", "brand": "Emser", "style": "Visconde", "color": "Oro", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set horizontal straight", "location_in_room": "floor", "notes": "12x24; confirm prior to ordering" },
+      { "trade": "tile", "brand": "Emser", "style": "Visconde", "color": "Oro Polished", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "set straight parallel with vanity", "location_in_room": "shower_walls", "notes": "12x24" },
+      { "trade": "tile", "brand": "Emser", "style": "Visconde", "color": "Oro Polished", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "set straight", "location_in_room": "shower_floor", "notes": "2x2" },
+      { "trade": "tile", "brand": null, "style": null, "color": "Rolling Fog", "sku": null, "grout_color": null, "edge_profile": "Satin Nickel", "pattern": "set vertical mosaic 12 inch splash", "location_in_room": "tub_surround", "notes": "12x24" }
+    ]},
+    { "room_name": "Main Bath", "entries": [
+      { "trade": "tile", "brand": "Masonry Center", "style": "Ragnos Look", "color": "R8FP Beige", "sku": null, "grout_color": "Urban Putty", "edge_profile": "Jolly to match", "pattern": "set horizontal staggered", "location_in_room": "vanity_backsplash", "notes": "6 inch splash" },
+      { "trade": "tile", "brand": "Masonry Center", "style": "Marazzi Crafthouse CH44", "color": "Argilla", "sku": null, "grout_color": null, "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "12x24" },
+      { "trade": "tile", "brand": "Masonry Center", "style": "Marrazi Crafthouse CH40", "color": "PUMICE Fluted Wall Tile", "sku": null, "grout_color": "Bone", "edge_profile": "Jolly to match", "pattern": null, "location_in_room": "tub_surround", "notes": "8x8 fluted wall tile; advise if over budget" }
+    ]}
+  ]
+}

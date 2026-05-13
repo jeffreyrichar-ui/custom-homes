@@ -1,0 +1,33 @@
+{
+  "external_id": "TCCH-1171",
+  "external_source": "toddcampbell-portal",
+  "project": { "name": "Centerra 8/2 - Adamson Custom", "address": "762 N Delehaye Ave" },
+  "rooms": [
+    { "room_name": "Master Bath", "entries": [
+      { "trade": "tile", "brand": "Bedrosians", "style": "Chroma", "color": "White", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "set vertical straight", "location_in_room": "vanity_backsplash", "notes": "2x18; all walls behind floating vanities and below" },
+      { "trade": "tile", "brand": "Bedrosians", "style": "Chroma", "color": "White", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "set vertical straight", "location_in_room": "tub_surround", "notes": "2x18" },
+      { "trade": "tile", "brand": "Dal", "style": "Sand and Stone", "color": "Basin", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set straight", "location_in_room": "floor", "notes": "24x24" },
+      { "trade": "tile", "brand": "Bedrosians", "style": "Chroma", "color": "White", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Satin Nickel", "pattern": "set vertical straight", "location_in_room": "shower_walls", "notes": "2x18" },
+      { "trade": "tile", "brand": "Dal", "style": "Sand and Stone", "color": "Basin", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Miter edges", "pattern": "set vertical straight", "location_in_room": "shower_bench", "notes": "2x18; large bench inside full wall niche" },
+      { "trade": "tile", "brand": "Dal", "style": "Sand and Stone", "color": "Basin", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "cut to fit", "location_in_room": "shower_floor", "notes": null }
+    ]},
+    { "room_name": "Primary 2 Bath", "entries": [
+      { "trade": "tile", "brand": "Dal", "style": "Sand and Stone SS70 Summit Rectangle Stone", "color": "Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "12x24" },
+      { "trade": "tile", "brand": "Dal", "style": "Sand and Stone SS70 Summit Rectangle Stone", "color": "Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "cut to fit", "location_in_room": "shower_floor", "notes": "12x24" },
+      { "trade": "tile", "brand": "Dal Spirit", "style": "Mesmerist MM30", "color": "Glossy", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "one row set straight + one row horizontal repeat", "location_in_room": "shower_walls", "notes": null }
+    ]},
+    { "room_name": "Secondary Bath", "entries": [
+      { "trade": "tile", "brand": "Masonry Center", "style": "Look Olivia", "color": "RCu5 3D Yubi", "sku": null, "grout_color": null, "edge_profile": null, "pattern": null, "location_in_room": "shower_niche", "notes": "inside vertical shower niche" },
+      { "trade": "tile", "brand": "Emser", "style": "Prodigy", "color": "Agnesi", "sku": null, "grout_color": null, "edge_profile": null, "pattern": "set straight", "location_in_room": "floor", "notes": "12x24" },
+      { "trade": "tile", "brand": "Emser", "style": "Prodigy", "color": "Agnesi", "sku": null, "grout_color": null, "edge_profile": null, "pattern": "set parallel with vanity", "location_in_room": "tub_surround", "notes": "12x24" }
+    ]},
+    { "room_name": "Media Room Bath", "entries": [
+      { "trade": "tile", "brand": "Emser", "style": "Prodigy", "color": "Cruz Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "12x24" },
+      { "trade": "tile", "brand": null, "style": null, "color": "Lana ZL 07", "sku": null, "grout_color": null, "edge_profile": null, "pattern": null, "location_in_room": "vanity_backsplash", "notes": "Slab material; updated 4.23.26" },
+      { "trade": "tile", "brand": "Marrazzi", "style": "Zellige Neo", "color": "Bright White", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "White Jolley", "pattern": "set staggered", "location_in_room": "shower_walls", "notes": "1.5x9; lower 7 ft ZL07 Lana, top 3 ft ZL11 Gesso" }
+    ]},
+    { "room_name": "Main Bath", "entries": [
+      { "trade": "tile", "brand": "Dal", "style": "Contempee CE 30 Jasmine Square Star Glossy", "color": null, "sku": "CE30 SQU44 STAGLE", "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "to ceiling, no returns", "location_in_room": "vanity_backsplash", "notes": "4x4" }
+    ]}
+  ]
+}

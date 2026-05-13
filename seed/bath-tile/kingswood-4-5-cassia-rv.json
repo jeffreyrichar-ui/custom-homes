@@ -1,0 +1,19 @@
+{
+  "external_id": "TCCH-1174",
+  "external_source": "toddcampbell-portal",
+  "project": { "name": "Kingswood Est 4/5 - Cassia RV", "address": null },
+  "rooms": [
+    { "room_name": "Master Bath", "entries": [
+      { "trade": "tile", "brand": "Masonry Center", "style": "Borghini Classico Mos Vial", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "set vertical straight", "location_in_room": "vanity_backsplash", "notes": "0.75x6; 6 inch splash" },
+      { "trade": "tile", "brand": "Masonry Center", "style": "Borghini Classico Mos Vial", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "set vertical straight", "location_in_room": "shower_niche", "notes": "0.75x6; back of niche" },
+      { "trade": "tile", "brand": "Dal", "style": "Indoterra", "color": "Natural IN 42", "sku": null, "grout_color": "Warm Gray", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "24x24" },
+      { "trade": "tile", "brand": "Masonry Center", "style": "Borghini Classico", "color": "Polished", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "set vertical straight", "location_in_room": "shower_walls", "notes": "24x24" },
+      { "trade": "tile", "brand": "Masonry Center", "style": "Borghini Classico", "color": "Polished", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": null, "location_in_room": "shower_floor", "notes": "2x2" }
+    ]},
+    { "room_name": "Main Bath", "entries": [
+      { "trade": "tile", "brand": "Bedrosians", "style": "Marin Trapezoid", "color": "Black Sea", "sku": null, "grout_color": "Warm Gray", "edge_profile": "Black", "pattern": "3 inch hex", "location_in_room": "vanity_backsplash", "notes": "6 inch splash" },
+      { "trade": "tile", "brand": "Emser", "style": "Prodigy", "color": "Cruz Matte", "sku": null, "grout_color": "Warm Gray", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "12x24" },
+      { "trade": "tile", "brand": "Emser", "style": "Prodigy", "color": "Cruz Matte", "sku": null, "grout_color": "Warm Gray", "edge_profile": "Black", "pattern": "set vertical straight", "location_in_room": "tub_surround", "notes": "wrap splash border around all 3 edges; ~6 inch band next to Schluter; see attached layout" }
+    ]}
+  ]
+}
