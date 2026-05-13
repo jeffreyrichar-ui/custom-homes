@@ -89,6 +89,10 @@ export const api = {
     }),
 
   // Phase 2 — suggestions
+  suggestVendors: () =>
+    request<{ vendors: { value: string; count: number }[] }>(
+      `/api/suggest/vendors`,
+    ),
   suggestBrands: (trade?: string) =>
     request<{ brands: { value: string; count: number }[] }>(
       `/api/suggest/brands${trade ? `?trade=${encodeURIComponent(trade)}` : ""}`,

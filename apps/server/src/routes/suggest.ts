@@ -16,6 +16,20 @@ function parseTrade(req: import("express").Request): TradeKind | null {
 export function makeSuggestRouter(getDbi: () => Dbi): Router {
   const router = Router();
 
+  // Distinct vendors (tile only — vendor column doesn't exist on other trades yet)
+  router.get("/vendors", async (_req, res, next) => {
+    try {
+      const rows = await getDbi().query<{ vendor: string; n: number | string }>(
+        `SELECT vendor, COUNT(*) AS n FROM tile_entries
+         WHERE vendor IS NOT NULL AND vendor != ''
+         GROUP BY vendor ORDER BY n DESC, vendor ASC`,
+      );
+      res.json({ vendors: rows.map((r) => ({ value: r.vendor, count: Number(r.n) })) });
+    } catch (err) {
+      next(err);
+    }
+  });
+
   // Distinct brands. Optional ?trade=tile narrows to that trade.
   router.get("/brands", async (req, res, next) => {
     try {

@@ -6,6 +6,7 @@ import { PatternPreview } from "./PatternPreview.js";
 
 type FieldKind =
   | "text"
+  | "ac-vendor"
   | "ac-brand"
   | "ac-style"
   | "ac-color"
@@ -22,6 +23,7 @@ type FieldDef = {
 
 const TRADE_FIELDS: Record<TradeKind, FieldDef[]> = {
   tile: [
+    { key: "vendor", label: "Vendor", kind: "ac-vendor" },
     { key: "brand", label: "Brand", kind: "ac-brand", required: true },
     { key: "style", label: "Style", kind: "ac-style" },
     { key: "color", label: "Color", kind: "ac-color" },
@@ -231,6 +233,15 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
     }
   };
 
+  const fetchVendorsKey = `vendors`;
+  const fetchVendors = useMemo(
+    () => async (): Promise<Suggestion[]> => {
+      const res = await api.suggestVendors();
+      return res.vendors;
+    },
+    [],
+  );
+
   const fetchBrandsKey = `brands:${trade}`;
   const fetchBrands = useMemo(
     () => async (): Promise<Suggestion[]> => {
@@ -288,6 +299,19 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
             ))}
           </select>
         </div>
+      );
+    }
+    if (f.kind === "ac-vendor") {
+      return (
+        <AutoComplete
+          key={f.key}
+          label={f.label}
+          required={f.required}
+          value={v}
+          onChange={set}
+          fetchSuggestions={fetchVendors}
+          fetchKey={fetchVendorsKey}
+        />
       );
     }
     if (f.kind === "ac-brand") {
