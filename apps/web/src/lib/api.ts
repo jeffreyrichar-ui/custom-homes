@@ -148,13 +148,23 @@ export const api = {
     }),
 
   // Phase 3 — manufacturer images
-  getManufacturerImage: (brand: string, sku: string) =>
-    request<{ image_url: string; scraped_at: string }>(
-      `/api/manufacturer-images?brand=${encodeURIComponent(brand)}&sku=${encodeURIComponent(sku)}`,
+  getManufacturerImage: (
+    brand: string,
+    sku: string | null | undefined,
+    style?: string | null,
+    color?: string | null,
+  ) => {
+    const params = new URLSearchParams({ brand });
+    if (sku) params.set("sku", sku);
+    if (style) params.set("style", style);
+    if (color) params.set("color", color);
+    return request<{ image_url: string; scraped_at: string }>(
+      `/api/manufacturer-images?${params.toString()}`,
     ).catch((err: Error) => {
       if (err.message === "not cached") return null;
       throw err;
-    }),
+    });
+  },
   triggerScrape: (brand: string, sku: string) =>
     request<{
       outcome:

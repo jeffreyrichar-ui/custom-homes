@@ -14,7 +14,9 @@
     "db:migrate": "tsx src/db/migrate.ts",
     "db:reset": "tsx src/db/reset.ts",
     "db:seed": "tsx src/db/seed.ts",
-    "db:seed-bath-tile": "tsx src/db/seedBathTile.ts"
+    "db:seed-bath-tile": "tsx src/db/seedBathTile.ts",
+    "db:dump-image-prompts": "tsx src/db/dumpImagePrompts.ts",
+    "db:import-tile-images": "tsx src/db/importTileImages.ts"
   },
   "dependencies": {
     "@custom-homes/shared": "workspace:*",

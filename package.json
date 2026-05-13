@@ -12,7 +12,9 @@
     "db:migrate": "pnpm --filter @custom-homes/server db:migrate",
     "db:reset": "pnpm --filter @custom-homes/server db:reset",
     "db:seed": "pnpm --filter @custom-homes/server db:seed",
-    "db:seed-bath-tile": "pnpm --filter @custom-homes/server db:seed-bath-tile"
+    "db:seed-bath-tile": "pnpm --filter @custom-homes/server db:seed-bath-tile",
+    "db:dump-image-prompts": "pnpm --filter @custom-homes/server db:dump-image-prompts",
+    "db:import-tile-images": "pnpm --filter @custom-homes/server db:import-tile-images"
   },
   "devDependencies": {
     "concurrently": "^9.0.1",

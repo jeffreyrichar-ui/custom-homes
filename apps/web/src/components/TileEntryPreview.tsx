@@ -10,16 +10,18 @@ type Props = {
 export function TileEntryPreview({ entry }: Props) {
   const brand = typeof entry.brand === "string" ? entry.brand : null;
   const sku = typeof entry.sku === "string" ? entry.sku : null;
+  const style = typeof entry.style === "string" ? entry.style : null;
+  const color = typeof entry.color === "string" ? entry.color : null;
   const groutColor = typeof entry.grout_color === "string" ? entry.grout_color : null;
   const pattern = typeof entry.pattern === "string" ? entry.pattern : null;
 
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!brand || !sku) return;
+    if (!brand) return;
     let cancelled = false;
     api
-      .getManufacturerImage(brand, sku)
+      .getManufacturerImage(brand, sku, style, color)
       .then((res) => {
         if (!cancelled) setImageUrl(res?.image_url ?? null);
       })
@@ -27,7 +29,7 @@ export function TileEntryPreview({ entry }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [brand, sku]);
+  }, [brand, sku, style, color]);
 
   // Show pattern preview if we have at least pattern or grout to render.
   const showPattern = !!(pattern || groutColor);
