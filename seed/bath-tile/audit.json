@@ -1,0 +1,196 @@
+{
+  "purpose": "Interpretive calls I made during portal-PDF → JSON extraction. Tamara should sanity-check each one and either confirm or fix in the source JSON before downstream sync to BuilderTrend.",
+  "generated_by": "Claude extraction pass, 2026-05-13",
+  "total_projects": 18,
+  "total_tile_entries": 218,
+  "conventions": {
+    "compound_rows_split": "Portal rows naming multiple surfaces (e.g. 'Backsplash / Tub & Vanity / Inside Niche') were split into one entry per physical surface with the same tile spec.",
+    "brand_separator": "Portal 'Brand X / Y' parsed as brand=X, style=Y when Y looked like a collection name.",
+    "size_field": "Portal 'Size' has no schema column — values were appended to notes (e.g. '12x24').",
+    "trim_field": "Portal 'Trim' mapped to schema edge_profile.",
+    "size_in_notes": "Tile size lives in notes since the schema doesn't have a size column. Add a size column in a future migration if querying by size becomes important.",
+    "unknown_brand_marker": "Entries where the portal listed only a color number with no brand are marked brand='Unknown' with the notes field flagging the ambiguity."
+  },
+  "interpretive_calls": [
+    {
+      "project": "centerra-22-6-cassia-rv",
+      "room": "Master Bath",
+      "issue": "Compound row split",
+      "portal_text": "Backsplash / Tub & Vanity / Inside Niche — Brand: Dal, Color: Remedy RD 20",
+      "decision": "Split into 3 entries: vanity_backsplash, tub_surround, shower_niche. Treated 'Backsplash' and 'Vanity' as the same physical surface (vanity backsplash).",
+      "needs_review": "Confirm 'Backsplash' meant vanity backsplash and not a separate wall."
+    },
+    {
+      "project": "centerra-22-6-cassia-rv",
+      "room": "Master Bath",
+      "issue": "Pattern typo",
+      "portal_text": "Shower Floor — Pattern: d",
+      "decision": "Left pattern null with note flagging the typo.",
+      "needs_review": "What was the intended pattern? Likely 'set straight'."
+    },
+    {
+      "project": "centerra-8-2-adamson",
+      "room": "Media Room Bath",
+      "issue": "Brand missing",
+      "portal_text": "Backsplash — Color Number: Lana ZL 07 (slab material)",
+      "decision": "Set brand='Unknown', moved 'Lana ZL 07' into style, flagged in notes.",
+      "needs_review": "Identify the brand (probably the same as the related shower tile 'Marrazzi Zellige Neo' since 'ZL 07' / 'ZL 11' suggests the same series)."
+    },
+    {
+      "project": "kingswood-5-2-cassia-rv-hamptons",
+      "room": "Master Bath",
+      "issue": "Brand missing",
+      "portal_text": "Tub — Color Number: Rolling Fog, Size: 12x24",
+      "decision": "Set brand='Unknown', kept color and trim, flagged in notes.",
+      "needs_review": "Confirm brand. 'Rolling Fog' appears elsewhere with Emser/Visconde as the source."
+    },
+    {
+      "project": "kingswood-5-5-owyhee-rv",
+      "room": "Master Bath",
+      "issue": "Brand missing",
+      "portal_text": "Tub Surround — Color Number: Rolling Fog, mosaic 12 inch splash",
+      "decision": "Set brand='Unknown', kept color and trim, flagged in notes.",
+      "needs_review": "Same 'Rolling Fog' question as 5/2."
+    },
+    {
+      "project": "kingswood-7-3-verraso-2",
+      "room": "Master Bath",
+      "issue": "Compound row split",
+      "portal_text": "Backsplash — used for vanity / niche / tub curb (one row, multiple notes)",
+      "decision": "Split into 3 entries: vanity_backsplash, shower_niche, tub_surround. Same tile spec across all.",
+      "needs_review": "Confirm tub curb is actually a tile location and not just a Schluter strip."
+    },
+    {
+      "project": "kingswood-7-3-verraso-2",
+      "room": "Master Bath",
+      "issue": "Floor + under-tub mosaic",
+      "portal_text": "Shower Floor & Floor Under Tub — Bedrosians Frammente White Mosaic Palladiana",
+      "decision": "Stored as one shower_floor entry with notes capturing 'also goes under tub'.",
+      "needs_review": "If the under-tub area needs separate ordering quantity, split into a second entry."
+    },
+    {
+      "project": "kingswood-7-3-verraso-2",
+      "room": "Main Suite Bath",
+      "issue": "Compound row split",
+      "portal_text": "Backsplash / Back of shower niche — Dal CE30 SQU44 STAGLE",
+      "decision": "Split into vanity_backsplash + shower_niche.",
+      "needs_review": "Standard split, low risk."
+    },
+    {
+      "project": "kingswood-7-3-verraso-2",
+      "room": "Upstairs Bath",
+      "issue": "Accent tile interpretation",
+      "portal_text": "Backsplash / Shower Accent — Bedrosians Sahara Cotta with notes about 6 rows of 1x12 border",
+      "decision": "Recorded as one shower_walls_accent entry; the 6-row border detail in notes.",
+      "needs_review": "Is this used on the vanity backsplash too, or only as the shower accent strip?"
+    },
+    {
+      "project": "kingswood-7-3-verraso-2",
+      "room": "Upstairs Bath",
+      "issue": "Floor + shower walls + shower floor from one tile",
+      "portal_text": "Flooring & Shower Walls — Bedrosians Sahara Ecru, 12x24 plus 0.5x4 mosaic for shower floor",
+      "decision": "Split into floor + shower_walls + shower_floor; all same tile spec.",
+      "needs_review": "Confirm the 0.5x4 mosaic on shower floor is indeed Bedrosians Sahara and not a separate product."
+    },
+    {
+      "project": "oakwood-1-1-eklund",
+      "room": "Master Bath",
+      "issue": "Master Accent placement",
+      "portal_text": "Master Accents — Dal Remedy Aurora FLUTED, used 'Back of Niches / Picture Frame Mirrors and Onyx / Bench Surround'",
+      "decision": "Single shower_walls_accent entry with notes capturing the 3 uses.",
+      "needs_review": "If you need separate ordering for niche-back vs mirror-frame vs bench, split into 3 entries."
+    },
+    {
+      "project": "oakwood-1-1-eklund",
+      "room": "Gym Bath",
+      "issue": "Border tile vs main tile",
+      "portal_text": "Shower — Masonry Center Conrad Brick Siren CB95 + Border Linen CB91",
+      "decision": "Two entries: shower_walls (CB95) and shower_walls_accent (CB91 border). Plus shower_niche on the CB91.",
+      "needs_review": "Standard 2-tile shower; likely correct."
+    },
+    {
+      "project": "oakwood-3-1-tantillo",
+      "room": "Master Bath",
+      "issue": "Compound row split",
+      "portal_text": "Backsplash / Pony Wall in back of tub — Masonry Center Glace Bianco Raye 3D Rael",
+      "decision": "Split into vanity_backsplash + tub_surround (pony wall = tub-side wall in this builder's vocabulary).",
+      "needs_review": "Confirm 'pony wall in back of tub' should map to tub_surround. Some builders treat pony walls separately."
+    },
+    {
+      "project": "oakwood-3-1-tantillo",
+      "room": "Main Floor Guest",
+      "issue": "Accent stripes in tub surround",
+      "portal_text": "Backsplash — Tile Shop Sami Materici, 'Visone add 2 stripes - vertical rows at appx 60 and 84'",
+      "decision": "Two entries: vanity_backsplash + shower_walls_accent (the 2 vertical stripes).",
+      "needs_review": "Stripes are on the tub_surround, not vanity backsplash — should the accent entry use location tub_surround?"
+    },
+    {
+      "project": "oakwood-3-1-tantillo",
+      "room": "Pool Bath",
+      "issue": "Bench wall location",
+      "portal_text": "Full WALL Behind Tub/Toilet and Bench Wall — Bedrosians Cloe Blue",
+      "decision": "Single tub_surround entry with notes mentioning bench wall.",
+      "needs_review": "Bench wall might be its own location (wainscot?). Splitting may help ordering."
+    },
+    {
+      "project": "kingswood-2-3-walker",
+      "room": "Master Bath",
+      "issue": "Bench location coverage",
+      "portal_text": "Shower Walls / top of bench — Emser Visconde ORO POLISHED",
+      "decision": "Two entries: shower_walls + shower_bench.",
+      "needs_review": "Confirm shower_bench uses same tile (vs being its own SKU)."
+    },
+    {
+      "project": "kingswood2-11-2-dittman",
+      "room": "Up Jack-n-Jill Bath",
+      "issue": "'Each bathroom different color'",
+      "portal_text": "Bedrosians Marin Aloe Green Glass / Misty Blue Gloss — each bathroom different color, match inside niches",
+      "decision": "Recorded as one entry per location with both colors in the color field.",
+      "needs_review": "Should be split into one entry per color per bathroom if this is actually 2 separate baths sharing a JnJ shower."
+    },
+    {
+      "project": "kingswood2-13-2-winstead-gemma",
+      "room": "Master Bath",
+      "issue": "Same tile floor vs wall, different finish",
+      "portal_text": "Bedrosians Magnifico Calcutto Oro — Matte on floor, Polished on walls",
+      "decision": "Two entries: floor (color='Calcutto Oro Matte') and shower_walls (color='Calcutto Oro Polished').",
+      "needs_review": "Should these be the same SKU with finish as a notes detail, or treated as 2 SKUs since matte and polished are different products?"
+    },
+    {
+      "project": "kingswood2-8-3-brentwood-francie",
+      "room": "Master Bath",
+      "issue": "Compound row with multi-location",
+      "portal_text": "Wall Tub / Splashes / Inside Niche — Dal Contempoee Jasmine CE30, 4x4 ring pattern",
+      "decision": "Three entries: tub_surround + vanity_backsplash + shower_niche.",
+      "needs_review": "Standard split; confirm 'Wall Tub' is tub_surround vs a separate accent wall."
+    },
+    {
+      "project": "general",
+      "issue": "Brand variants for the same vendor",
+      "portal_text": "Brands like 'Dal', 'Dal Spirit', 'Dal/Miramo', 'Dal/Remedy', 'Dal/Marble Attache' appear — sometimes 'Dal' is just the vendor, sometimes 'Dal Spirit' is a sub-brand.",
+      "decision": "Kept the literal first-token as brand. 'Dal Spirit' was preserved as a separate brand. 'Dal/Miramo' parsed as brand=Dal, style=Miramo.",
+      "needs_review": "Consider a brand-normalization pass that maps 'Dal Spirit' → 'Dal' so the autocomplete groups all Daltile entries together."
+    },
+    {
+      "project": "general",
+      "issue": "Masonry Center vs Bedrosians distributor ambiguity",
+      "portal_text": "Masonry Center carries multiple manufacturers (Marazzi, Portabello, Lungarno, Ragno). Portal lists 'Masonry Center / Marazzi' style entries.",
+      "decision": "Kept brand='Masonry Center' (the distributor) with the manufacturer as style. This is consistent across all extractions.",
+      "needs_review": "If Tamara wants to fuzzy-match by manufacturer (Marazzi) rather than distributor (Masonry Center), the brand-vs-style split should flip."
+    }
+  ],
+  "low_confidence_patterns_by_count": {
+    "compound_row_splits": 8,
+    "brand_missing_filled_with_unknown": 3,
+    "pattern_typo_or_ambiguous": 1,
+    "accent_vs_main_tile_calls": 5,
+    "same_tile_floor_walls_different_finish": 2,
+    "shower_bench_assumed_same_as_walls": 4
+  },
+  "recommended_review_order": [
+    "1. Skim 'interpretive_calls' for the 3 'Brand missing → Unknown' cases — fill in actual brand if you can.",
+    "2. Walk through a few projects in /selections/:id and visually check that the location vocabulary matches reality.",
+    "3. The general 'Dal Spirit' / 'Masonry Center' normalization questions are policy decisions — answer once, apply globally with a sed pass on seed/bath-tile/.",
+    "4. The compound-row splits are the highest-leverage check: if your tile sub gets ordering quantities wrong because of how I split, fixing those JSONs first prevents the same issue on future imports."
+  ]
+}

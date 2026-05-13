@@ -11,7 +11,8 @@
     "db:generate": "pnpm --filter @custom-homes/server db:generate",
     "db:migrate": "pnpm --filter @custom-homes/server db:migrate",
     "db:reset": "pnpm --filter @custom-homes/server db:reset",
-    "db:seed": "pnpm --filter @custom-homes/server db:seed"
+    "db:seed": "pnpm --filter @custom-homes/server db:seed",
+    "db:seed-bath-tile": "pnpm --filter @custom-homes/server db:seed-bath-tile"
   },
   "devDependencies": {
     "concurrently": "^9.0.1",

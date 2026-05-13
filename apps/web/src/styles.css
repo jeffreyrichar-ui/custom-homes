@@ -359,6 +359,14 @@ button.link.danger { color: #cf222e; font-size: 12px; margin-top: 8px; }
   border-color: #ffd7d6;
   color: #cf222e;
 }
+.entry-image-placeholder button {
+  margin-right: 8px;
+}
+button.link.experimental {
+  font-size: 11px;
+  font-style: italic;
+  opacity: 0.7;
+}
 
 .pattern-preview {
   width: 100%;

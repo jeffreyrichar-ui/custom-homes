@@ -11,6 +11,7 @@ type State =
   | { kind: "loading" }
   | { kind: "loaded"; url: string }
   | { kind: "missing" }
+  | { kind: "scraping" }
   | { kind: "error"; message: string };
 
 export function EntryImage({ brand, sku }: Props) {
@@ -41,21 +42,6 @@ export function EntryImage({ brand, sku }: Props) {
 
   if (!brand || !sku) return null;
 
-  const handleScrape = async () => {
-    setState({ kind: "loading" });
-    const res = await api.triggerScrape(brand, sku);
-    if (res.outcome.kind === "scraped" || res.outcome.kind === "cached") {
-      setState({ kind: "loaded", url: res.outcome.imageUrl });
-    } else if (res.outcome.kind === "no-scraper") {
-      setState({
-        kind: "error",
-        message: `No scraper for ${brand}. Use manual upload.`,
-      });
-    } else {
-      setState({ kind: "error", message: res.outcome.reason });
-    }
-  };
-
   const handleUpload = async (file: File) => {
     setState({ kind: "loading" });
     try {
@@ -63,7 +49,30 @@ export function EntryImage({ brand, sku }: Props) {
       const res = await api.uploadManufacturerImage(brand, sku, dataUrl);
       setState({ kind: "loaded", url: res.image_url });
     } catch (err) {
-      setState({ kind: "error", message: err instanceof Error ? err.message : String(err) });
+      setState({
+        kind: "error",
+        message: err instanceof Error ? err.message : String(err),
+      });
+    }
+  };
+
+  const handleScrape = async () => {
+    setState({ kind: "scraping" });
+    const res = await api.triggerScrape(brand, sku);
+    if (res.outcome.kind === "scraped" || res.outcome.kind === "cached") {
+      setState({ kind: "loaded", url: res.outcome.imageUrl });
+    } else if (res.outcome.kind === "no-scraper") {
+      setState({
+        kind: "missing",
+      });
+      window.alert(
+        `No scraper registered for ${brand}. Upload the product image manually.`,
+      );
+    } else {
+      setState({ kind: "missing" });
+      window.alert(
+        `Auto-fetch failed: ${res.outcome.reason}\n\nUpload the product image manually.`,
+      );
     }
   };
 
@@ -72,19 +81,27 @@ export function EntryImage({ brand, sku }: Props) {
       {state.kind === "loaded" && (
         <img src={state.url} alt={`${brand} ${sku}`} className="entry-image-img" />
       )}
-      {state.kind === "loading" && <div className="entry-image-placeholder">Loading…</div>}
+      {state.kind === "loading" && (
+        <div className="entry-image-placeholder">Loading…</div>
+      )}
+      {state.kind === "scraping" && (
+        <div className="entry-image-placeholder">Trying auto-fetch…</div>
+      )}
       {state.kind === "missing" && (
         <div className="entry-image-placeholder">
-          <button type="button" className="link" onClick={handleScrape}>
-            Try scrape
-          </button>
-          {" · "}
           <button
             type="button"
-            className="link"
             onClick={() => fileRef.current?.click()}
           >
-            Upload
+            Upload image
+          </button>
+          <button
+            type="button"
+            className="link experimental"
+            onClick={handleScrape}
+            title="Best-effort fetch from manufacturer site. Often fails — manual upload is the reliable path."
+          >
+            try auto-fetch (experimental)
           </button>
         </div>
       )}
@@ -93,7 +110,6 @@ export function EntryImage({ brand, sku }: Props) {
           {state.message}{" "}
           <button
             type="button"
-            className="link"
             onClick={() => fileRef.current?.click()}
           >
             Upload manually
