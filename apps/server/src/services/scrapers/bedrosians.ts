@@ -2,8 +2,16 @@ import { fetchProductImagePlaywright } from "./playwrightFetch.js";
 import { searchQuery, type Scraper } from "./types.js";
 
 /**
- * Bedrosians is a Shopify-style catalog; product detail pages emit a clean
- * og:image. Search URL pattern verified manually 2026-05.
+ * Bedrosians — Salesforce Commerce Cloud (SFCC).
+ *
+ * Confirmed via Google search (2026-05): product detail URLs follow
+ *   https://www.bedrosians.com/en/product/detail/<series-slug>/?itemNo=<id>
+ *
+ * Search URL:
+ *   https://www.bedrosians.com/en/search/?q=<query>
+ *
+ * SFCC detail pages reliably emit og:image. That's our primary signal
+ * here; the inline DOM selectors are fallbacks against a site redesign.
  */
 export const bedrosiansScraper: Scraper = {
   brand: "Bedrosians",
@@ -14,13 +22,16 @@ export const bedrosiansScraper: Scraper = {
     const searchUrl = `https://www.bedrosians.com/en/search/?q=${encodeURIComponent(q)}`;
     return fetchProductImagePlaywright({
       searchUrl,
-      productLinkSelector: 'a[href*="/en/product/"]',
+      productLinkSelector: 'a[href*="/product/detail/"]',
       imageSelectors: [
-        ".product-main-image img",
-        ".product-image-gallery__main img",
-        "main img",
+        ".b-product_detail-image img",
+        ".pdp-image-gallery_main img",
+        ".pdp-image-gallery__main img",
+        ".b-pdp_image img",
+        "main img[itemprop='image']",
+        "main picture img",
       ],
-      waitMs: 800,
+      waitMs: 1500,
     });
   },
 };
