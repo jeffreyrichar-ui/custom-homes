@@ -18,8 +18,8 @@
           "grout_color": "Bleached Wood",
           "edge_profile": "TSI Ivory",
           "pattern": "8 inch splash",
-          "location_in_room": "backsplash",
-          "notes": "2x10; same tile applied to backsplash + tub wall + vanity backsplash + inside niche"
+          "location_in_room": "vanity_backsplash",
+          "notes": "2x10; same tile applied to vanity backsplash + tub surround + inside niche"
         },
         {
           "trade": "tile",
@@ -32,18 +32,6 @@
           "pattern": "8 inch splash",
           "location_in_room": "tub_surround",
           "notes": "2x10; face of shower/tub wall"
-        },
-        {
-          "trade": "tile",
-          "brand": "Dal",
-          "style": "Remedy",
-          "color": "RD 20",
-          "sku": null,
-          "grout_color": "Bleached Wood",
-          "edge_profile": "TSI Ivory",
-          "pattern": "8 inch splash",
-          "location_in_room": "vanity_backsplash",
-          "notes": "2x10"
         },
         {
           "trade": "tile",
@@ -107,7 +95,7 @@
           "grout_color": "Bright White",
           "edge_profile": "Jolly to match",
           "pattern": "1x6 set straight",
-          "location_in_room": "backsplash",
+          "location_in_room": "vanity_backsplash",
           "notes": "6 inch splash"
         },
         {
@@ -136,7 +124,7 @@
           "grout_color": "Bleached Wood",
           "edge_profile": "Chrome",
           "pattern": "set vertical straight",
-          "location_in_room": "backsplash",
+          "location_in_room": "vanity_backsplash",
           "notes": "6 inch splash; to ceiling, no returns"
         }
       ]

@@ -18,7 +18,7 @@
           "grout_color": "Bleached Wood",
           "edge_profile": "Black",
           "pattern": "penny round",
-          "location_in_room": "backsplash",
+          "location_in_room": "vanity_backsplash",
           "notes": "6 inch splash; penny size"
         },
         {
@@ -71,7 +71,7 @@
           "grout_color": "Bright White",
           "edge_profile": "Black",
           "pattern": "Lattice",
-          "location_in_room": "backsplash",
+          "location_in_room": "vanity_backsplash",
           "notes": "6 inch splash"
         }
       ]
@@ -88,7 +88,7 @@
           "grout_color": null,
           "edge_profile": "Black",
           "pattern": null,
-          "location_in_room": "backsplash",
+          "location_in_room": "vanity_backsplash",
           "notes": "6 inch splash; series KR5 SJ"
         },
         {
