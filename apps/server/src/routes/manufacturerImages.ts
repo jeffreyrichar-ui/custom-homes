@@ -99,12 +99,16 @@ export function makeManufacturerImagesRouter(
         res.status(400).json({ error: "brand required" });
         return;
       }
+      const size = typeof req.body?.size === "string" ? req.body.size.trim() : "";
+      const notes = typeof req.body?.notes === "string" ? req.body.notes.trim() : "";
       const cacheKey = sku || syntheticKey(brand, style, color);
       const outcome = await queue.runOnce({
         brand,
         sku: sku || null,
         style: style || null,
         color: color || null,
+        size: size || null,
+        notes: notes || null,
         cacheKey,
       });
       res.json({ outcome, registered_brands: registeredBrands() });

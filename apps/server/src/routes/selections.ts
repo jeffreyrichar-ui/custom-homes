@@ -157,6 +157,7 @@ export function makeSelectionsRouter(
         const sku = typeof entry.sku === "string" ? entry.sku : "";
         const style = typeof entry.style === "string" ? entry.style : "";
         const color = typeof entry.color === "string" ? entry.color : "";
+        const notes = typeof entry.notes === "string" ? entry.notes : "";
         if (brand && (sku || style || color)) {
           const cacheKey =
             sku ||
@@ -171,6 +172,7 @@ export function makeSelectionsRouter(
             sku: sku || null,
             style: style || null,
             color: color || null,
+            notes: notes || null,
             cacheKey,
           });
         }
