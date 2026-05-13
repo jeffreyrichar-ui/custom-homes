@@ -1,28 +1,199 @@
 {
   "external_id": "TCCH-1202",
   "external_source": "toddcampbell-portal",
-  "project": { "name": "Kingswood Estates 8/3 - Brentwood (Francie)", "address": null },
+  "project": {
+    "name": "Kingswood Estates 8/3 - Brentwood (Francie)",
+    "address": null
+  },
   "rooms": [
-    { "room_name": "Master Bath", "entries": [
-      { "trade": "tile", "brand": "Masonry Center", "style": "Brechia Mandoria", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": "TSI Ivory", "pattern": "set straight vertical", "location_in_room": "floor", "notes": "24x24; cut to fit" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Brechia Mandoria", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": "TSI Ivory", "pattern": "set straight vertical", "location_in_room": "shower_walls", "notes": "12x24 vertical walls" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Brechia Mandoria", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": "TSI Ivory", "pattern": "set straight vertical", "location_in_room": "shower_floor", "notes": "24x24 cut to fit" },
-      { "trade": "tile", "brand": "Dal", "style": "Contempoee Jasmine CE30", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "tub_surround", "notes": "4x4 ring pattern; tile exterior of shower pony wall (tub wall)" },
-      { "trade": "tile", "brand": "Dal", "style": "Contempoee Jasmine CE30", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "vanity_backsplash", "notes": "4x4 ring pattern; splashes to ceiling on both sides, block out for mirrors ~40x60" },
-      { "trade": "tile", "brand": "Dal", "style": "Contempoee Jasmine CE30", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "shower_niche", "notes": "4x4 ring pattern" }
-    ]},
-    { "room_name": "Bathroom 2", "entries": [
-      { "trade": "tile", "brand": "Masonry Center", "style": "Persuade", "color": "White", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "SBN", "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "12x24" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Persuade", "color": "White", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "SBN", "pattern": "set straight parallel with vanity", "location_in_room": "tub_surround", "notes": "12x24" },
-      { "trade": "tile", "brand": "Dal", "style": "Artefino Vintage", "color": null, "sku": null, "grout_color": "Tobacco Brown", "edge_profile": "TSR Rustic Color", "pattern": "set horizontal straight", "location_in_room": "vanity_backsplash", "notes": "6 inch splash" }
-    ]},
-    { "room_name": "Powder Bath", "entries": [
-      { "trade": "tile", "brand": "Dal", "style": "Artefino Vintage", "color": "Pearl Floret Apex AR 44", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set straight", "location_in_room": "vanity_backsplash", "notes": "4x4; set to ceiling" }
-    ]},
-    { "room_name": "Bathroom 3", "entries": [
-      { "trade": "tile", "brand": "Dal", "style": "Remedy Aura Rectangular Fluted RD 27", "color": null, "sku": null, "grout_color": "Tobacco Brown", "edge_profile": "TSR Rustic Color", "pattern": "set horizontal straight", "location_in_room": "vanity_backsplash", "notes": "4.5x9" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Persuade PS 41", "color": "Beige Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "12x24" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Persuade PS 41", "color": "Beige Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "shower set vertical", "location_in_room": "shower_walls", "notes": "12x24" }
-    ]}
+    {
+      "room_name": "Master Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Brechia Mandoria",
+          "color": null,
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "TSI Ivory",
+          "pattern": "set straight vertical",
+          "location_in_room": "floor",
+          "notes": "24x24; cut to fit | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Brechia Mandoria",
+          "color": null,
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "TSI Ivory",
+          "pattern": "set straight vertical",
+          "location_in_room": "shower_walls",
+          "notes": "12x24 vertical walls | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Brechia Mandoria",
+          "color": null,
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "TSI Ivory",
+          "pattern": "set straight vertical",
+          "location_in_room": "shower_floor",
+          "notes": "24x24 cut to fit | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Contempoee Jasmine CE30",
+          "color": null,
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "tub_surround",
+          "notes": "4x4 ring pattern; tile exterior of shower pony wall (tub wall)",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Contempoee Jasmine CE30",
+          "color": null,
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "vanity_backsplash",
+          "notes": "4x4 ring pattern; splashes to ceiling on both sides, block out for mirrors ~40x60",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Contempoee Jasmine CE30",
+          "color": null,
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "shower_niche",
+          "notes": "4x4 ring pattern",
+          "vendor": null
+        }
+      ]
+    },
+    {
+      "room_name": "Bathroom 2",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Persuade",
+          "color": "White",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "SBN",
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "floor",
+          "notes": "12x24 | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Persuade",
+          "color": "White",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "SBN",
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "tub_surround",
+          "notes": "12x24 | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Artefino Vintage",
+          "color": null,
+          "sku": null,
+          "grout_color": "Tobacco Brown",
+          "edge_profile": "TSR Rustic Color",
+          "pattern": "set horizontal straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": "6 inch splash",
+          "vendor": null
+        }
+      ]
+    },
+    {
+      "room_name": "Powder Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Artefino Vintage",
+          "color": "Pearl Floret Apex AR 44",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": "4x4; set to ceiling",
+          "vendor": null
+        }
+      ]
+    },
+    {
+      "room_name": "Bathroom 3",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Remedy Aura Rectangular Fluted RD 27",
+          "color": null,
+          "sku": null,
+          "grout_color": "Tobacco Brown",
+          "edge_profile": "TSR Rustic Color",
+          "pattern": "set horizontal straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": "4.5x9",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Persuade PS 41",
+          "color": "Beige Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "floor",
+          "notes": "12x24 | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Persuade PS 41",
+          "color": "Beige Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "shower set vertical",
+          "location_in_room": "shower_walls",
+          "notes": "12x24 | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        }
+      ]
+    }
   ]
 }

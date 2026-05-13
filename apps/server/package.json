@@ -16,7 +16,9 @@
     "db:seed": "tsx src/db/seed.ts",
     "db:seed-bath-tile": "tsx src/db/seedBathTile.ts",
     "db:dump-image-prompts": "tsx src/db/dumpImagePrompts.ts",
-    "db:import-tile-images": "tsx src/db/importTileImages.ts"
+    "db:import-tile-images": "tsx src/db/importTileImages.ts",
+    "db:normalize-brands": "tsx src/db/normalizeSeedBrands.ts",
+    "db:test-scraper": "tsx src/db/testScraper.ts"
   },
   "dependencies": {
     "@custom-homes/shared": "workspace:*",

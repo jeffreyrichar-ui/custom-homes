@@ -1,29 +1,212 @@
 {
   "external_id": "TCCH-1197",
   "external_source": "toddcampbell-portal",
-  "project": { "name": "Kingswood Est #2 12/2 - Cottonwood (Dahlia)", "address": null },
+  "project": {
+    "name": "Kingswood Est #2 12/2 - Cottonwood (Dahlia)",
+    "address": null
+  },
   "rooms": [
-    { "room_name": "Master Bath", "entries": [
-      { "trade": "tile", "brand": "Dal", "style": "Miramo", "color": "Pearl MR 44", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "6 inch splash", "location_in_room": "vanity_backsplash", "notes": "1x6 set vertical straight; trim Black; to ceiling" },
-      { "trade": "tile", "brand": "Dal", "style": "Miramo", "color": "Pearl MR 44", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "1x6 set vertical straight", "location_in_room": "tub_surround", "notes": "wainscot cap with jolly to match" },
-      { "trade": "tile", "brand": "Dal", "style": "Miramo", "color": "Pearl MR 44", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "1x6 set vertical straight", "location_in_room": "shower_niche", "notes": "back of niche" },
-      { "trade": "tile", "brand": "Emser", "style": "Visconde", "color": "Oro Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "TSI Ivory", "pattern": "set straight vertical", "location_in_room": "floor", "notes": "12x24" },
-      { "trade": "tile", "brand": "Emser", "style": "Visconde", "color": "Oro Polished", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "shower_walls", "notes": "12x24; tile exterior of pony wall" },
-      { "trade": "tile", "brand": "Emser", "style": "Civillian", "color": "Citizen", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": null, "location_in_room": "shower_floor", "notes": "2x2" }
-    ]},
-    { "room_name": "Main Bath", "entries": [
-      { "trade": "tile", "brand": "Dal", "style": "Visual Impression Quadrangle", "color": "Beige VIII", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "TSI Ivory", "pattern": "set vertical straight", "location_in_room": "tub_surround", "notes": null },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Lungarno Oat", "color": "Discs / Circles MMOATQTRMT", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "TSI Ivory", "pattern": "6 inch splash", "location_in_room": "vanity_backsplash", "notes": null },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Persuade PS 41", "color": "Beige Matte", "sku": null, "grout_color": "Warm Gray", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "12x24" }
-    ]},
-    { "room_name": "Powder Bath", "entries": [
-      { "trade": "tile", "brand": "Dal", "style": "Arcrafted", "color": "Coconut AC 23 / Dune AC 24", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set checkerboard on point", "location_in_room": "vanity_backsplash", "notes": "4x4; to ceiling, no returns" }
-    ]},
-    { "room_name": "2nd Master Suite", "entries": [
-      { "trade": "tile", "brand": "Masonry Center", "style": "MSI Sinfonio", "color": "Panio Abedul", "sku": null, "grout_color": "Oyster Gray", "edge_profile": "TSC Cream", "pattern": "set horizontal straight", "location_in_room": "vanity_backsplash", "notes": "4.5x9" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "MSI Sinfonio", "color": "Panio Abedul", "sku": null, "grout_color": "Oyster Gray", "edge_profile": "TSC Cream", "pattern": "set horizontal straight", "location_in_room": "shower_niche", "notes": "4.5x9; inside niche" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Persuade PS 40", "color": "White", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "12x24" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Persuade PS 40", "color": "White", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "shower set vertical", "location_in_room": "shower_walls", "notes": "12x24" }
-    ]}
+    {
+      "room_name": "Master Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Miramo",
+          "color": "Pearl MR 44",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": "6 inch splash",
+          "location_in_room": "vanity_backsplash",
+          "notes": "1x6 set vertical straight; trim Black; to ceiling",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Miramo",
+          "color": "Pearl MR 44",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": "1x6 set vertical straight",
+          "location_in_room": "tub_surround",
+          "notes": "wainscot cap with jolly to match",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Miramo",
+          "color": "Pearl MR 44",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": "1x6 set vertical straight",
+          "location_in_room": "shower_niche",
+          "notes": "back of niche",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Emser",
+          "style": "Visconde",
+          "color": "Oro Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "TSI Ivory",
+          "pattern": "set straight vertical",
+          "location_in_room": "floor",
+          "notes": "12x24",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Emser",
+          "style": "Visconde",
+          "color": "Oro Polished",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "shower_walls",
+          "notes": "12x24; tile exterior of pony wall",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Emser",
+          "style": "Civillian",
+          "color": "Citizen",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": null,
+          "location_in_room": "shower_floor",
+          "notes": "2x2",
+          "vendor": null
+        }
+      ]
+    },
+    {
+      "room_name": "Main Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Visual Impression Quadrangle",
+          "color": "Beige VIII",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "TSI Ivory",
+          "pattern": "set vertical straight",
+          "location_in_room": "tub_surround",
+          "notes": null,
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Lungarno",
+          "style": "Oat",
+          "color": "Discs / Circles MMOATQTRMT",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "TSI Ivory",
+          "pattern": "6 inch splash",
+          "location_in_room": "vanity_backsplash",
+          "notes": null,
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Persuade PS 41",
+          "color": "Beige Matte",
+          "sku": null,
+          "grout_color": "Warm Gray",
+          "edge_profile": null,
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "floor",
+          "notes": "12x24 | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        }
+      ]
+    },
+    {
+      "room_name": "Powder Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Arcrafted",
+          "color": "Coconut AC 23 / Dune AC 24",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set checkerboard on point",
+          "location_in_room": "vanity_backsplash",
+          "notes": "4x4; to ceiling, no returns",
+          "vendor": null
+        }
+      ]
+    },
+    {
+      "room_name": "2nd Master Suite",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "MSI",
+          "style": "Sinfonio",
+          "color": "Panio Abedul",
+          "sku": null,
+          "grout_color": "Oyster Gray",
+          "edge_profile": "TSC Cream",
+          "pattern": "set horizontal straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": "4.5x9",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "MSI",
+          "style": "Sinfonio",
+          "color": "Panio Abedul",
+          "sku": null,
+          "grout_color": "Oyster Gray",
+          "edge_profile": "TSC Cream",
+          "pattern": "set horizontal straight",
+          "location_in_room": "shower_niche",
+          "notes": "4.5x9; inside niche",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Persuade PS 40",
+          "color": "White",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "floor",
+          "notes": "12x24 | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Persuade PS 40",
+          "color": "White",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "shower set vertical",
+          "location_in_room": "shower_walls",
+          "notes": "12x24 | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        }
+      ]
+    }
   ]
 }

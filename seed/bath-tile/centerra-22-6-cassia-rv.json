@@ -11,7 +11,7 @@
       "entries": [
         {
           "trade": "tile",
-          "brand": "Dal",
+          "brand": "Daltile",
           "style": "Remedy",
           "color": "RD 20",
           "sku": null,
@@ -19,11 +19,12 @@
           "edge_profile": "TSI Ivory",
           "pattern": "8 inch splash",
           "location_in_room": "vanity_backsplash",
-          "notes": "2x10; same tile applied to vanity backsplash + tub surround + inside niche"
+          "notes": "2x10; same tile applied to vanity backsplash + tub surround + inside niche",
+          "vendor": null
         },
         {
           "trade": "tile",
-          "brand": "Dal",
+          "brand": "Daltile",
           "style": "Remedy",
           "color": "RD 20",
           "sku": null,
@@ -31,11 +32,12 @@
           "edge_profile": "TSI Ivory",
           "pattern": "8 inch splash",
           "location_in_room": "tub_surround",
-          "notes": "2x10; face of shower/tub wall"
+          "notes": "2x10; face of shower/tub wall",
+          "vendor": null
         },
         {
           "trade": "tile",
-          "brand": "Dal",
+          "brand": "Daltile",
           "style": "Remedy",
           "color": "RD 20",
           "sku": null,
@@ -43,7 +45,8 @@
           "edge_profile": "TSI Ivory",
           "pattern": "8 inch splash",
           "location_in_room": "shower_niche",
-          "notes": "2x10; inside niche"
+          "notes": "2x10; inside niche",
+          "vendor": null
         },
         {
           "trade": "tile",
@@ -55,7 +58,8 @@
           "edge_profile": null,
           "pattern": "set straight",
           "location_in_room": "floor",
-          "notes": "12x24; parallel with vanity"
+          "notes": "12x24; parallel with vanity",
+          "vendor": null
         },
         {
           "trade": "tile",
@@ -67,7 +71,8 @@
           "edge_profile": "TSI Ivory",
           "pattern": "set vertical straight",
           "location_in_room": "shower_walls",
-          "notes": "12x24"
+          "notes": "12x24",
+          "vendor": null
         },
         {
           "trade": "tile",
@@ -79,7 +84,8 @@
           "edge_profile": null,
           "pattern": null,
           "location_in_room": "shower_floor",
-          "notes": "AMBIGUOUS: portal had Pattern:'d' (single letter, likely typo). Verify intended pattern."
+          "notes": "AMBIGUOUS: portal had Pattern:'d' (single letter, likely typo). Verify intended pattern.",
+          "vendor": null
         }
       ]
     },
@@ -88,7 +94,7 @@
       "entries": [
         {
           "trade": "tile",
-          "brand": "Dal",
+          "brand": "Daltile",
           "style": "Miramo",
           "color": "Pearl MR 44",
           "sku": null,
@@ -96,7 +102,8 @@
           "edge_profile": "Jolly to match",
           "pattern": "1x6 set straight",
           "location_in_room": "vanity_backsplash",
-          "notes": "6 inch splash"
+          "notes": "6 inch splash",
+          "vendor": null
         },
         {
           "trade": "tile",
@@ -108,7 +115,8 @@
           "edge_profile": null,
           "pattern": "set straight",
           "location_in_room": "floor",
-          "notes": "12x24; parallel with vanity"
+          "notes": "12x24; parallel with vanity | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
         }
       ]
     },
@@ -117,7 +125,7 @@
       "entries": [
         {
           "trade": "tile",
-          "brand": "Dal",
+          "brand": "Daltile",
           "style": "Miramo",
           "color": "Pearl MR 44 PICKET",
           "sku": null,
@@ -125,7 +133,8 @@
           "edge_profile": "Chrome",
           "pattern": "set vertical straight",
           "location_in_room": "vanity_backsplash",
-          "notes": "6 inch splash; to ceiling, no returns"
+          "notes": "6 inch splash; to ceiling, no returns",
+          "vendor": null
         }
       ]
     }

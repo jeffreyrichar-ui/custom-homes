@@ -1,19 +1,23 @@
-import { fetchProductImage } from "./genericFetch.js";
-import type { Scraper } from "./types.js";
+import { fetchProductImagePlaywright } from "./playwrightFetch.js";
+import { searchQuery, type Scraper } from "./types.js";
 
 export const daltileScraper: Scraper = {
   brand: "Daltile",
-  matches: (b) => /^daltile/i.test(b.trim()),
-  async scrape(sku: string) {
-    const url = `https://www.daltile.com/search?text=${encodeURIComponent(sku)}`;
-    return fetchProductImage({
-      url,
-      selectors: [
-        "img.product-image",
+  matches: (b) => /^(daltile|dal)\b/i.test(b.trim()),
+  async scrape(input) {
+    const q = searchQuery(input);
+    if (!q) return null;
+    const searchUrl = `https://www.daltile.com/search?text=${encodeURIComponent(q)}`;
+    return fetchProductImagePlaywright({
+      searchUrl,
+      productLinkSelector: 'a[href*="/product-detail/"]',
+      imageSelectors: [
+        ".product-main-image img",
+        ".pdp-image-main img",
         ".tile-image img",
         "main img",
       ],
-      referer: "https://www.daltile.com/",
+      waitMs: 1200,
     });
   },
 };

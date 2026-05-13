@@ -1,22 +1,22 @@
-import { fetchProductImage } from "./genericFetch.js";
-import type { Scraper } from "./types.js";
+import { fetchProductImagePlaywright } from "./playwrightFetch.js";
+import { searchQuery, type Scraper } from "./types.js";
 
 export const schluterScraper: Scraper = {
   brand: "Schluter",
   matches: (b) => /^schluter/i.test(b.trim()),
-  async scrape(sku: string) {
-    // Schluter's product search URL pattern. Real implementation should
-    // hit the product details page; this URL is a placeholder until the
-    // exact SKU → URL mapping is reverse-engineered for production.
-    const url = `https://www.schluter.com/schluter-us/en_US/search?q=${encodeURIComponent(sku)}`;
-    return fetchProductImage({
-      url,
-      selectors: [
-        "img.product-image",
+  async scrape(input) {
+    const q = searchQuery(input);
+    if (!q) return null;
+    const searchUrl = `https://www.schluter.com/schluter-us/en_US/search?q=${encodeURIComponent(q)}`;
+    return fetchProductImagePlaywright({
+      searchUrl,
+      productLinkSelector: 'a[href*="/product/"]',
+      imageSelectors: [
+        ".product-image img",
         ".product-detail img",
         "main img",
       ],
-      referer: "https://www.schluter.com/",
+      waitMs: 1000,
     });
   },
 };

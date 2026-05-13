@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import crypto, { randomUUID } from "node:crypto";
 import { Router } from "express";
 import {
   ENTRY_SCHEMA_BY_TRADE,
@@ -149,11 +149,31 @@ export function makeSelectionsRouter(
         insertVals,
       );
 
-      // Trigger background scrape if this entry has brand + sku
-      const brand = typeof entry.brand === "string" ? entry.brand : "";
-      const sku = typeof entry.sku === "string" ? entry.sku : "";
-      if (brand && sku && scrapeQueue) {
-        scrapeQueue.enqueue(brand, sku);
+      // Trigger background scrape on tile entries that have enough context
+      // to look up a real product photo. cacheKey matches the synthetic
+      // (brand, style, color) hash used by the GET endpoint when sku is null.
+      if (trade === "tile" && scrapeQueue) {
+        const brand = typeof entry.brand === "string" ? entry.brand : "";
+        const sku = typeof entry.sku === "string" ? entry.sku : "";
+        const style = typeof entry.style === "string" ? entry.style : "";
+        const color = typeof entry.color === "string" ? entry.color : "";
+        if (brand && (sku || style || color)) {
+          const cacheKey =
+            sku ||
+            "AUTO-" +
+              crypto
+                .createHash("sha1")
+                .update([brand, style, color].join("|").toLowerCase())
+                .digest("hex")
+                .slice(0, 6);
+          scrapeQueue.enqueue({
+            brand,
+            sku: sku || null,
+            style: style || null,
+            color: color || null,
+            cacheKey,
+          });
+        }
       }
 
       res.status(201).json({ id, trade, is_new_entry: isNovel });

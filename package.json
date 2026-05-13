@@ -14,7 +14,9 @@
     "db:seed": "pnpm --filter @custom-homes/server db:seed",
     "db:seed-bath-tile": "pnpm --filter @custom-homes/server db:seed-bath-tile",
     "db:dump-image-prompts": "pnpm --filter @custom-homes/server db:dump-image-prompts",
-    "db:import-tile-images": "pnpm --filter @custom-homes/server db:import-tile-images"
+    "db:import-tile-images": "pnpm --filter @custom-homes/server db:import-tile-images",
+    "db:normalize-brands": "pnpm --filter @custom-homes/server db:normalize-brands",
+    "db:test-scraper": "pnpm --filter @custom-homes/server db:test-scraper"
   },
   "devDependencies": {
     "concurrently": "^9.0.1",

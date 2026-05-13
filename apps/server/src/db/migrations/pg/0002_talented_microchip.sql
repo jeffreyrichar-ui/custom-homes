@@ -1,0 +1,1 @@
+ALTER TABLE "tile_entries" ADD COLUMN "vendor" text;

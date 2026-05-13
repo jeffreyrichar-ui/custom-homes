@@ -19,7 +19,8 @@
           "edge_profile": "Black",
           "pattern": "penny round",
           "location_in_room": "vanity_backsplash",
-          "notes": "6 inch splash; penny size"
+          "notes": "6 inch splash; penny size | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
         },
         {
           "trade": "tile",
@@ -31,7 +32,8 @@
           "edge_profile": null,
           "pattern": "set 30/70",
           "location_in_room": "floor",
-          "notes": "12x24; parallel with vanity"
+          "notes": "12x24; parallel with vanity",
+          "vendor": null
         },
         {
           "trade": "tile",
@@ -43,7 +45,8 @@
           "edge_profile": null,
           "pattern": "set vertical 30/70",
           "location_in_room": "shower_walls",
-          "notes": "12x24; shower set 30/70 vertical"
+          "notes": "12x24; shower set 30/70 vertical",
+          "vendor": null
         },
         {
           "trade": "tile",
@@ -55,7 +58,8 @@
           "edge_profile": null,
           "pattern": "cut to fit",
           "location_in_room": "shower_floor",
-          "notes": "2x2 or cut to fit"
+          "notes": "2x2 or cut to fit",
+          "vendor": null
         }
       ]
     },
@@ -64,7 +68,7 @@
       "entries": [
         {
           "trade": "tile",
-          "brand": "Dal",
+          "brand": "Daltile",
           "style": "Color Wheel",
           "color": "White Matte",
           "sku": null,
@@ -72,7 +76,8 @@
           "edge_profile": "Black",
           "pattern": "Lattice",
           "location_in_room": "vanity_backsplash",
-          "notes": "6 inch splash"
+          "notes": "6 inch splash",
+          "vendor": null
         }
       ]
     },
@@ -81,15 +86,16 @@
       "entries": [
         {
           "trade": "tile",
-          "brand": "Masonry Center",
-          "style": "Cepac Krave",
+          "brand": "Cepac",
+          "style": "Krave",
           "color": "KR5 SJ Cappucino",
           "sku": null,
           "grout_color": null,
           "edge_profile": "Black",
           "pattern": null,
           "location_in_room": "vanity_backsplash",
-          "notes": "6 inch splash; series KR5 SJ"
+          "notes": "6 inch splash; series KR5 SJ",
+          "vendor": "Masonry Center"
         },
         {
           "trade": "tile",
@@ -101,7 +107,8 @@
           "edge_profile": null,
           "pattern": "set 30/70",
           "location_in_room": "floor",
-          "notes": "12x24; parallel with vanity"
+          "notes": "12x24; parallel with vanity",
+          "vendor": null
         }
       ]
     }

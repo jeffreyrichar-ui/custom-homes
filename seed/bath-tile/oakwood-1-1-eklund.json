@@ -9,45 +9,273 @@
     {
       "room_name": "Master Bath",
       "entries": [
-        { "trade": "tile", "brand": "Dal", "style": "Island Stone Phoenix", "color": "Ivory", "sku": null, "grout_color": null, "edge_profile": null, "pattern": null, "location_in_room": "vanity_backsplash", "notes": "splash to ceiling, block out for 3 mirrors" },
-        { "trade": "tile", "brand": "Dal", "style": "Island Stone Phoenix", "color": "Ivory", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set vertical straight", "location_in_room": "shower_walls", "notes": "1x18; all walls in master" },
-        { "trade": "tile", "brand": "Dal", "style": "Island Stone Phoenix", "color": "Ivory", "sku": null, "grout_color": null, "edge_profile": null, "pattern": null, "location_in_room": "shower_niche", "notes": "full niche area" },
-        { "trade": "tile", "brand": "Dal", "style": "Sand and Stone", "color": "Basin", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "curbless shower full size tile", "location_in_room": "floor", "notes": "24x24" },
-        { "trade": "tile", "brand": "Dal", "style": "Sand and Stone", "color": "Basin", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "curbless shower full size tile", "location_in_room": "shower_floor", "notes": "24x24" },
-        { "trade": "tile", "brand": "Dal", "style": "Remedy Aurora FLUTED", "color": null, "sku": null, "grout_color": "Sable Brown", "edge_profile": null, "pattern": null, "location_in_room": "shower_walls_accent", "notes": "Master accents: back of niches, picture frame mirrors and onyx, bench surround" }
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Island Stone Phoenix",
+          "color": "Ivory",
+          "sku": null,
+          "grout_color": null,
+          "edge_profile": null,
+          "pattern": null,
+          "location_in_room": "vanity_backsplash",
+          "notes": "splash to ceiling, block out for 3 mirrors",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Island Stone Phoenix",
+          "color": "Ivory",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set vertical straight",
+          "location_in_room": "shower_walls",
+          "notes": "1x18; all walls in master",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Island Stone Phoenix",
+          "color": "Ivory",
+          "sku": null,
+          "grout_color": null,
+          "edge_profile": null,
+          "pattern": null,
+          "location_in_room": "shower_niche",
+          "notes": "full niche area",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Sand and Stone",
+          "color": "Basin",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "curbless shower full size tile",
+          "location_in_room": "floor",
+          "notes": "24x24",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Sand and Stone",
+          "color": "Basin",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "curbless shower full size tile",
+          "location_in_room": "shower_floor",
+          "notes": "24x24",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Remedy Aurora FLUTED",
+          "color": null,
+          "sku": null,
+          "grout_color": "Sable Brown",
+          "edge_profile": null,
+          "pattern": null,
+          "location_in_room": "shower_walls_accent",
+          "notes": "Master accents: back of niches, picture frame mirrors and onyx, bench surround",
+          "vendor": null
+        }
       ]
     },
     {
       "room_name": "Gym Bath",
       "entries": [
-        { "trade": "tile", "brand": "Masonry Center", "style": "Conrad Brick Siren", "color": "CB95", "sku": null, "grout_color": "Oyster Gray", "edge_profile": null, "pattern": "set vertical straight", "location_in_room": "vanity_backsplash", "notes": "to ceiling, no returns, block out for 30x40 mirror; confirmed 11.26.25" },
-        { "trade": "tile", "brand": "Masonry Center", "style": "Ceppo", "color": "Sapia", "sku": null, "grout_color": "Oyster Gray", "edge_profile": null, "pattern": "set straight", "location_in_room": "floor", "notes": "24x24; confirmed 11.26.25" },
-        { "trade": "tile", "brand": "Masonry Center", "style": "Ceppo", "color": "Sapia", "sku": null, "grout_color": "Oyster Gray", "edge_profile": null, "pattern": "set straight", "location_in_room": "shower_floor", "notes": "24x24 cut to fit" },
-        { "trade": "tile", "brand": "Masonry Center", "style": "Conrad Brick Siren", "color": "CB95", "sku": null, "grout_color": "Oyster Gray", "edge_profile": "Black", "pattern": "all vertical with border", "location_in_room": "shower_walls", "notes": "2x8 set vertical straight; confirmed 11.26.25" },
-        { "trade": "tile", "brand": "Masonry Center", "style": "Conrad Brick Border Linen", "color": "CB91", "sku": null, "grout_color": "Oyster Gray", "edge_profile": "Black", "pattern": "set vertical", "location_in_room": "shower_walls_accent", "notes": "2x8; contrast border to Siren CB95" },
-        { "trade": "tile", "brand": "Masonry Center", "style": "Conrad Brick Border Linen", "color": "CB91", "sku": null, "grout_color": "Oyster Gray", "edge_profile": null, "pattern": "set vertical", "location_in_room": "shower_niche", "notes": "2x8; inside niche all Linen CB 91" }
+        {
+          "trade": "tile",
+          "brand": "Conrad Brick",
+          "style": "Siren",
+          "color": "CB95",
+          "sku": null,
+          "grout_color": "Oyster Gray",
+          "edge_profile": null,
+          "pattern": "set vertical straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": "to ceiling, no returns, block out for 30x40 mirror; confirmed 11.26.25",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Ceppo",
+          "color": "Sapia",
+          "sku": null,
+          "grout_color": "Oyster Gray",
+          "edge_profile": null,
+          "pattern": "set straight",
+          "location_in_room": "floor",
+          "notes": "24x24; confirmed 11.26.25 | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Ceppo",
+          "color": "Sapia",
+          "sku": null,
+          "grout_color": "Oyster Gray",
+          "edge_profile": null,
+          "pattern": "set straight",
+          "location_in_room": "shower_floor",
+          "notes": "24x24 cut to fit | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Conrad Brick",
+          "style": "Siren",
+          "color": "CB95",
+          "sku": null,
+          "grout_color": "Oyster Gray",
+          "edge_profile": "Black",
+          "pattern": "all vertical with border",
+          "location_in_room": "shower_walls",
+          "notes": "2x8 set vertical straight; confirmed 11.26.25",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Conrad Brick",
+          "style": "Border Linen",
+          "color": "CB91",
+          "sku": null,
+          "grout_color": "Oyster Gray",
+          "edge_profile": "Black",
+          "pattern": "set vertical",
+          "location_in_room": "shower_walls_accent",
+          "notes": "2x8; contrast border to Siren CB95",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Conrad Brick",
+          "style": "Border Linen",
+          "color": "CB91",
+          "sku": null,
+          "grout_color": "Oyster Gray",
+          "edge_profile": null,
+          "pattern": "set vertical",
+          "location_in_room": "shower_niche",
+          "notes": "2x8; inside niche all Linen CB 91",
+          "vendor": "Masonry Center"
+        }
       ]
     },
     {
       "room_name": "Powder Bath",
       "entries": [
-        { "trade": "tile", "brand": "Emser", "style": "Newtro", "color": "Red Glossy", "sku": null, "grout_color": "Sable Brown", "edge_profile": "To ceiling / under cabinet", "pattern": "set horizontal straight", "location_in_room": "vanity_backsplash", "notes": "tight joint" }
+        {
+          "trade": "tile",
+          "brand": "Emser",
+          "style": "Newtro",
+          "color": "Red Glossy",
+          "sku": null,
+          "grout_color": "Sable Brown",
+          "edge_profile": "To ceiling / under cabinet",
+          "pattern": "set horizontal straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": "tight joint",
+          "vendor": null
+        }
       ]
     },
     {
       "room_name": "Bed 2 Bathroom",
       "entries": [
-        { "trade": "tile", "brand": "Masonry Center", "style": "Lungarno Zellige", "color": "Mint Tea / Atlas White", "sku": null, "grout_color": "Ash", "edge_profile": "Miter edges", "pattern": "see attached pictures", "location_in_room": "tub_surround", "notes": "4x4 Mint Tea + 2x6 Atlas White; confirmed 11.26.25" },
-        { "trade": "tile", "brand": "Masonry Center", "style": "Cepac Serentity Series", "color": null, "sku": null, "grout_color": "Urban Putty", "edge_profile": "Jolly to match", "pattern": "1/2 x 1 herringbone", "location_in_room": "vanity_backsplash", "notes": "splash with cutouts for pendants and small niche; confirmed 11.26.25" },
-        { "trade": "tile", "brand": "Bedrosians", "style": "Thaddeus", "color": "Almond", "sku": null, "grout_color": "Oyster Gray", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "24x48; confirmed 11.26.25" }
+        {
+          "trade": "tile",
+          "brand": "Lungarno",
+          "style": "Zellige",
+          "color": "Mint Tea / Atlas White",
+          "sku": null,
+          "grout_color": "Ash",
+          "edge_profile": "Miter edges",
+          "pattern": "see attached pictures",
+          "location_in_room": "tub_surround",
+          "notes": "4x4 Mint Tea + 2x6 Atlas White; confirmed 11.26.25",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Cepac",
+          "style": "Serentity Series",
+          "color": null,
+          "sku": null,
+          "grout_color": "Urban Putty",
+          "edge_profile": "Jolly to match",
+          "pattern": "1/2 x 1 herringbone",
+          "location_in_room": "vanity_backsplash",
+          "notes": "splash with cutouts for pendants and small niche; confirmed 11.26.25",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Thaddeus",
+          "color": "Almond",
+          "sku": null,
+          "grout_color": "Oyster Gray",
+          "edge_profile": null,
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "floor",
+          "notes": "24x48; confirmed 11.26.25",
+          "vendor": null
+        }
       ]
     },
     {
       "room_name": "Bed 3 Bathroom",
       "entries": [
-        { "trade": "tile", "brand": "Masonry Center", "style": "Highland Lake", "color": "Flower & Almond", "sku": null, "grout_color": "Linene", "edge_profile": "Jolly to match", "pattern": "see attached layout", "location_in_room": "tub_surround", "notes": "confirmed 11.26.25" },
-        { "trade": "tile", "brand": "Masonry Center", "style": "Maniscalco Botany Bay Pebbles", "color": "Coins / Olive", "sku": "Q503/9999457943", "grout_color": "Urban Putty", "edge_profile": "Jolly to match", "pattern": null, "location_in_room": "vanity_backsplash", "notes": "see attached drawing - splash with cutouts; confirmed 11.26.25" },
-        { "trade": "tile", "brand": "Bedrosians", "style": "Thaddeus", "color": "Creme", "sku": null, "grout_color": "Urban Putty", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "24x48; confirmed 11.26.25" }
+        {
+          "trade": "tile",
+          "brand": "Highland Lake",
+          "style": null,
+          "color": "Flower & Almond",
+          "sku": null,
+          "grout_color": "Linene",
+          "edge_profile": "Jolly to match",
+          "pattern": "see attached layout",
+          "location_in_room": "tub_surround",
+          "notes": "confirmed 11.26.25",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Maniscalco",
+          "style": "Botany Bay Pebbles",
+          "color": "Coins / Olive",
+          "sku": "Q503/9999457943",
+          "grout_color": "Urban Putty",
+          "edge_profile": "Jolly to match",
+          "pattern": null,
+          "location_in_room": "vanity_backsplash",
+          "notes": "see attached drawing - splash with cutouts; confirmed 11.26.25",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Thaddeus",
+          "color": "Creme",
+          "sku": null,
+          "grout_color": "Urban Putty",
+          "edge_profile": null,
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "floor",
+          "notes": "24x48; confirmed 11.26.25",
+          "vendor": null
+        }
       ]
     }
   ]

@@ -9,52 +9,304 @@
     {
       "room_name": "Master Bath",
       "entries": [
-        { "trade": "tile", "brand": "Masonry Center", "style": "Glace Bianco Raye 3D Rael", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Miter edges", "pattern": "set horizontal straight", "location_in_room": "vanity_backsplash", "notes": "3x8; to ceiling behind vanities" },
-        { "trade": "tile", "brand": "Masonry Center", "style": "Glace Bianco Raye 3D Rael", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Miter edges", "pattern": "set horizontal straight", "location_in_room": "tub_surround", "notes": "3x8; pony wall in back of tub" },
-        { "trade": "tile", "brand": "Bedrosians", "style": "Magnifica", "color": "Calcatta Oro Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set straight", "location_in_room": "floor", "notes": "30x30; heated master floor" },
-        { "trade": "tile", "brand": "Bedrosians", "style": "Magnifica", "color": "Calcatta Oro Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set straight", "location_in_room": "shower_floor", "notes": "30x30 cut to fit" },
-        { "trade": "tile", "brand": "Bedrosians", "style": "Thaddeus", "color": "Creme DECO", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set vertical straight", "location_in_room": "shower_walls", "notes": "24x48" }
+        {
+          "trade": "tile",
+          "brand": "Glace",
+          "style": "Bianco Raye 3D Rael",
+          "color": null,
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Miter edges",
+          "pattern": "set horizontal straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": "3x8; to ceiling behind vanities",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Glace",
+          "style": "Bianco Raye 3D Rael",
+          "color": null,
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Miter edges",
+          "pattern": "set horizontal straight",
+          "location_in_room": "tub_surround",
+          "notes": "3x8; pony wall in back of tub",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Magnifica",
+          "color": "Calcatta Oro Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight",
+          "location_in_room": "floor",
+          "notes": "30x30; heated master floor",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Magnifica",
+          "color": "Calcatta Oro Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight",
+          "location_in_room": "shower_floor",
+          "notes": "30x30 cut to fit",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Thaddeus",
+          "color": "Creme DECO",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set vertical straight",
+          "location_in_room": "shower_walls",
+          "notes": "24x48",
+          "vendor": null
+        }
       ]
     },
     {
       "room_name": "Main Floor Guest",
       "entries": [
-        { "trade": "tile", "brand": "Tile Shop", "style": "Sami Materici", "color": "Visone + Latte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "set vertical straight", "location_in_room": "vanity_backsplash", "notes": "All Latte; chair rail height" },
-        { "trade": "tile", "brand": "Tile Shop", "style": "Sami Materici", "color": "Visone + Latte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "set vertical straight", "location_in_room": "shower_walls_accent", "notes": "Visone stripes at ~60 and ~84 inches; to ceiling" },
-        { "trade": "tile", "brand": "Dal", "style": "Calligo", "color": "Tusk", "sku": null, "grout_color": null, "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "15x30" },
-        { "trade": "tile", "brand": "Tile Shop", "style": "Sami Materici", "color": "Visone + Latte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": null, "location_in_room": "tub_surround", "notes": "All Latte chair rail height; Visone stripes; to ceiling" }
+        {
+          "trade": "tile",
+          "brand": "Sami",
+          "style": "Materici",
+          "color": "Visone + Latte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": "set vertical straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": "All Latte; chair rail height",
+          "vendor": "Tile Shop"
+        },
+        {
+          "trade": "tile",
+          "brand": "Sami",
+          "style": "Materici",
+          "color": "Visone + Latte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": "set vertical straight",
+          "location_in_room": "shower_walls_accent",
+          "notes": "Visone stripes at ~60 and ~84 inches; to ceiling",
+          "vendor": "Tile Shop"
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Calligo",
+          "color": "Tusk",
+          "sku": null,
+          "grout_color": null,
+          "edge_profile": null,
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "floor",
+          "notes": "15x30",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Sami",
+          "style": "Materici",
+          "color": "Visone + Latte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": null,
+          "location_in_room": "tub_surround",
+          "notes": "All Latte chair rail height; Visone stripes; to ceiling",
+          "vendor": "Tile Shop"
+        }
       ]
     },
     {
       "room_name": "Up Bathroom East",
       "entries": [
-        { "trade": "tile", "brand": "Masonry Center", "style": "Costa Clara", "color": "Cloud Gloss", "sku": null, "grout_color": "Bright White", "edge_profile": "Jolly to match", "pattern": "one row horizontal + one row vertical repeat", "location_in_room": "tub_surround", "notes": "3x12; changed to bathtub - tub surround" },
-        { "trade": "tile", "brand": "Masonry Center", "style": "Chameleon", "color": "OPAL", "sku": null, "grout_color": "Bright White", "edge_profile": "Jolly to match", "pattern": "penny round", "location_in_room": "vanity_backsplash", "notes": null },
-        { "trade": "tile", "brand": "Masonry Center", "style": "Chameleon", "color": "OPAL", "sku": null, "grout_color": "Bright White", "edge_profile": "Jolly to match", "pattern": "penny round", "location_in_room": "shower_niche", "notes": "inside niche" },
-        { "trade": "tile", "brand": "Masonry Center", "style": "Belvedere", "color": "Ivory Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "12x24" }
+        {
+          "trade": "tile",
+          "brand": "Costa Clara",
+          "style": null,
+          "color": "Cloud Gloss",
+          "sku": null,
+          "grout_color": "Bright White",
+          "edge_profile": "Jolly to match",
+          "pattern": "one row horizontal + one row vertical repeat",
+          "location_in_room": "tub_surround",
+          "notes": "3x12; changed to bathtub - tub surround",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Chameleon",
+          "style": null,
+          "color": "OPAL",
+          "sku": null,
+          "grout_color": "Bright White",
+          "edge_profile": "Jolly to match",
+          "pattern": "penny round",
+          "location_in_room": "vanity_backsplash",
+          "notes": null,
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Chameleon",
+          "style": null,
+          "color": "OPAL",
+          "sku": null,
+          "grout_color": "Bright White",
+          "edge_profile": "Jolly to match",
+          "pattern": "penny round",
+          "location_in_room": "shower_niche",
+          "notes": "inside niche",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Belvedere",
+          "color": "Ivory Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "floor",
+          "notes": "12x24 | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        }
       ]
     },
     {
       "room_name": "Up Bathroom West",
       "entries": [
-        { "trade": "tile", "brand": "Dal", "style": "Marimo", "color": "Pearl MR 44", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "1x6 set horizontal straight", "location_in_room": "vanity_backsplash", "notes": null },
-        { "trade": "tile", "brand": "Dal", "style": "Marimo", "color": "Pearl MR 44", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "1x6 set horizontal straight", "location_in_room": "shower_niche", "notes": "inside niche" },
-        { "trade": "tile", "brand": "Masonry Center", "style": "Zellige Neo ZL 11", "color": "Gesso / White", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "set straight", "location_in_room": "shower_walls", "notes": "4x4" },
-        { "trade": "tile", "brand": "Masonry Center", "style": null, "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": null, "location_in_room": "shower_floor", "notes": "2 inch penny round from Tamara's inventory" },
-        { "trade": "tile", "brand": "Emser", "style": "Prodigy", "color": "Cruz Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "12x24" }
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Marimo",
+          "color": "Pearl MR 44",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": "1x6 set horizontal straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": null,
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Marimo",
+          "color": "Pearl MR 44",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": "1x6 set horizontal straight",
+          "location_in_room": "shower_niche",
+          "notes": "inside niche",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Zellige Neo ZL 11",
+          "color": "Gesso / White",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": "set straight",
+          "location_in_room": "shower_walls",
+          "notes": "4x4 | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": null,
+          "color": null,
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": null,
+          "location_in_room": "shower_floor",
+          "notes": "2 inch penny round from Tamara's inventory | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Emser",
+          "style": "Prodigy",
+          "color": "Cruz Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "floor",
+          "notes": "12x24",
+          "vendor": null
+        }
       ]
     },
     {
       "room_name": "Pool Bath",
       "entries": [
-        { "trade": "tile", "brand": "Dal", "style": "Avery", "color": "WHITE AV 17", "sku": null, "grout_color": "Oyster Gray", "edge_profile": null, "pattern": "set straight", "location_in_room": "floor", "notes": "12x24" },
-        { "trade": "tile", "brand": "Bedrosians", "style": "Cloe", "color": "Blue", "sku": null, "grout_color": "Oyster Gray", "edge_profile": "Jolly to match", "pattern": "set horizontal straight", "location_in_room": "tub_surround", "notes": "2.5x8; full wall behind tub/toilet and bench wall; bench is wood (provided by trim carpenter)" }
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Avery",
+          "color": "WHITE AV 17",
+          "sku": null,
+          "grout_color": "Oyster Gray",
+          "edge_profile": null,
+          "pattern": "set straight",
+          "location_in_room": "floor",
+          "notes": "12x24",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Cloe",
+          "color": "Blue",
+          "sku": null,
+          "grout_color": "Oyster Gray",
+          "edge_profile": "Jolly to match",
+          "pattern": "set horizontal straight",
+          "location_in_room": "tub_surround",
+          "notes": "2.5x8; full wall behind tub/toilet and bench wall; bench is wood (provided by trim carpenter)",
+          "vendor": null
+        }
       ]
     },
     {
       "room_name": "Powder Bath",
       "entries": [
-        { "trade": "tile", "brand": "Dal", "style": "Miramo Reef", "color": "M4 49", "sku": null, "grout_color": "Shadow", "edge_profile": null, "pattern": "1x6 set vertical straight", "location_in_room": "vanity_backsplash", "notes": "to ceiling, under floating cabs, no returns" }
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Miramo Reef",
+          "color": "M4 49",
+          "sku": null,
+          "grout_color": "Shadow",
+          "edge_profile": null,
+          "pattern": "1x6 set vertical straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": "to ceiling, under floating cabs, no returns",
+          "vendor": null
+        }
       ]
     }
   ]

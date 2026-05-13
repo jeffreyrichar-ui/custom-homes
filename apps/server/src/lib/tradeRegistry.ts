@@ -56,6 +56,7 @@ const REGISTRY: Record<TradeKind, TradeMeta> = {
     rowColumns: (e) => {
       const t = e as Extract<EntryInput, { trade: "tile" }>;
       return {
+        vendor: (t as { vendor?: string | null }).vendor ?? null,
         brand: t.brand,
         style: t.style ?? null,
         color: t.color ?? null,

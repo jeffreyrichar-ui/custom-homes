@@ -2,67 +2,68 @@ import { randomUUID } from "node:crypto";
 import type { Dbi } from "../db/dbi.js";
 import type { ImageStorage } from "./imageStorage.js";
 import { imageKey } from "./imageStorage.js";
-import { findScraper } from "./scrapers/index.js";
+import { findScraper, type ScrapeInput } from "./scrapers/index.js";
 
-type Job = { brand: string; sku: string };
+type Job = ScrapeInput & { cacheKey: string };
 
 export type ScrapeQueue = {
-  enqueue(brand: string, sku: string): void;
+  /** Enqueue a scrape. cacheKey is the manufacturer_images.sku column value. */
+  enqueue(input: ScrapeInput & { cacheKey: string }): void;
   /** Run a single scrape synchronously — used by manual retry and tests. */
-  runOnce(brand: string, sku: string): Promise<ScrapeOutcome>;
+  runOnce(input: ScrapeInput & { cacheKey: string }): Promise<ScrapeOutcome>;
 };
 
 export type ScrapeOutcome =
   | { kind: "cached"; imageUrl: string }
   | { kind: "scraped"; imageUrl: string }
   | { kind: "no-scraper"; brand: string }
-  | { kind: "failed"; brand: string; sku: string; reason: string };
+  | { kind: "failed"; brand: string; cacheKey: string; reason: string };
 
 export function makeScrapeQueue(getDbi: () => Dbi, storage: ImageStorage): ScrapeQueue {
   const queue: Job[] = [];
   const inFlight = new Set<string>();
   let running = false;
 
-  async function lookupCached(brand: string, sku: string): Promise<string | null> {
+  async function lookupCached(brand: string, cacheKey: string): Promise<string | null> {
     const rows = await getDbi().query<{ image_url: string }>(
       `SELECT image_url FROM manufacturer_images WHERE brand = $1 AND sku = $2 LIMIT 1`,
-      [brand, sku],
+      [brand, cacheKey],
     );
     return rows[0]?.image_url ?? null;
   }
 
-  async function persist(brand: string, sku: string, imageUrl: string) {
+  async function persist(brand: string, cacheKey: string, imageUrl: string) {
     await getDbi().exec(
       `INSERT INTO manufacturer_images (id, brand, sku, image_url)
        VALUES ($1, $2, $3, $4)
        ON CONFLICT(brand, sku) DO UPDATE SET image_url = excluded.image_url, scraped_at = CURRENT_TIMESTAMP`,
-      [randomUUID(), brand, sku, imageUrl],
+      [randomUUID(), brand, cacheKey, imageUrl],
     );
   }
 
   async function process(job: Job): Promise<ScrapeOutcome> {
-    const cached = await lookupCached(job.brand, job.sku);
+    const cached = await lookupCached(job.brand, job.cacheKey);
     if (cached) return { kind: "cached", imageUrl: cached };
 
     const scraper = findScraper(job.brand);
     if (!scraper) return { kind: "no-scraper", brand: job.brand };
 
     try {
-      const result = await scraper.scrape(job.sku);
+      const result = await scraper.scrape(job);
       if (!result) {
-        return { kind: "failed", brand: job.brand, sku: job.sku, reason: "scraper returned null" };
+        return { kind: "failed", brand: job.brand, cacheKey: job.cacheKey, reason: "scraper returned null" };
       }
       const url = await storage.put(
-        imageKey(job.brand, job.sku),
+        imageKey(job.brand, job.cacheKey),
         result.imageBuffer,
         result.contentType,
       );
-      await persist(job.brand, job.sku, url);
+      await persist(job.brand, job.cacheKey, url);
       return { kind: "scraped", imageUrl: url };
     } catch (err) {
       const reason = err instanceof Error ? err.message : String(err);
-      console.warn(`[scrape] ${job.brand} ${job.sku} failed: ${reason}`);
-      return { kind: "failed", brand: job.brand, sku: job.sku, reason };
+      console.warn(`[scrape] ${job.brand} ${job.cacheKey} failed: ${reason}`);
+      return { kind: "failed", brand: job.brand, cacheKey: job.cacheKey, reason };
     }
   }
 
@@ -72,8 +73,8 @@ export function makeScrapeQueue(getDbi: () => Dbi, storage: ImageStorage): Scrap
     try {
       while (queue.length > 0) {
         const job = queue.shift()!;
-        await process(job).catch(() => {/* never lets one bad job kill the drain */});
-        inFlight.delete(`${job.brand}|${job.sku}`);
+        await process(job).catch(() => {});
+        inFlight.delete(`${job.brand}|${job.cacheKey}`);
       }
     } finally {
       running = false;
@@ -81,19 +82,17 @@ export function makeScrapeQueue(getDbi: () => Dbi, storage: ImageStorage): Scrap
   }
 
   return {
-    enqueue(brand, sku) {
-      if (!brand || !sku) return;
-      const key = `${brand}|${sku}`;
+    enqueue(input) {
+      const key = `${input.brand}|${input.cacheKey}`;
       if (inFlight.has(key)) return;
       inFlight.add(key);
-      queue.push({ brand, sku });
-      // Fire and forget — never block the request.
+      queue.push(input);
       setImmediate(() => {
         drain().catch((err) => console.error("[scrape] drain error", err));
       });
     },
-    runOnce(brand, sku) {
-      return process({ brand, sku });
+    runOnce(input) {
+      return process(input);
     },
   };
 }

@@ -93,11 +93,20 @@ export function makeManufacturerImagesRouter(
     try {
       const brand = typeof req.body?.brand === "string" ? req.body.brand.trim() : "";
       const sku = typeof req.body?.sku === "string" ? req.body.sku.trim() : "";
-      if (!brand || !sku) {
-        res.status(400).json({ error: "brand and sku required" });
+      const style = typeof req.body?.style === "string" ? req.body.style.trim() : "";
+      const color = typeof req.body?.color === "string" ? req.body.color.trim() : "";
+      if (!brand) {
+        res.status(400).json({ error: "brand required" });
         return;
       }
-      const outcome = await queue.runOnce(brand, sku);
+      const cacheKey = sku || syntheticKey(brand, style, color);
+      const outcome = await queue.runOnce({
+        brand,
+        sku: sku || null,
+        style: style || null,
+        color: color || null,
+        cacheKey,
+      });
       res.json({ outcome, registered_brands: registeredBrands() });
     } catch (err) {
       next(err);

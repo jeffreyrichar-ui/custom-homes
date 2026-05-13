@@ -1,29 +1,212 @@
 {
   "external_id": "TCCH-1162",
   "external_source": "toddcampbell-portal",
-  "project": { "name": "Kingswood Est 2/3 - Walker Custom", "address": "4900 W Braveheart" },
+  "project": {
+    "name": "Kingswood Est 2/3 - Walker Custom",
+    "address": "4900 W Braveheart"
+  },
   "rooms": [
-    { "room_name": "Master Bath", "entries": [
-      { "trade": "tile", "brand": "Masonry Center", "style": "AO Studio Haven", "color": "Espresso SN75 Glossy", "sku": null, "grout_color": "Saddle Brown", "edge_profile": "Jolly to match", "pattern": "set vertical straight", "location_in_room": "vanity_backsplash", "notes": "4x12; to ceiling full area, block out for mirrors, tile window trim with jollys" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "AO Studio Haven", "color": "Espresso SN75 Glossy", "sku": null, "grout_color": "Saddle Brown", "edge_profile": "Jolly to match", "pattern": "set vertical straight", "location_in_room": "shower_niche", "notes": "4x4 inside niches" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Marrazi CH 40", "color": "Pumice", "sku": null, "grout_color": "Urban Putty", "edge_profile": null, "pattern": "set straight", "location_in_room": "floor", "notes": "24x24; linear drain, heated, full-size tiles to ceiling" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Marrazi CH 40", "color": "Pumice", "sku": null, "grout_color": "Urban Putty", "edge_profile": null, "pattern": "set straight", "location_in_room": "shower_floor", "notes": "24x24" },
-      { "trade": "tile", "brand": "Emser", "style": "Visconde", "color": "Oro Polished", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "TSI Ivory or SBN", "pattern": "set vertical straight", "location_in_room": "shower_walls", "notes": "12x24" },
-      { "trade": "tile", "brand": "Emser", "style": "Visconde", "color": "Oro Polished", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "TSI Ivory or SBN", "pattern": "set vertical straight", "location_in_room": "shower_bench", "notes": "Sides and top of full bench (extends 1 ft into room next to tub)" }
-    ]},
-    { "room_name": "Main Bath 2", "entries": [
-      { "trade": "tile", "brand": "Emser", "style": "Jasmine Contempee Jasmine 30 STAR Wall Tile", "color": null, "sku": null, "grout_color": null, "edge_profile": null, "pattern": "4x4", "location_in_room": "vanity_backsplash", "notes": "3 inch hex / Splatter Polished; to ceiling, block out for mirror" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Belvedere", "color": "Ivory Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set parallel with vanity", "location_in_room": "floor", "notes": "12x24" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Studio Haven", "color": "AO Shea SN71 Glossy", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "set vertical straight", "location_in_room": "shower_walls", "notes": "4x12" }
-    ]},
-    { "room_name": "Smaller Bedroom Bath", "entries": [
-      { "trade": "tile", "brand": "Masonry Center", "style": "Ragno Look", "color": "R8FP Beige", "sku": null, "grout_color": "Urban Putty", "edge_profile": "Jolly to match", "pattern": "set horizontal staggered", "location_in_room": "vanity_backsplash", "notes": "2x9; 6 inch splash" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Marazzi Crafthouse CH44", "color": "Argilla", "sku": null, "grout_color": null, "edge_profile": null, "pattern": null, "location_in_room": "floor", "notes": "24x48 (keep, cut down as needed)" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Marazzi Crafthouse CH44", "color": "Argilla", "sku": null, "grout_color": null, "edge_profile": null, "pattern": null, "location_in_room": "shower_floor", "notes": "24x48 cut to fit" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Marazzi Crafthouse CH40", "color": "PUMICE Fluted Wall Tile", "sku": null, "grout_color": "Bone", "edge_profile": "Jolly to match", "pattern": "fluted set stripes vertical", "location_in_room": "shower_walls", "notes": "8x8 fluted wall tile" }
-    ]},
-    { "room_name": "Powder Bath", "entries": [
-      { "trade": "tile", "brand": "Dal", "style": "Remedy", "color": "RD 27 Aura Fluted", "sku": null, "grout_color": "Saddle Brown", "edge_profile": null, "pattern": "set vertical", "location_in_room": "vanity_backsplash", "notes": "to ceiling, include toilet wall, no returns" }
-    ]}
+    {
+      "room_name": "Master Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "AO",
+          "style": "Studio Haven",
+          "color": "Espresso SN75 Glossy",
+          "sku": null,
+          "grout_color": "Saddle Brown",
+          "edge_profile": "Jolly to match",
+          "pattern": "set vertical straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": "4x12; to ceiling full area, block out for mirrors, tile window trim with jollys",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "AO",
+          "style": "Studio Haven",
+          "color": "Espresso SN75 Glossy",
+          "sku": null,
+          "grout_color": "Saddle Brown",
+          "edge_profile": "Jolly to match",
+          "pattern": "set vertical straight",
+          "location_in_room": "shower_niche",
+          "notes": "4x4 inside niches",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Marazzi",
+          "style": "CH 40",
+          "color": "Pumice",
+          "sku": null,
+          "grout_color": "Urban Putty",
+          "edge_profile": null,
+          "pattern": "set straight",
+          "location_in_room": "floor",
+          "notes": "24x24; linear drain, heated, full-size tiles to ceiling",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Marazzi",
+          "style": "CH 40",
+          "color": "Pumice",
+          "sku": null,
+          "grout_color": "Urban Putty",
+          "edge_profile": null,
+          "pattern": "set straight",
+          "location_in_room": "shower_floor",
+          "notes": "24x24",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Emser",
+          "style": "Visconde",
+          "color": "Oro Polished",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "TSI Ivory or SBN",
+          "pattern": "set vertical straight",
+          "location_in_room": "shower_walls",
+          "notes": "12x24",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Emser",
+          "style": "Visconde",
+          "color": "Oro Polished",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "TSI Ivory or SBN",
+          "pattern": "set vertical straight",
+          "location_in_room": "shower_bench",
+          "notes": "Sides and top of full bench (extends 1 ft into room next to tub)",
+          "vendor": null
+        }
+      ]
+    },
+    {
+      "room_name": "Main Bath 2",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Emser",
+          "style": "Jasmine Contempee Jasmine 30 STAR Wall Tile",
+          "color": null,
+          "sku": null,
+          "grout_color": null,
+          "edge_profile": null,
+          "pattern": "4x4",
+          "location_in_room": "vanity_backsplash",
+          "notes": "3 inch hex / Splatter Polished; to ceiling, block out for mirror",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Belvedere",
+          "color": "Ivory Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set parallel with vanity",
+          "location_in_room": "floor",
+          "notes": "12x24 | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "AO",
+          "style": null,
+          "color": "AO Shea SN71 Glossy",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": "set vertical straight",
+          "location_in_room": "shower_walls",
+          "notes": "4x12",
+          "vendor": "Masonry Center"
+        }
+      ]
+    },
+    {
+      "room_name": "Smaller Bedroom Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Ragno",
+          "style": "Look",
+          "color": "R8FP Beige",
+          "sku": null,
+          "grout_color": "Urban Putty",
+          "edge_profile": "Jolly to match",
+          "pattern": "set horizontal staggered",
+          "location_in_room": "vanity_backsplash",
+          "notes": "2x9; 6 inch splash",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Marazzi",
+          "style": "Crafthouse CH44",
+          "color": "Argilla",
+          "sku": null,
+          "grout_color": null,
+          "edge_profile": null,
+          "pattern": null,
+          "location_in_room": "floor",
+          "notes": "24x48 (keep, cut down as needed)",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Marazzi",
+          "style": "Crafthouse CH44",
+          "color": "Argilla",
+          "sku": null,
+          "grout_color": null,
+          "edge_profile": null,
+          "pattern": null,
+          "location_in_room": "shower_floor",
+          "notes": "24x48 cut to fit",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Marazzi",
+          "style": "Crafthouse CH40",
+          "color": "PUMICE Fluted Wall Tile",
+          "sku": null,
+          "grout_color": "Bone",
+          "edge_profile": "Jolly to match",
+          "pattern": "fluted set stripes vertical",
+          "location_in_room": "shower_walls",
+          "notes": "8x8 fluted wall tile",
+          "vendor": "Masonry Center"
+        }
+      ]
+    },
+    {
+      "room_name": "Powder Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Remedy",
+          "color": "RD 27 Aura Fluted",
+          "sku": null,
+          "grout_color": "Saddle Brown",
+          "edge_profile": null,
+          "pattern": "set vertical",
+          "location_in_room": "vanity_backsplash",
+          "notes": "to ceiling, include toilet wall, no returns",
+          "vendor": null
+        }
+      ]
+    }
   ]
 }

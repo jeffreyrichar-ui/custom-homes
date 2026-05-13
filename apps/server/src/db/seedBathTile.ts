@@ -19,9 +19,10 @@ async function main() {
     process.exit(1);
   }
 
+  const SKIP = new Set(["audit.json", "image-prompts.json"]);
   const files = fs
     .readdirSync(seedDir)
-    .filter((f) => f.endsWith(".json"))
+    .filter((f) => f.endsWith(".json") && !SKIP.has(f))
     .sort();
 
   if (files.length === 0) {

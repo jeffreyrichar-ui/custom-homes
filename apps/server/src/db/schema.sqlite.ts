@@ -76,6 +76,7 @@ export const tile_entries = sqliteTable(
     room_id: text("room_id")
       .notNull()
       .references(() => rooms.id, { onDelete: "cascade" }),
+    vendor: text("vendor"),
     brand: text("brand").notNull(),
     style: text("style"),
     color: text("color"),

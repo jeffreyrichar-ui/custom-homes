@@ -71,6 +71,7 @@ export const tile_entries = pgTable(
     room_id: uuid("room_id")
       .notNull()
       .references(() => rooms.id, { onDelete: "cascade" }),
+    vendor: text("vendor"),
     brand: text("brand").notNull(),
     style: text("style"),
     color: text("color"),

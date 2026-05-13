@@ -1,21 +1,129 @@
 {
   "external_id": "TCCH-1167",
   "external_source": "toddcampbell-portal",
-  "project": { "name": "Kingswood Est 2/5 - Cassia RV", "address": null },
+  "project": {
+    "name": "Kingswood Est 2/5 - Cassia RV",
+    "address": null
+  },
   "rooms": [
-    { "room_name": "Master Bath", "entries": [
-      { "trade": "tile", "brand": "Masonry Center", "style": "Zagara", "color": "Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "set", "location_in_room": "vanity_backsplash", "notes": "3x6; to ceiling behind vanities, block out for backlit mirrors" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Portabello Charlestone", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "12x24; heated master floor" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Portabello Charlestone Graffi", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": "SBN", "pattern": "set vertical straight", "location_in_room": "shower_walls", "notes": "12x24; to ceiling, no ceiling tile" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Portabello Charlestone", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "full size tile", "location_in_room": "shower_floor", "notes": "12x24; no linear drain, standard curb" }
-    ]},
-    { "room_name": "Main Bath", "entries": [
-      { "trade": "tile", "brand": "Masonry Center", "style": "Pascal", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "6 inch splash", "location_in_room": "vanity_backsplash", "notes": null },
-      { "trade": "tile", "brand": "Bedrosians", "style": "Purestone 12", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": "SBN", "pattern": "set parallel with vanity / horizontal in shower", "location_in_room": "floor", "notes": "12x24" },
-      { "trade": "tile", "brand": "Bedrosians", "style": "Purestone 12", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": "SBN", "pattern": "horizontal in shower", "location_in_room": "tub_surround", "notes": "12x24" }
-    ]},
-    { "room_name": "Powder Bath", "entries": [
-      { "trade": "tile", "brand": "Masonry Center", "style": "Pompei", "color": "4035 Mararone", "sku": null, "grout_color": null, "edge_profile": null, "pattern": null, "location_in_room": "vanity_backsplash", "notes": "wall to wall, no returns, block out for mirror" }
-    ]}
+    {
+      "room_name": "Master Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Zagara",
+          "color": "Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": "set",
+          "location_in_room": "vanity_backsplash",
+          "notes": "3x6; to ceiling behind vanities, block out for backlit mirrors | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Portobello",
+          "style": "Charlestone",
+          "color": null,
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "floor",
+          "notes": "12x24; heated master floor",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Portobello",
+          "style": "Charlestone Graffi",
+          "color": null,
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "SBN",
+          "pattern": "set vertical straight",
+          "location_in_room": "shower_walls",
+          "notes": "12x24; to ceiling, no ceiling tile",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Portobello",
+          "style": "Charlestone",
+          "color": null,
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "full size tile",
+          "location_in_room": "shower_floor",
+          "notes": "12x24; no linear drain, standard curb",
+          "vendor": "Masonry Center"
+        }
+      ]
+    },
+    {
+      "room_name": "Main Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Pascal",
+          "color": null,
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": "6 inch splash",
+          "location_in_room": "vanity_backsplash",
+          "notes": "MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Purestone 12",
+          "color": null,
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "SBN",
+          "pattern": "set parallel with vanity / horizontal in shower",
+          "location_in_room": "floor",
+          "notes": "12x24",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Purestone 12",
+          "color": null,
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "SBN",
+          "pattern": "horizontal in shower",
+          "location_in_room": "tub_surround",
+          "notes": "12x24",
+          "vendor": null
+        }
+      ]
+    },
+    {
+      "room_name": "Powder Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Pompei",
+          "color": "4035 Mararone",
+          "sku": null,
+          "grout_color": null,
+          "edge_profile": null,
+          "pattern": null,
+          "location_in_room": "vanity_backsplash",
+          "notes": "wall to wall, no returns, block out for mirror | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        }
+      ]
+    }
   ]
 }

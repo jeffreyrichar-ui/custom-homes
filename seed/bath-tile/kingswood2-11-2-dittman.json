@@ -1,29 +1,212 @@
 {
   "external_id": "TCCH-1196",
   "external_source": "toddcampbell-portal",
-  "project": { "name": "Kingswood Est #2 11/2 - Dittman Willoughby-RV (Abby)", "address": "5182 W May Jay Drive" },
+  "project": {
+    "name": "Kingswood Est #2 11/2 - Dittman Willoughby-RV (Abby)",
+    "address": "5182 W May Jay Drive"
+  },
   "rooms": [
-    { "room_name": "Master Bath", "entries": [
-      { "trade": "tile", "brand": "Masonry Center", "style": "Glace Mastice 3D Raye", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": "TSC Cream", "pattern": "6 inch splash", "location_in_room": "vanity_backsplash", "notes": "3x8; trim Black; to ceiling behind vanities" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Glace Mastice 3D Raye", "color": null, "sku": null, "grout_color": "Bleached Wood", "edge_profile": "TSC Cream", "pattern": "6 inch splash", "location_in_room": "tub_surround", "notes": "3x8; add pony wall behind tub - face and returns; cap in quartz" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Belvedere", "color": "Ivory Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "TSI Ivory", "pattern": "set straight vertical", "location_in_room": "floor", "notes": "12x24" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Belvedere", "color": "Ivory Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "TSI Ivory", "pattern": null, "location_in_room": "shower_floor", "notes": "12x24 cut to fit" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Belvedere", "color": "Ivory Polished", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "shower_walls", "notes": "12x24" }
-    ]},
-    { "room_name": "Up Main Bath", "entries": [
-      { "trade": "tile", "brand": "Masonry Center", "style": "Costa Clara", "color": "Cloud Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "4 vertical + 4 horizontal parquet design", "location_in_room": "tub_surround", "notes": "4x4 + set vertical straight; add niche with backsplash material" },
-      { "trade": "tile", "brand": "Bedrosians", "style": "Marin", "color": "Aloe Green Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "6 inch splash", "location_in_room": "vanity_backsplash", "notes": "2 inch penny round" },
-      { "trade": "tile", "brand": "Bedrosians", "style": "Marin", "color": "Aloe Green Matte", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "penny round", "location_in_room": "shower_niche", "notes": "back of niche" },
-      { "trade": "tile", "brand": "Emser", "style": "Prodigy", "color": "Agnesi", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "12x24" }
-    ]},
-    { "room_name": "Powder Bath", "entries": [
-      { "trade": "tile", "brand": "Bedrosians", "style": "Marin", "color": "Aloe Green Light", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set horizontal straight", "location_in_room": "vanity_backsplash", "notes": "Trapezoid; to ceiling, no returns, block out for mirrors" }
-    ]},
-    { "room_name": "Up Jack-n-Jill Bath", "entries": [
-      { "trade": "tile", "brand": "Bedrosians", "style": "Marin", "color": "Aloe Green Glass / Misty Blue Gloss", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "matching Jolly", "pattern": "set horizontal straight", "location_in_room": "vanity_backsplash", "notes": "2.5x10; each bathroom different color, match inside niches" },
-      { "trade": "tile", "brand": "Bedrosians", "style": "Marin", "color": "Aloe Green Glass / Misty Blue Gloss", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "matching Jolly", "pattern": "set horizontal straight", "location_in_room": "shower_niche", "notes": "2.5x10; inside niche" },
-      { "trade": "tile", "brand": "Emser", "style": "Prodigy", "color": "Agnesi", "sku": null, "grout_color": "Bleached Wood", "edge_profile": null, "pattern": "set straight parallel with vanity", "location_in_room": "floor", "notes": "12x24" },
-      { "trade": "tile", "brand": "Masonry Center", "style": "Costa Clara", "color": "Cloud", "sku": null, "grout_color": "Bleached Wood", "edge_profile": "Jolly to match", "pattern": "one row straight + one row vertical repeat", "location_in_room": "tub_surround", "notes": "3x12" }
-    ]}
+    {
+      "room_name": "Master Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Glace",
+          "style": "Mastice 3D Raye",
+          "color": null,
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "TSC Cream",
+          "pattern": "6 inch splash",
+          "location_in_room": "vanity_backsplash",
+          "notes": "3x8; trim Black; to ceiling behind vanities",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Glace",
+          "style": "Mastice 3D Raye",
+          "color": null,
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "TSC Cream",
+          "pattern": "6 inch splash",
+          "location_in_room": "tub_surround",
+          "notes": "3x8; add pony wall behind tub - face and returns; cap in quartz",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Belvedere",
+          "color": "Ivory Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "TSI Ivory",
+          "pattern": "set straight vertical",
+          "location_in_room": "floor",
+          "notes": "12x24 | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Belvedere",
+          "color": "Ivory Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "TSI Ivory",
+          "pattern": null,
+          "location_in_room": "shower_floor",
+          "notes": "12x24 cut to fit | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Masonry Center",
+          "style": "Belvedere",
+          "color": "Ivory Polished",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "shower_walls",
+          "notes": "12x24 | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        }
+      ]
+    },
+    {
+      "room_name": "Up Main Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Costa Clara",
+          "style": null,
+          "color": "Cloud Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": "4 vertical + 4 horizontal parquet design",
+          "location_in_room": "tub_surround",
+          "notes": "4x4 + set vertical straight; add niche with backsplash material",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Marin",
+          "color": "Aloe Green Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": "6 inch splash",
+          "location_in_room": "vanity_backsplash",
+          "notes": "2 inch penny round",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Marin",
+          "color": "Aloe Green Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": "penny round",
+          "location_in_room": "shower_niche",
+          "notes": "back of niche",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Emser",
+          "style": "Prodigy",
+          "color": "Agnesi",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "floor",
+          "notes": "12x24",
+          "vendor": null
+        }
+      ]
+    },
+    {
+      "room_name": "Powder Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Marin",
+          "color": "Aloe Green Light",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set horizontal straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": "Trapezoid; to ceiling, no returns, block out for mirrors",
+          "vendor": null
+        }
+      ]
+    },
+    {
+      "room_name": "Up Jack-n-Jill Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Marin",
+          "color": "Aloe Green Glass / Misty Blue Gloss",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "matching Jolly",
+          "pattern": "set horizontal straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": "2.5x10; each bathroom different color, match inside niches",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Marin",
+          "color": "Aloe Green Glass / Misty Blue Gloss",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "matching Jolly",
+          "pattern": "set horizontal straight",
+          "location_in_room": "shower_niche",
+          "notes": "2.5x10; inside niche",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Emser",
+          "style": "Prodigy",
+          "color": "Agnesi",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "floor",
+          "notes": "12x24",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Costa Clara",
+          "style": null,
+          "color": "Cloud",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": "one row straight + one row vertical repeat",
+          "location_in_room": "tub_surround",
+          "notes": "3x12",
+          "vendor": "Masonry Center"
+        }
+      ]
+    }
   ]
 }
