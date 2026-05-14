@@ -11,28 +11,28 @@
       "entries": [
         {
           "trade": "tile",
-          "brand": "Masonry Center",
-          "style": "Borghini Classico Mos Vial",
+          "brand": "Portobello",
+          "style": "Mos Vial",
           "color": null,
           "sku": null,
           "grout_color": "Bleached Wood",
           "edge_profile": "Jolly to match",
           "pattern": "set vertical straight",
           "location_in_room": "vanity_backsplash",
-          "notes": "0.75x6; 6 inch splash | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "notes": "0.75x6; 6 inch splash",
           "vendor": "Masonry Center"
         },
         {
           "trade": "tile",
-          "brand": "Masonry Center",
-          "style": "Borghini Classico Mos Vial",
+          "brand": "Portobello",
+          "style": "Mos Vial",
           "color": null,
           "sku": null,
           "grout_color": "Bleached Wood",
           "edge_profile": "Jolly to match",
           "pattern": "set vertical straight",
           "location_in_room": "shower_niche",
-          "notes": "0.75x6; back of niche | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "notes": "0.75x6; back of niche",
           "vendor": "Masonry Center"
         },
         {
@@ -50,28 +50,28 @@
         },
         {
           "trade": "tile",
-          "brand": "Masonry Center",
-          "style": "Borghini Classico",
+          "brand": "Portobello",
+          "style": null,
           "color": "Polished",
           "sku": null,
           "grout_color": "Bleached Wood",
           "edge_profile": "Jolly to match",
           "pattern": "set vertical straight",
           "location_in_room": "shower_walls",
-          "notes": "24x24 | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "notes": "24x24",
           "vendor": "Masonry Center"
         },
         {
           "trade": "tile",
-          "brand": "Masonry Center",
-          "style": "Borghini Classico",
+          "brand": "Portobello",
+          "style": null,
           "color": "Polished",
           "sku": null,
           "grout_color": "Bleached Wood",
           "edge_profile": "Jolly to match",
           "pattern": null,
           "location_in_room": "shower_floor",
-          "notes": "2x2 | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "notes": "2x2",
           "vendor": "Masonry Center"
         }
       ]

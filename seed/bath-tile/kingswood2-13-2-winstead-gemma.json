@@ -11,28 +11,28 @@
       "entries": [
         {
           "trade": "tile",
-          "brand": "Masonry Center",
-          "style": "A Studio Haven",
+          "brand": "AO",
+          "style": null,
           "color": "Espresso SN75 Glossy",
           "sku": null,
           "grout_color": "Saddle Brown",
           "edge_profile": "Jolly to match",
           "pattern": "24 inch tall splash, set vertical",
           "location_in_room": "vanity_backsplash",
-          "notes": "4x12; trim Black; butt into mirrors | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "notes": "4x12; trim Black; butt into mirrors",
           "vendor": "Masonry Center"
         },
         {
           "trade": "tile",
-          "brand": "Masonry Center",
-          "style": "A Studio Haven",
+          "brand": "AO",
+          "style": null,
           "color": "Espresso SN75 Glossy",
           "sku": null,
           "grout_color": "Saddle Brown",
           "edge_profile": "Jolly to match",
           "pattern": "set vertical",
           "location_in_room": "shower_niche",
-          "notes": "4x4 in shower niche | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "notes": "4x4 in shower niche",
           "vendor": "Masonry Center"
         },
         {

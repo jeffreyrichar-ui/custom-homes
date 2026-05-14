@@ -107,15 +107,15 @@
         },
         {
           "trade": "tile",
-          "brand": "Masonry Center",
-          "style": "Belvedere",
+          "brand": "Marble Systems",
+          "style": null,
           "color": "Ivory Matte",
           "sku": null,
           "grout_color": "Bleached Wood",
           "edge_profile": null,
           "pattern": "set parallel with vanity",
           "location_in_room": "floor",
-          "notes": "12x24 | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "notes": "12x24",
           "vendor": "Masonry Center"
         },
         {

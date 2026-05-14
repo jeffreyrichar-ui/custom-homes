@@ -48,8 +48,8 @@ const VENDORS = new Set([
 const MANUFACTURER_PREFIXES: Array<{ re: RegExp; canonical: string }> = [
   { re: /^Conrad Brick\b/i, canonical: "Conrad Brick" },
   { re: /^Highland Lake\b/i, canonical: "Highland Lake" },
-  { re: /^Sand and Stone\b/i, canonical: "Daltile" }, // Sand & Stone is a Daltile collection
-  { re: /^Studio Haven\b/i, canonical: "AO" },
+  { re: /^Sand and Stone\b/i, canonical: "Daltile" },
+  { re: /^Studio Haven\b|^A Studio Haven\b/i, canonical: "AO" },
   { re: /^Marrazi\b|^Marrazzi\b|^Marazzi\b/i, canonical: "Marazzi" },
   { re: /^Portabello\b|^Portobello\b/i, canonical: "Portobello" },
   { re: /^Lungarno\b/i, canonical: "Lungarno" },
@@ -67,14 +67,29 @@ const MANUFACTURER_PREFIXES: Array<{ re: RegExp; canonical: string }> = [
   { re: /^Sami\b/i, canonical: "Sami" },
   { re: /^Costa Clara\b/i, canonical: "Costa Clara" },
   { re: /^Chameleon\b/i, canonical: "Chameleon" },
+  // Confirmed via WebSearch 2026-05:
+  { re: /^Persuade\b/i, canonical: "Marazzi" },
+  { re: /^Borghini Classico\b/i, canonical: "Portobello" },
+  { re: /^Rhyme and Reason\b/i, canonical: "Marazzi" },
+  { re: /^Zellige Neo\b/i, canonical: "Marazzi" },
+  { re: /^Pompei\b/i, canonical: "Marazzi" },
+  { re: /^Belvedere\b/i, canonical: "Marble Systems" },
+  { re: /^Cassero\b/i, canonical: "Emser" },
 ];
 
 function normalizeEntry(entry: TileEntry): TileEntry {
-  // Already normalized
-  if (entry.vendor !== undefined && entry.vendor !== null) {
+  // Already normalized with a real manufacturer — skip
+  if (
+    entry.vendor !== undefined &&
+    entry.vendor !== null &&
+    entry.brand !== entry.vendor
+  ) {
     return entry;
   }
 
+  // Otherwise re-process: either fresh (no vendor) or stuck-at-vendor
+  // (brand==vendor, manufacturer was previously unknown and may now be
+  // identifiable via newly-added manufacturer prefixes).
   const out: TileEntry = { ...entry };
 
   // Case 1: brand is a vendor — promote and try to extract manufacturer
@@ -87,6 +102,13 @@ function normalizeEntry(entry: TileEntry): TileEntry {
           out.brand = canonical;
           const stripped = out.style.replace(re, "").trim().replace(/^[\/\s-]+|[\/\s-]+$/g, "");
           out.style = stripped || null;
+          // Clean up the MANUFACTURER UNKNOWN flag if it's now identified.
+          if (out.notes) {
+            out.notes = out.notes
+              .replace(/\s*\|?\s*MANUFACTURER UNKNOWN: confirm with Tamara\s*/g, "")
+              .replace(/^\s*\|\s*/, "")
+              .trim() || null;
+          }
           return out;
         }
       }
