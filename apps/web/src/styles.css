@@ -1171,3 +1171,28 @@ button.link.experimental {
   from { opacity: 0; transform: translateY(-6px) scale(0.98); }
   to { opacity: 1; transform: none; }
 }
+
+/* -------- Project header rename + actions -------- */
+
+.project-header-rename {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  flex: 1;
+  min-width: 280px;
+}
+.project-header-rename .ac-input { width: 100%; max-width: 420px; }
+.project-header-rename-actions {
+  display: flex;
+  gap: var(--sp-2);
+}
+.project-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.project-header-actions button.link {
+  color: var(--text-3);
+}
+.project-header-actions button.link:hover { color: var(--primary); }
+.project-header-actions button.link.danger:hover { color: var(--danger); }

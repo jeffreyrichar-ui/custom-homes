@@ -221,4 +221,16 @@ export const api = {
       throw err;
     }),
   authLogout: () => request<{ ok: boolean }>("/api/auth/logout", { method: "POST" }),
+
+  // Project rename + delete
+  updateProject: (id: string, body: { name?: string; address?: string | null }) =>
+    request<{ id: string; name: string; address: string | null }>(
+      `/api/selections/projects/${id}`,
+      { method: "PATCH", body, admin: true },
+    ),
+  deleteProject: (id: string) =>
+    request<void>(`/api/selections/projects/${id}`, {
+      method: "DELETE",
+      admin: true,
+    }),
 };

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { TRADE_KINDS, type TradeKind } from "@custom-homes/shared";
 import { api, type ProjectDetailResponse } from "../lib/api.js";
 import { TradeForm } from "../components/TradeForm.js";
@@ -17,6 +17,7 @@ type EditingState = {
 
 export function SelectionsEdit() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [data, setData] = useState<ProjectDetailResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,6 +26,9 @@ export function SelectionsEdit() {
   const [pendingRoomName, setPendingRoomName] = useState("");
   const [editing, setEditing] = useState<EditingState>(null);
   const [viewMode, setViewMode] = useState<Record<string, "cards" | "shower">>({});
+  const [renamingProject, setRenamingProject] = useState(false);
+  const [pendingProjectName, setPendingProjectName] = useState("");
+  const [pendingProjectAddress, setPendingProjectAddress] = useState("");
   const { notify } = useToast();
   const formScrollRef = useRef<HTMLDivElement | null>(null);
 
@@ -130,19 +134,108 @@ export function SelectionsEdit() {
     }
   };
 
+  const startRenameProject = () => {
+    setPendingProjectName(project.name);
+    setPendingProjectAddress(project.address ?? "");
+    setRenamingProject(true);
+  };
+
+  const handleRenameProject = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!pendingProjectName.trim()) return;
+    try {
+      await api.updateProject(id, {
+        name: pendingProjectName.trim(),
+        address: pendingProjectAddress.trim() || null,
+      });
+      setRenamingProject(false);
+      refresh();
+      notify("success", "Project updated");
+    } catch (err) {
+      notify("error", err instanceof Error ? err.message : String(err));
+    }
+  };
+
+  const handleDeleteProject = async () => {
+    if (!window.confirm("Delete this project and all its rooms and selections?")) return;
+    try {
+      await api.deleteProject(id);
+      notify("success", "Project deleted");
+      navigate("/projects");
+    } catch (err) {
+      notify("error", err instanceof Error ? err.message : String(err));
+    }
+  };
+
   return (
     <>
       <p>
         <Link to="/projects">← All projects</Link>
       </p>
       <div className="project-detail-header">
-        <div>
-          <h1>{project.name}</h1>
-          {project.address && <p className="subtle">{project.address}</p>}
+        {renamingProject ? (
+          <form onSubmit={handleRenameProject} className="project-header-rename">
+            <input
+              className="ac-input"
+              placeholder="Project name"
+              value={pendingProjectName}
+              onChange={(e) => setPendingProjectName(e.target.value)}
+              autoFocus
+            />
+            <input
+              className="ac-input"
+              placeholder="Address (optional)"
+              value={pendingProjectAddress}
+              onChange={(e) => setPendingProjectAddress(e.target.value)}
+            />
+            <div className="project-header-rename-actions">
+              <button type="submit" className="icon-button">
+                <Icon name="check" />
+                <span>Save</span>
+              </button>
+              <button
+                type="button"
+                className="secondary icon-button"
+                onClick={() => setRenamingProject(false)}
+              >
+                <Icon name="x" />
+                <span>Cancel</span>
+              </button>
+            </div>
+          </form>
+        ) : (
+          <div>
+            <h1>{project.name}</h1>
+            {project.address && <p className="subtle">{project.address}</p>}
+          </div>
+        )}
+        <div className="project-header-actions">
+          <Link to={`/projects/${project.id}`} className="secondary-link">
+            View summary
+          </Link>
+          {!renamingProject && (
+            <>
+              <button
+                type="button"
+                className="link icon-link"
+                onClick={startRenameProject}
+                aria-label="Rename project"
+                title="Rename project"
+              >
+                <Icon name="edit" />
+              </button>
+              <button
+                type="button"
+                className="link danger icon-link"
+                onClick={handleDeleteProject}
+                aria-label="Delete project"
+                title="Delete project"
+              >
+                <Icon name="delete" />
+              </button>
+            </>
+          )}
         </div>
-        <Link to={`/projects/${project.id}`} className="secondary-link">
-          View summary
-        </Link>
       </div>
 
       <PdfActions projectId={project.id} />
