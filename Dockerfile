@@ -24,10 +24,10 @@ RUN pnpm install --no-frozen-lockfile
 COPY apps/server apps/server
 COPY packages/shared packages/shared
 
+# Build shared first so its dist/ exists before the server build resolves it.
+RUN pnpm --filter @custom-homes/shared build
+
 # Build server (emits to apps/server/dist).
-# Note: @custom-homes/shared has no build script and exports .ts directly via
-# its package.json "main". The compiled server dist imports "@custom-homes/shared"
-# which Node resolves to packages/shared/src/index.ts at runtime — see report.
 RUN pnpm --filter @custom-homes/server build
 
 # Prune dev deps to slim the prod node_modules we copy into the runtime stage.
@@ -49,8 +49,10 @@ COPY --from=builder /app/deploy/server/node_modules ./node_modules
 COPY --from=builder /app/apps/server/dist ./apps/server/dist
 COPY --from=builder /app/apps/server/package.json ./apps/server/package.json
 
-# Ship shared sources too — server imports resolve to packages/shared/src/*.
-COPY --from=builder /app/packages/shared ./packages/shared
+# Ship the shared package's built dist + manifest so Node can resolve
+# `@custom-homes/shared` at runtime via the workspace symlink in node_modules.
+COPY --from=builder /app/packages/shared/dist ./packages/shared/dist
+COPY --from=builder /app/packages/shared/package.json ./packages/shared/package.json
 
 EXPOSE 4000
 

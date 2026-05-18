@@ -10,7 +10,7 @@ services:
     runtime: node
     region: oregon
     plan: free
-    buildCommand: corepack enable && pnpm install --no-frozen-lockfile && pnpm --filter @custom-homes/server build
+    buildCommand: corepack enable && pnpm install --no-frozen-lockfile && pnpm --filter @custom-homes/shared build && pnpm --filter @custom-homes/server build
     startCommand: pnpm --filter @custom-homes/server start
     healthCheckPath: /api/health
     autoDeploy: true

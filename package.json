@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "description": "Finish-selections system for Todd Campbell Homes (Phase 1)",
   "scripts": {
-    "dev": "concurrently -n server,web -c blue,magenta \"pnpm --filter @custom-homes/server dev\" \"pnpm --filter @custom-homes/web dev\"",
+    "dev": "concurrently -n shared,server,web -c cyan,blue,magenta \"pnpm --filter @custom-homes/shared dev\" \"pnpm --filter @custom-homes/server dev\" \"pnpm --filter @custom-homes/web dev\"",
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
