@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { TradeKind } from "@custom-homes/shared";
 import { EntryImage } from "./EntryImage.js";
 import { TileEntryPreview } from "./TileEntryPreview.js";
+import { Icon } from "./Icon.js";
 
 type Props = {
   trade: TradeKind;
@@ -72,20 +73,29 @@ export function EntryCard({
       <div className="entry-card-header">
         {isNovel && <span className="tag created">new</span>}
         <div className="entry-card-actions">
-          <button type="button" className="link" onClick={onEdit}>
-            Edit
+          <button type="button" className="link icon-link" onClick={onEdit} title="Edit">
+            <Icon name="edit" />
+            <span>Edit</span>
           </button>
           {rooms.length > 1 && (
             <button
               type="button"
-              className="link"
+              className="link icon-link"
               onClick={() => setShowDupPicker((s) => !s)}
+              title="Duplicate to another room"
             >
-              Duplicate
+              <Icon name="duplicate" />
+              <span>Copy</span>
             </button>
           )}
-          <button type="button" className="link danger" onClick={onDelete}>
-            Delete
+          <button
+            type="button"
+            className="link icon-link danger"
+            onClick={onDelete}
+            title="Delete"
+          >
+            <Icon name="delete" />
+            <span>Delete</span>
           </button>
         </div>
       </div>

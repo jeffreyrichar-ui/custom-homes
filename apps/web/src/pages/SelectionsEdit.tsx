@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { TRADE_KINDS, type TradeKind } from "@custom-homes/shared";
 import { api, type ProjectDetailResponse } from "../lib/api.js";
@@ -25,6 +25,13 @@ export function SelectionsEdit() {
   const [editing, setEditing] = useState<EditingState>(null);
   const [viewMode, setViewMode] = useState<Record<string, "cards" | "shower">>({});
   const { notify } = useToast();
+  const formScrollRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if ((editing || Object.values(tradePicker).some(Boolean)) && formScrollRef.current) {
+      formScrollRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [editing, tradePicker]);
 
   const refresh = () => {
     if (!id) return;
@@ -201,7 +208,7 @@ export function SelectionsEdit() {
             </div>
 
             {tradePicker[room.id] && !editing && (
-              <div className="trade-form-block">
+              <div className="trade-form-block" ref={formScrollRef}>
                 <h3>New {tradePicker[room.id]} entry</h3>
                 <TradeForm
                   trade={tradePicker[room.id]!}
@@ -214,7 +221,7 @@ export function SelectionsEdit() {
             )}
 
             {editing && editing.roomId === room.id && (
-              <div className="trade-form-block">
+              <div className="trade-form-block" ref={formScrollRef}>
                 <h3>Editing {editing.trade} entry</h3>
                 <TradeForm
                   trade={editing.trade}
