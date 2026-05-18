@@ -448,6 +448,12 @@ textarea:focus {
 }
 .entry-card-actions button.link:hover { color: var(--primary); }
 .entry-card-actions button.link.danger:hover { color: var(--danger); }
+.icon-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.icon-link svg { color: currentColor; }
 
 .entry-primary {
   display: grid;
@@ -970,5 +976,187 @@ button.link.experimental {
 
 @keyframes toast-in {
   from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+/* -------- Command palette (Cmd+K / Ctrl+K) -------- */
+
+.cmdk-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 10vh var(--sp-4) var(--sp-4);
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  backdrop-filter: blur(8px) saturate(115%);
+  -webkit-backdrop-filter: blur(8px) saturate(115%);
+  animation: cmdk-fade 0.14s ease-out;
+}
+
+.cmdk-modal {
+  width: 100%;
+  max-width: 580px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-3);
+  display: flex;
+  flex-direction: column;
+  max-height: 70vh;
+  overflow: hidden;
+  animation: cmdk-pop 0.16s cubic-bezier(0.2, 0.9, 0.3, 1.1);
+}
+
+.cmdk-input-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-4);
+  border-bottom: 1px solid var(--border);
+  flex: 0 0 auto;
+}
+.cmdk-input-icon {
+  display: inline-flex;
+  color: var(--text-3);
+  flex: 0 0 auto;
+}
+.cmdk-input {
+  flex: 1 1 auto;
+  padding: 14px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  line-height: 1.4;
+}
+.cmdk-input::placeholder { color: var(--text-3); }
+
+.cmdk-esc {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--text-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 2px 6px;
+  letter-spacing: 0.04em;
+}
+
+.cmdk-results {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.cmdk-status {
+  padding: var(--sp-5) var(--sp-4);
+  text-align: center;
+  color: var(--text-3);
+  font-size: var(--fs-sm);
+}
+
+.cmdk-list {
+  list-style: none;
+  margin: 0;
+  padding: var(--sp-1) 0;
+}
+.cmdk-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 10px var(--sp-4);
+  cursor: pointer;
+  transition: background var(--t-fast);
+  border-left: 2px solid transparent;
+}
+.cmdk-item--hl {
+  background: var(--surface-2);
+  border-left-color: var(--primary);
+}
+.cmdk-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-sm);
+  background: var(--accent-soft);
+  color: var(--text-2);
+  flex: 0 0 28px;
+}
+.cmdk-item--hl .cmdk-item-icon {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+.cmdk-item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.cmdk-item-label {
+  font-size: var(--fs-base);
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cmdk-item-sublabel {
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.cmdk-item-type {
+  flex: 0 0 auto;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cmdk-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: 8px var(--sp-4);
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
+  flex: 0 0 auto;
+}
+.cmdk-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+}
+.cmdk-hint kbd {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  min-width: 16px;
+  text-align: center;
+}
+
+@keyframes cmdk-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes cmdk-pop {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
   to { opacity: 1; transform: none; }
 }

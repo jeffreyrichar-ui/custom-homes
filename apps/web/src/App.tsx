@@ -6,6 +6,7 @@ import { ProjectDetail } from "./pages/ProjectDetail.js";
 import { NewProject } from "./pages/NewProject.js";
 import { SelectionsEdit } from "./pages/SelectionsEdit.js";
 import { Login } from "./pages/Login.js";
+import { CommandBar } from "./components/CommandBar.js";
 import { api } from "./lib/api.js";
 
 type User = { id: string; email: string; name: string | null; role: string };
@@ -26,6 +27,7 @@ export function App() {
   return (
     <>
       <Nav user={user} onLogout={() => setUser(null)} />
+      {user && <CommandBar />}
       <main>
         <Routes>
           <Route path="/" element={<Navigate to={user ? "/projects" : "/login"} replace />} />
