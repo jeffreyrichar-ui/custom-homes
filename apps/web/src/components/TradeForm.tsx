@@ -42,6 +42,7 @@ const TRADE_FIELDS: Record<TradeKind, FieldDef[]> = {
         "set vertical",
         "staggered horizontal",
         "staggered vertical",
+        "herringbone",
         "checkerboard",
         "stacked",
       ],

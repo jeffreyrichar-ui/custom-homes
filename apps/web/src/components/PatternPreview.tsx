@@ -108,6 +108,28 @@ export function PatternPreview({
   // Square, rectangle, subway, trapezoid, fan, unknown → fall back to grid
   const aspect = detectedShape === "square" ? 1 : detectAspect({ notes });
   const norm = normalizePattern(pattern);
+  if (norm === "herringbone") {
+    return renderHerringbone({
+      imageUrl,
+      groutFill,
+      placeholderFill,
+      cols,
+      rows,
+      tileWidth,
+      aspect,
+    });
+  }
+  if (norm === "checkerboard") {
+    return renderCheckerboard({
+      imageUrl,
+      groutFill,
+      placeholderFill,
+      cols,
+      rows,
+      tileWidth,
+      groutWidth,
+    });
+  }
   return renderRectangleGrid({
     imageUrl,
     groutFill,
@@ -303,6 +325,147 @@ function renderPicket(opts: {
         );
       } else {
         tiles.push(<polygon key={`${row}-${c}`} points={points} fill={placeholderFill} />);
+      }
+    }
+  }
+  return (
+    <svg
+      viewBox={`0 0 ${totalW} ${totalH}`}
+      className="pattern-preview"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <rect x={0} y={0} width={totalW} height={totalH} fill={groutFill} />
+      {tiles}
+    </svg>
+  );
+}
+
+function renderHerringbone(opts: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+  tileWidth: number;
+  aspect: number;
+}) {
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect } = opts;
+  // Each grid cell holds one rotated rectangle. Alternating ±45° per cell
+  // forms the classic single-weave herringbone — adjacent tiles meet at L-joints.
+  const tileW = tileWidth;
+  const tileH = tileWidth / aspect;
+  const cellSize = Math.max(tileW, tileH) * 0.75;
+  // Half-cell padding around the grid so corners of rotated tiles don't clip.
+  const pad = cellSize / 2;
+  const totalW = cols * cellSize + 2 * pad;
+  const totalH = rows * cellSize + 2 * pad;
+
+  const tiles: React.ReactElement[] = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const cx = pad + c * cellSize + cellSize / 2;
+      const cy = pad + r * cellSize + cellSize / 2;
+      const angle = (r + c) % 2 === 0 ? 45 : -45;
+      const x = cx - tileW / 2;
+      const y = cy - tileH / 2;
+      const id = `hb-${r}-${c}`;
+      if (imageUrl) {
+        tiles.push(
+          <g key={`${r}-${c}`} transform={`rotate(${angle} ${cx} ${cy})`}>
+            <defs>
+              <clipPath id={id}>
+                <rect x={x} y={y} width={tileW} height={tileH} />
+              </clipPath>
+            </defs>
+            <image
+              href={imageUrl}
+              x={x}
+              y={y}
+              width={tileW}
+              height={tileH}
+              clipPath={`url(#${id})`}
+              preserveAspectRatio="xMidYMid slice"
+            />
+          </g>,
+        );
+      } else {
+        tiles.push(
+          <rect
+            key={`${r}-${c}`}
+            x={x}
+            y={y}
+            width={tileW}
+            height={tileH}
+            fill={placeholderFill}
+            transform={`rotate(${angle} ${cx} ${cy})`}
+          />,
+        );
+      }
+    }
+  }
+  return (
+    <svg
+      viewBox={`0 0 ${totalW} ${totalH}`}
+      className="pattern-preview"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <rect x={0} y={0} width={totalW} height={totalH} fill={groutFill} />
+      {tiles}
+    </svg>
+  );
+}
+
+function renderCheckerboard(opts: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+  tileWidth: number;
+  groutWidth: number;
+}) {
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, groutWidth } = opts;
+  // Checkerboard implies square cells regardless of detected aspect.
+  const tileW = tileWidth;
+  const tileH = tileWidth;
+  const totalW = cols * tileW + groutWidth * (cols + 1);
+  const totalH = rows * tileH + groutWidth * (rows + 1);
+
+  const tiles: React.ReactElement[] = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const x = c * tileW + groutWidth * (c + 1);
+      const y = r * tileH + groutWidth * (r + 1);
+      const dimmed = (r + c) % 2 === 1;
+      if (imageUrl) {
+        tiles.push(
+          <image
+            key={`img-${r}-${c}`}
+            href={imageUrl}
+            x={x}
+            y={y}
+            width={tileW}
+            height={tileH}
+            preserveAspectRatio="xMidYMid slice"
+          />,
+        );
+      } else {
+        tiles.push(
+          <rect key={`bg-${r}-${c}`} x={x} y={y} width={tileW} height={tileH} fill={placeholderFill} />,
+        );
+      }
+      if (dimmed) {
+        tiles.push(
+          <rect
+            key={`tint-${r}-${c}`}
+            x={x}
+            y={y}
+            width={tileW}
+            height={tileH}
+            fill={groutFill}
+            opacity={0.35}
+          />,
+        );
       }
     }
   }

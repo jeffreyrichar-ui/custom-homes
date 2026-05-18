@@ -34,6 +34,7 @@ function normalizePattern(p?: string | null): string {
   if (n.includes("staggered vertical")) return "staggered vertical";
   if (n.includes("checkerboard")) return "checkerboard";
   if (n.includes("stacked")) return "stacked";
+  if (n.includes("herringbone")) return "herringbone";
   return "set straight";
 }
 
@@ -72,6 +73,13 @@ export function renderPatternSvg(opts: {
     return renderPicketSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows: rows + 2 });
   }
   const aspect = shape === "square" ? 1 : detectAspect({ notes: opts.notes });
+  const pattern = normalizePattern(opts.pattern);
+  if (pattern === "herringbone") {
+    return renderHerringboneSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows, aspect });
+  }
+  if (pattern === "checkerboard") {
+    return renderCheckerboardSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows });
+  }
   return renderRectSvg({
     imageUrl: opts.imageUrl,
     groutFill,
@@ -79,7 +87,7 @@ export function renderPatternSvg(opts: {
     cols,
     rows,
     aspect,
-    pattern: normalizePattern(opts.pattern),
+    pattern,
   });
 }
 
@@ -164,6 +172,80 @@ function renderPicketSvg(o: { imageUrl?: string | null; groutFill: string; place
         parts.push(`<image href="${esc(o.imageUrl)}" x="${x}" y="${y}" width="${w}" height="${h}" clip-path="url(#${id})" preserveAspectRatio="xMidYMid slice"/>`);
       } else {
         parts.push(`<polygon points="${points}" fill="${o.placeholderFill}"/>`);
+      }
+    }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} ${totalH}" preserveAspectRatio="xMidYMid meet" class="pattern-svg"><rect x="0" y="0" width="${totalW}" height="${totalH}" fill="${o.groutFill}"/>${parts.join("")}</svg>`;
+}
+
+function renderHerringboneSvg(o: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+  aspect: number;
+}) {
+  // Mirror of renderHerringbone in PatternPreview.tsx — single-weave layout
+  // where alternating grid cells hold rectangles rotated ±45°.
+  const tileBase = 80;
+  const tileW = tileBase;
+  const tileH = tileBase / o.aspect;
+  const cellSize = Math.max(tileW, tileH) * 0.75;
+  // Half-cell padding around the grid so corners of rotated tiles don't clip.
+  const pad = cellSize / 2;
+  const totalW = o.cols * cellSize + 2 * pad;
+  const totalH = o.rows * cellSize + 2 * pad;
+  const parts: string[] = [];
+  for (let r = 0; r < o.rows; r++) {
+    for (let c = 0; c < o.cols; c++) {
+      const cx = pad + c * cellSize + cellSize / 2;
+      const cy = pad + r * cellSize + cellSize / 2;
+      const angle = (r + c) % 2 === 0 ? 45 : -45;
+      const x = cx - tileW / 2;
+      const y = cy - tileH / 2;
+      if (o.imageUrl) {
+        const id = `hb-${r}-${c}`;
+        parts.push(`<g transform="rotate(${angle} ${cx} ${cy})">`);
+        parts.push(`<defs><clipPath id="${id}"><rect x="${x}" y="${y}" width="${tileW}" height="${tileH}"/></clipPath></defs>`);
+        parts.push(`<image href="${esc(o.imageUrl)}" x="${x}" y="${y}" width="${tileW}" height="${tileH}" clip-path="url(#${id})" preserveAspectRatio="xMidYMid slice"/>`);
+        parts.push(`</g>`);
+      } else {
+        parts.push(`<rect x="${x}" y="${y}" width="${tileW}" height="${tileH}" fill="${o.placeholderFill}" transform="rotate(${angle} ${cx} ${cy})"/>`);
+      }
+    }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} ${totalH}" preserveAspectRatio="xMidYMid meet" class="pattern-svg"><rect x="0" y="0" width="${totalW}" height="${totalH}" fill="${o.groutFill}"/>${parts.join("")}</svg>`;
+}
+
+function renderCheckerboardSvg(o: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+}) {
+  // Mirror of renderCheckerboard in PatternPreview.tsx — square cells, alternating
+  // cells get a translucent grout-color overlay to fake the two-tone contrast.
+  const tileBase = 80;
+  const tileW = tileBase;
+  const tileH = tileBase;
+  const groutWidth = 2;
+  const totalW = o.cols * tileW + groutWidth * (o.cols + 1);
+  const totalH = o.rows * tileH + groutWidth * (o.rows + 1);
+  const parts: string[] = [];
+  for (let r = 0; r < o.rows; r++) {
+    for (let c = 0; c < o.cols; c++) {
+      const x = c * tileW + groutWidth * (c + 1);
+      const y = r * tileH + groutWidth * (r + 1);
+      const dimmed = (r + c) % 2 === 1;
+      if (o.imageUrl) {
+        parts.push(`<image href="${esc(o.imageUrl)}" x="${x}" y="${y}" width="${tileW}" height="${tileH}" preserveAspectRatio="xMidYMid slice"/>`);
+      } else {
+        parts.push(`<rect x="${x}" y="${y}" width="${tileW}" height="${tileH}" fill="${o.placeholderFill}"/>`);
+      }
+      if (dimmed) {
+        parts.push(`<rect x="${x}" y="${y}" width="${tileW}" height="${tileH}" fill="${o.groutFill}" opacity="0.35"/>`);
       }
     }
   }
