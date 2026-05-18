@@ -592,3 +592,249 @@ describe("marbleSystemsScraper", () => {
     expect(opts.imageSelectors.length).toBeGreaterThan(0);
   });
 });
+
+describe("maniscalcoScraper", () => {
+  beforeEach(async () => {
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    vi.mocked(mod.fetchProductImagePlaywright).mockClear();
+  });
+
+  it("findScraper resolves the Maniscalco adapter by exact brand", async () => {
+    const { findScraper } = await import("../src/services/scrapers/index.js");
+    const s = findScraper("Maniscalco");
+    expect(s).not.toBeNull();
+    expect(s!.brand).toBe("Maniscalco");
+  });
+
+  it("matches 'Maniscalco' on word boundary, with suffix variants but not arbitrary prefixes", async () => {
+    const { maniscalcoScraper } = await import(
+      "../src/services/scrapers/maniscalco.js"
+    );
+    expect(maniscalcoScraper.matches("Maniscalco")).toBe(true);
+    expect(maniscalcoScraper.matches("maniscalco")).toBe(true);
+    expect(maniscalcoScraper.matches("MANISCALCO")).toBe(true);
+    expect(maniscalcoScraper.matches(" Maniscalco ")).toBe(true);
+    expect(maniscalcoScraper.matches("Maniscalco Stone")).toBe(true);
+    expect(maniscalcoScraper.matches("Maniscalco Tile")).toBe(true);
+    // Sanity: don't bleed into other brands.
+    expect(maniscalcoScraper.matches("Daltile")).toBe(false);
+    expect(maniscalcoScraper.matches("Marazzi")).toBe(false);
+    // And not a substring match on a prefix.
+    expect(maniscalcoScraper.matches("Maniscalcola")).toBe(false);
+  });
+
+  it("scrape() builds a maniscalcostone.com ?s= search URL with the shape-first query and a /product/ link selector", async () => {
+    const { maniscalcoScraper } = await import(
+      "../src/services/scrapers/maniscalco.js"
+    );
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    const fetchMock = vi.mocked(mod.fetchProductImagePlaywright);
+
+    const result = await maniscalcoScraper.scrape({
+      brand: "Maniscalco",
+      sku: null,
+      style: "Chameleon",
+      color: "Opal",
+      notes: "penny round",
+    });
+
+    expect(result).not.toBeNull();
+    expect(result!.imageBuffer.length).toBeGreaterThan(0);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const opts = fetchMock.mock.calls[0]![0];
+    expect(opts.searchUrl.startsWith("https://www.maniscalcostone.com/?s=")).toBe(
+      true,
+    );
+    // Penny round is a named shape — it must lead the query.
+    expect(decodeURIComponent(opts.searchUrl)).toContain("penny round");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Chameleon");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Opal");
+    // Singular /product/<slug>/ is the canonical detail URL.
+    expect(opts.productLinkSelector).toContain("/product/");
+    expect(opts.imageSelectors.length).toBeGreaterThan(0);
+  });
+});
+
+describe("sartoriaScraper", () => {
+  beforeEach(async () => {
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    vi.mocked(mod.fetchProductImagePlaywright).mockClear();
+  });
+
+  it("findScraper resolves the Sartoria adapter by exact brand", async () => {
+    const { findScraper } = await import("../src/services/scrapers/index.js");
+    const s = findScraper("Sartoria");
+    expect(s).not.toBeNull();
+    expect(s!.brand).toBe("Sartoria");
+  });
+
+  it("matches 'Sartoria' on word boundary, never 'sartorial' or arbitrary tokens", async () => {
+    const { sartoriaScraper } = await import(
+      "../src/services/scrapers/sartoria.js"
+    );
+    expect(sartoriaScraper.matches("Sartoria")).toBe(true);
+    expect(sartoriaScraper.matches("sartoria")).toBe(true);
+    expect(sartoriaScraper.matches("SARTORIA")).toBe(true);
+    expect(sartoriaScraper.matches(" Sartoria ")).toBe(true);
+    expect(sartoriaScraper.matches("Sartoria Materici")).toBe(true);
+    expect(sartoriaScraper.matches("Sartoria Tbrick")).toBe(true);
+    // The whole point of the word-boundary anchor — these must NOT match.
+    expect(sartoriaScraper.matches("sartorial")).toBe(false);
+    expect(sartoriaScraper.matches("Sartorialist")).toBe(false);
+    // Sanity: don't bleed into other Italian-sounding tile brands.
+    expect(sartoriaScraper.matches("Lungarno")).toBe(false);
+    expect(sartoriaScraper.matches("Marazzi")).toBe(false);
+    expect(sartoriaScraper.matches("Ragno")).toBe(false);
+  });
+
+  it("scrape() builds a terratintagroup.com ?s= search URL with the shape-first query and a /collections/ link selector", async () => {
+    const { sartoriaScraper } = await import(
+      "../src/services/scrapers/sartoria.js"
+    );
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    const fetchMock = vi.mocked(mod.fetchProductImagePlaywright);
+
+    const result = await sartoriaScraper.scrape({
+      brand: "Sartoria",
+      sku: null,
+      style: "Materici",
+      color: "Latte",
+      notes: "subway 2x10 glossy",
+    });
+
+    expect(result).not.toBeNull();
+    expect(result!.imageBuffer.length).toBeGreaterThan(0);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const opts = fetchMock.mock.calls[0]![0];
+    expect(
+      opts.searchUrl.startsWith("https://www.terratintagroup.com/?s="),
+    ).toBe(true);
+    // Subway is a named shape — it must lead the query.
+    expect(decodeURIComponent(opts.searchUrl)).toContain("subway");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Materici");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Latte");
+    // Collections are the canonical landing pages on terratintagroup.com.
+    expect(opts.productLinkSelector).toContain("/collections/");
+    expect(opts.imageSelectors.length).toBeGreaterThan(0);
+  });
+});
+
+describe("sonomaTilemakersScraper", () => {
+  beforeEach(async () => {
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    vi.mocked(mod.fetchProductImagePlaywright).mockClear();
+  });
+
+  it("findScraper resolves the Sonoma Tilemakers adapter by exact brand", async () => {
+    const { findScraper } = await import("../src/services/scrapers/index.js");
+    const s = findScraper("Sonoma Tilemakers");
+    expect(s).not.toBeNull();
+    expect(s!.brand).toBe("Sonoma Tilemakers");
+  });
+
+  it("requires both 'sonoma' and 'tilemakers' — never matches either word alone", async () => {
+    const { sonomaTilemakersScraper } = await import(
+      "../src/services/scrapers/sonomaTilemakers.js"
+    );
+    expect(sonomaTilemakersScraper.matches("Sonoma Tilemakers")).toBe(true);
+    expect(sonomaTilemakersScraper.matches("sonoma tilemakers")).toBe(true);
+    expect(sonomaTilemakersScraper.matches("SONOMA TILEMAKERS")).toBe(true);
+    expect(sonomaTilemakersScraper.matches(" Sonoma  Tilemakers ")).toBe(true);
+    // The whole point of the tight matcher: must NOT match either word alone,
+    // nor unrelated vendors sharing the "Sonoma" prefix.
+    expect(sonomaTilemakersScraper.matches("Sonoma")).toBe(false);
+    expect(sonomaTilemakersScraper.matches("Tilemakers")).toBe(false);
+    expect(sonomaTilemakersScraper.matches("Sonoma Cast Stone")).toBe(false);
+    // Sanity: don't bleed into sibling brands.
+    expect(sonomaTilemakersScraper.matches("Daltile")).toBe(false);
+    expect(sonomaTilemakersScraper.matches("Marazzi")).toBe(false);
+  });
+
+  it("scrape() builds a sonomatilemakers.com ?s= search URL with the shape-first query and a /product/ link selector", async () => {
+    const { sonomaTilemakersScraper } = await import(
+      "../src/services/scrapers/sonomaTilemakers.js"
+    );
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    const fetchMock = vi.mocked(mod.fetchProductImagePlaywright);
+
+    const result = await sonomaTilemakersScraper.scrape({
+      brand: "Sonoma Tilemakers",
+      sku: null,
+      style: "Hustle Shimmie",
+      color: "Fandango",
+      notes: "2x4",
+    });
+
+    expect(result).not.toBeNull();
+    expect(result!.imageBuffer.length).toBeGreaterThan(0);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const opts = fetchMock.mock.calls[0]![0];
+    expect(opts.searchUrl.startsWith("https://sonomatilemakers.com/?s=")).toBe(
+      true,
+    );
+    // Shape (rectangle from 2x4) leads the query.
+    expect(decodeURIComponent(opts.searchUrl)).toContain("rectangle");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Hustle Shimmie");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Fandango");
+    // Singular /product/<slug>/ is the canonical detail URL.
+    expect(opts.productLinkSelector).toContain("/product/");
+    expect(opts.imageSelectors.length).toBeGreaterThan(0);
+  });
+});
+
+describe("cepacScraper", () => {
+  beforeEach(async () => {
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    vi.mocked(mod.fetchProductImagePlaywright).mockClear();
+  });
+
+  it("findScraper resolves the Cepac adapter by exact brand", async () => {
+    const { findScraper } = await import("../src/services/scrapers/index.js");
+    const s = findScraper("Cepac");
+    expect(s).not.toBeNull();
+    expect(s!.brand).toBe("Cepac");
+  });
+
+  it("matches 'Cepac' as a discrete token only, never as a prefix of unrelated words", async () => {
+    const { cepacScraper } = await import("../src/services/scrapers/cepac.js");
+    expect(cepacScraper.matches("Cepac")).toBe(true);
+    expect(cepacScraper.matches("cepac")).toBe(true);
+    expect(cepacScraper.matches("CEPAC")).toBe(true);
+    expect(cepacScraper.matches(" Cepac ")).toBe(true);
+    expect(cepacScraper.matches("Cepac Tile")).toBe(true);
+    expect(cepacScraper.matches("cepac tile")).toBe(true);
+    // The whole point of the word-boundary anchor — these must NOT match.
+    expect(cepacScraper.matches("Cepacol")).toBe(false);
+    expect(cepacScraper.matches("Cepacia")).toBe(false);
+    // Sanity: don't bleed into other brands.
+    expect(cepacScraper.matches("Daltile")).toBe(false);
+    expect(cepacScraper.matches("Marazzi")).toBe(false);
+  });
+
+  it("scrape() builds a cepactile.com ?s= search URL with the shape-first query and a /product/ link selector", async () => {
+    const { cepacScraper } = await import("../src/services/scrapers/cepac.js");
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    const fetchMock = vi.mocked(mod.fetchProductImagePlaywright);
+
+    const result = await cepacScraper.scrape({
+      brand: "Cepac",
+      sku: null,
+      style: "Krave",
+      color: "Sugar",
+      notes: "0.5x2 stagger joint",
+    });
+
+    expect(result).not.toBeNull();
+    expect(result!.imageBuffer.length).toBeGreaterThan(0);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const opts = fetchMock.mock.calls[0]![0];
+    expect(opts.searchUrl.startsWith("https://cepactile.com/?s=")).toBe(true);
+    // Shape (rectangle from 0.5x2) leads the query.
+    expect(decodeURIComponent(opts.searchUrl)).toContain("rectangle");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Krave");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Sugar");
+    // Singular /product/<slug>/ is the canonical detail URL.
+    expect(opts.productLinkSelector).toContain("/product/");
+    expect(opts.imageSelectors.length).toBeGreaterThan(0);
+  });
+});

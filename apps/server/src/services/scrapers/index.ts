@@ -1,22 +1,26 @@
 import { americanOleanScraper } from "./americanOlean.js";
 import { bedrosiansScraper } from "./bedrosians.js";
+import { cepacScraper } from "./cepac.js";
 import { daltileScraper } from "./daltile.js";
 import { emserScraper } from "./emser.js";
 import { floridaTileScraper } from "./floridaTile.js";
 import { lungarnoScraper } from "./lungarno.js";
+import { maniscalcoScraper } from "./maniscalco.js";
 import { marazziScraper } from "./marazzi.js";
 import { marbleSystemsScraper } from "./marbleSystems.js";
 import { msiScraper } from "./msi.js";
 import { portobelloScraper } from "./portobello.js";
 import { ragnoScraper } from "./ragno.js";
+import { sartoriaScraper } from "./sartoria.js";
 import { schluterScraper } from "./schluter.js";
+import { sonomaTilemakersScraper } from "./sonomaTilemakers.js";
 import type { Scraper } from "./types.js";
 
 export * from "./types.js";
 export { closeScraperBrowser } from "./playwrightFetch.js";
 
 /**
- * Twelve brand adapters covering ~87% of bath/shower tile entries in the
+ * Sixteen brand adapters covering ~91% of bath/shower tile entries in the
  * seed data. Each uses Playwright (sharing the Chromium installed for
  * Phase 5 PDF generation) to render the manufacturer's search page,
  * navigate to the first product result, and resolve the product image
@@ -31,16 +35,20 @@ export { closeScraperBrowser } from "./playwrightFetch.js";
 const SCRAPERS: Scraper[] = [
   americanOleanScraper,
   bedrosiansScraper,
+  cepacScraper,
   daltileScraper,
   emserScraper,
   floridaTileScraper,
   lungarnoScraper,
+  maniscalcoScraper,
   marazziScraper,
   marbleSystemsScraper,
   msiScraper,
   portobelloScraper,
   ragnoScraper,
+  sartoriaScraper,
   schluterScraper,
+  sonomaTilemakersScraper,
 ];
 
 export function findScraper(brand: string): Scraper | null {
