@@ -8,18 +8,22 @@
   "exports": {
     ".": {
       "types": "./src/index.ts",
+      "module": "./src/index.ts",
       "default": "./dist/index.js"
     },
     "./trades": {
       "types": "./src/trades.ts",
+      "module": "./src/trades.ts",
       "default": "./dist/trades.js"
     },
     "./importContract": {
       "types": "./src/importContract.ts",
+      "module": "./src/importContract.ts",
       "default": "./dist/importContract.js"
     },
     "./exampleProject": {
       "types": "./src/exampleProject.ts",
+      "module": "./src/exampleProject.ts",
       "default": "./dist/exampleProject.js"
     }
   },
