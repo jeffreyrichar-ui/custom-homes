@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../lib/api.js";
+import { Icon } from "../components/Icon.js";
 
 export function NewProject() {
   const navigate = useNavigate();
@@ -60,8 +61,9 @@ export function NewProject() {
         </div>
         {error && <div className="errors">{error}</div>}
         <div className="button-row">
-          <button type="submit" disabled={saving}>
-            {saving ? "Creating…" : "Create project"}
+          <button type="submit" className="icon-button" disabled={saving}>
+            <Icon name="plus" />
+            <span>{saving ? "Creating…" : "Create project"}</span>
           </button>
         </div>
       </form>

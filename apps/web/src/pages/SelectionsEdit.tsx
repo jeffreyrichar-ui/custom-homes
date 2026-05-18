@@ -6,6 +6,7 @@ import { TradeForm } from "../components/TradeForm.js";
 import { PdfActions } from "../components/PdfActions.js";
 import { EntryCard } from "../components/EntryCard.js";
 import { ShowerView } from "../components/ShowerView.js";
+import { Icon } from "../components/Icon.js";
 import { useToast } from "../lib/toast.js";
 
 type EditingState = {
@@ -283,20 +284,27 @@ export function SelectionsEdit() {
             onChange={(e) => setPendingRoomName(e.target.value)}
             autoFocus
           />
-          <button type="submit">Add room</button>
+          <button type="submit" className="icon-button">
+            <Icon name="plus" />
+            <span>Add room</span>
+          </button>
           <button
             type="button"
-            className="secondary"
+            className="secondary icon-button"
             onClick={() => {
               setShowAddRoom(false);
               setPendingRoomName("");
             }}
           >
-            Cancel
+            <Icon name="x" />
+            <span>Cancel</span>
           </button>
         </form>
       ) : (
-        <button onClick={() => setShowAddRoom(true)}>+ Add room</button>
+        <button onClick={() => setShowAddRoom(true)} className="icon-button">
+          <Icon name="plus" />
+          <span>Add room</span>
+        </button>
       )}
     </>
   );

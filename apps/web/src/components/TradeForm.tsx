@@ -3,6 +3,7 @@ import type { TradeKind } from "@custom-homes/shared";
 import { api } from "../lib/api.js";
 import { AutoComplete, type Suggestion } from "./AutoComplete.js";
 import { PatternPreview } from "./PatternPreview.js";
+import { Icon } from "./Icon.js";
 
 type FieldKind =
   | "text"
@@ -426,11 +427,17 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
       )}
       {error && <div className="errors">{error}</div>}
       <div className="button-row">
-        <button type="submit" disabled={saving}>
-          {saving ? "Saving…" : "Save entry"}
+        <button type="submit" className="icon-button" disabled={saving}>
+          <Icon name="check" />
+          <span>{saving ? "Saving…" : "Save entry"}</span>
         </button>
-        <button type="button" className="secondary" onClick={onCancel}>
-          Cancel
+        <button
+          type="button"
+          className="secondary icon-button"
+          onClick={onCancel}
+        >
+          <Icon name="x" />
+          <span>Cancel</span>
         </button>
       </div>
     </form>

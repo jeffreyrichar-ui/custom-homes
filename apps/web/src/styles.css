@@ -164,6 +164,11 @@ nav .nav-right {
   gap: var(--sp-3);
   align-items: center;
 }
+nav .nav-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
 
 main {
   padding: var(--sp-6);

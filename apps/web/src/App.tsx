@@ -7,6 +7,7 @@ import { NewProject } from "./pages/NewProject.js";
 import { SelectionsEdit } from "./pages/SelectionsEdit.js";
 import { Login } from "./pages/Login.js";
 import { CommandBar } from "./components/CommandBar.js";
+import { Icon } from "./components/Icon.js";
 import { api } from "./lib/api.js";
 
 type User = { id: string; email: string; name: string | null; role: string };
@@ -64,16 +65,20 @@ function Nav({ user, onLogout }: { user: User | null; onLogout: () => void }) {
       <span className="nav-right">
         {user ? (
           <>
-            <span className="muted">{user.email}</span>
+            <span className="nav-user muted">
+              <Icon name="user" size={12} />
+              {user.email}
+            </span>
             <button
-              className="secondary"
+              className="secondary icon-button"
               onClick={async () => {
                 await api.authLogout();
                 onLogout();
                 navigate("/login");
               }}
             >
-              Sign out
+              <Icon name="logout" />
+              <span>Sign out</span>
             </button>
           </>
         ) : (
