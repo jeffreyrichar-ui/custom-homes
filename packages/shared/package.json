@@ -21,6 +21,11 @@
       "module": "./src/importContract.ts",
       "default": "./dist/importContract.js"
     },
+    "./patterns": {
+      "types": "./src/patterns.ts",
+      "module": "./src/patterns.ts",
+      "default": "./dist/patterns.js"
+    },
     "./exampleProject": {
       "types": "./src/exampleProject.ts",
       "module": "./src/exampleProject.ts",

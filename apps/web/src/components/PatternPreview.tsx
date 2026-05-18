@@ -1,4 +1,10 @@
-import { detectShape, detectAspect, type TileShape } from "@custom-homes/shared";
+import {
+  detectShape,
+  detectAspect,
+  normalizePattern,
+  type RenderMode,
+  type TileShape,
+} from "@custom-homes/shared";
 
 type Props = {
   imageUrl?: string | null;
@@ -42,18 +48,6 @@ function resolveGroutFill(input: string | null | undefined): string {
   if (NAMED_GROUT_COLORS[key]) return NAMED_GROUT_COLORS[key]!;
   if (/^#([0-9a-f]{3}){1,2}$/i.test(input.trim())) return input.trim();
   return "#cccccc";
-}
-
-function normalizePattern(p?: string | null): string {
-  const n = (p ?? "").trim().toLowerCase();
-  if (n.includes("set vertical")) return "set vertical";
-  if (n.includes("staggered horizontal") || n.includes("brick") || n.includes("running bond"))
-    return "staggered horizontal";
-  if (n.includes("staggered vertical")) return "staggered vertical";
-  if (n.includes("checkerboard")) return "checkerboard";
-  if (n.includes("stacked")) return "stacked";
-  if (n.includes("herringbone")) return "herringbone";
-  return "set straight";
 }
 
 export function PatternPreview({
@@ -107,40 +101,34 @@ export function PatternPreview({
 
   // Square, rectangle, subway, trapezoid, fan, unknown → fall back to grid
   const aspect = detectedShape === "square" ? 1 : detectAspect({ notes });
-  const norm = normalizePattern(pattern);
-  if (norm === "herringbone") {
-    return renderHerringbone({
-      imageUrl,
-      groutFill,
-      placeholderFill,
-      cols,
-      rows,
-      tileWidth,
-      aspect,
-    });
+  const mode = normalizePattern(pattern);
+
+  switch (mode) {
+    case "herringbone":
+      return renderHerringbone({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect });
+    case "checkerboard-on-point":
+      return renderCheckerboardOnPoint({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth });
+    case "parquet":
+      return renderParquet({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth });
+    case "lattice":
+      return renderLattice({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth });
+    case "stripes-vertical":
+      return renderStripesVertical({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect });
+    case "random":
+      return renderRandomRotation({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect });
+    default:
+      return renderRectangleGrid({
+        imageUrl,
+        groutFill,
+        placeholderFill,
+        cols,
+        rows,
+        tileWidth,
+        aspect,
+        mode,
+        groutWidth,
+      });
   }
-  if (norm === "checkerboard") {
-    return renderCheckerboard({
-      imageUrl,
-      groutFill,
-      placeholderFill,
-      cols,
-      rows,
-      tileWidth,
-      groutWidth,
-    });
-  }
-  return renderRectangleGrid({
-    imageUrl,
-    groutFill,
-    placeholderFill,
-    cols,
-    rows,
-    tileWidth,
-    aspect,
-    pattern: norm,
-    groutWidth,
-  });
 }
 
 // ----- shape renderers -----
@@ -415,19 +403,253 @@ function renderHerringbone(opts: {
   );
 }
 
-function renderCheckerboard(opts: {
+function renderCheckerboardOnPoint(opts: {
   imageUrl?: string | null;
   groutFill: string;
   placeholderFill: string;
   cols: number;
   rows: number;
   tileWidth: number;
-  groutWidth: number;
 }) {
-  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, groutWidth } = opts;
-  // Checkerboard implies square cells regardless of detected aspect.
-  const tileW = tileWidth;
-  const tileH = tileWidth;
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth } = opts;
+  // "On point" = squares rotated 45° (diamonds). Alternate cells get a
+  // translucent grout-color tint to fake the classic two-tone contrast.
+  const side = tileWidth;
+  const diag = side * Math.SQRT2;
+  const step = diag / 2;
+  const pad = step;
+  const totalW = cols * step + 2 * pad;
+  const totalH = rows * step + 2 * pad;
+
+  const tiles: React.ReactElement[] = [];
+  for (let r = 0; r < rows + 1; r++) {
+    for (let c = 0; c < cols + 1; c++) {
+      const cx = pad + c * step;
+      const cy = pad + r * step;
+      // Offset every other row by half-step → diamond tessellation.
+      const ox = r % 2 === 1 ? step : 0;
+      const x = cx + ox - side / 2;
+      const y = cy - side / 2;
+      const dimmed = (r + c) % 2 === 1;
+      const id = `cob-${r}-${c}`;
+      if (imageUrl) {
+        tiles.push(
+          <g key={`img-${r}-${c}`} transform={`rotate(45 ${x + side / 2} ${y + side / 2})`}>
+            <defs>
+              <clipPath id={id}>
+                <rect x={x} y={y} width={side} height={side} />
+              </clipPath>
+            </defs>
+            <image
+              href={imageUrl}
+              x={x}
+              y={y}
+              width={side}
+              height={side}
+              clipPath={`url(#${id})`}
+              preserveAspectRatio="xMidYMid slice"
+            />
+            {dimmed && (
+              <rect
+                x={x}
+                y={y}
+                width={side}
+                height={side}
+                fill={groutFill}
+                opacity={0.45}
+              />
+            )}
+          </g>,
+        );
+      } else {
+        tiles.push(
+          <rect
+            key={`bg-${r}-${c}`}
+            x={x}
+            y={y}
+            width={side}
+            height={side}
+            fill={dimmed ? groutFill : placeholderFill}
+            transform={`rotate(45 ${x + side / 2} ${y + side / 2})`}
+          />,
+        );
+      }
+    }
+  }
+  return (
+    <svg
+      viewBox={`0 0 ${totalW} ${totalH}`}
+      className="pattern-preview"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <rect x={0} y={0} width={totalW} height={totalH} fill={groutFill} />
+      {tiles}
+    </svg>
+  );
+}
+
+function renderParquet(opts: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+  tileWidth: number;
+}) {
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth } = opts;
+  // Tamara's "4 vertical + 4 horizontal" — square parquet blocks of 4 tiles,
+  // alternating block orientation in a checkerboard arrangement.
+  const tileLong = tileWidth;
+  const tileShort = tileWidth / 4;
+  const block = tileLong; // square block side = 4 short × 1 long
+  const groutWidth = 2;
+  const bcols = Math.max(2, Math.ceil(cols / 2));
+  const brows = Math.max(2, Math.ceil(rows / 2));
+  const totalW = bcols * block + groutWidth * (bcols + 1);
+  const totalH = brows * block + groutWidth * (brows + 1);
+
+  const tiles: React.ReactElement[] = [];
+  for (let br = 0; br < brows; br++) {
+    for (let bc = 0; bc < bcols; bc++) {
+      const x0 = bc * block + groutWidth * (bc + 1);
+      const y0 = br * block + groutWidth * (br + 1);
+      const vertical = (br + bc) % 2 === 0; // alternate block orientation
+      for (let i = 0; i < 4; i++) {
+        const x = vertical ? x0 + i * tileShort : x0;
+        const y = vertical ? y0 : y0 + i * tileShort;
+        const w = vertical ? tileShort : tileLong;
+        const h = vertical ? tileLong : tileShort;
+        if (imageUrl) {
+          tiles.push(
+            <image
+              key={`p-${br}-${bc}-${i}`}
+              href={imageUrl}
+              x={x}
+              y={y}
+              width={w}
+              height={h}
+              preserveAspectRatio="xMidYMid slice"
+            />,
+          );
+        } else {
+          tiles.push(
+            <rect key={`p-${br}-${bc}-${i}`} x={x} y={y} width={w} height={h} fill={placeholderFill} />,
+          );
+        }
+      }
+    }
+  }
+  return (
+    <svg
+      viewBox={`0 0 ${totalW} ${totalH}`}
+      className="pattern-preview"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <rect x={0} y={0} width={totalW} height={totalH} fill={groutFill} />
+      {tiles}
+    </svg>
+  );
+}
+
+function renderLattice(opts: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+  tileWidth: number;
+}) {
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth } = opts;
+  // Basket weave — pairs of vertical strips interlocking with pairs of
+  // horizontal strips. Repeat unit is a 2x2 super-cell.
+  const long = tileWidth;
+  const short = tileWidth / 2;
+  const cell = long; // super-cell side (one weave unit)
+  const groutWidth = 2;
+  const ucols = Math.max(2, Math.ceil(cols / 2));
+  const urows = Math.max(2, Math.ceil(rows / 2));
+  const totalW = ucols * cell + groutWidth * (ucols + 1);
+  const totalH = urows * cell + groutWidth * (urows + 1);
+
+  const tiles: React.ReactElement[] = [];
+  for (let ur = 0; ur < urows; ur++) {
+    for (let uc = 0; uc < ucols; uc++) {
+      const x0 = uc * cell + groutWidth * (uc + 1);
+      const y0 = ur * cell + groutWidth * (ur + 1);
+      // Alternate per super-cell: even cells = vertical pair on left,
+      // horizontal pair on right; odd cells flip.
+      const flip = (ur + uc) % 2 === 1;
+      const pieces = flip
+        ? [
+            { x: x0, y: y0, w: long, h: short },
+            { x: x0, y: y0 + short, w: long, h: short },
+            { x: x0, y: y0, w: short, h: long }, // overlap not visible, but kept for structure
+            { x: x0 + short, y: y0, w: short, h: long },
+          ]
+        : [
+            { x: x0, y: y0, w: short, h: long },
+            { x: x0 + short, y: y0, w: short, h: long },
+            { x: x0, y: y0, w: long, h: short },
+            { x: x0, y: y0 + short, w: long, h: short },
+          ];
+      // First two pieces are the "under" strips; last two are the "over" pair.
+      const visible = flip ? pieces.slice(0, 2).concat(pieces.slice(2)) : pieces.slice(2).concat(pieces.slice(0, 2));
+      for (let i = 0; i < 4; i++) {
+        const p = visible[i]!;
+        if (imageUrl) {
+          tiles.push(
+            <image
+              key={`l-${ur}-${uc}-${i}`}
+              href={imageUrl}
+              x={p.x}
+              y={p.y}
+              width={p.w}
+              height={p.h}
+              preserveAspectRatio="xMidYMid slice"
+            />,
+          );
+        } else {
+          tiles.push(
+            <rect
+              key={`l-${ur}-${uc}-${i}`}
+              x={p.x}
+              y={p.y}
+              width={p.w}
+              height={p.h}
+              fill={placeholderFill}
+            />,
+          );
+        }
+      }
+    }
+  }
+  return (
+    <svg
+      viewBox={`0 0 ${totalW} ${totalH}`}
+      className="pattern-preview"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <rect x={0} y={0} width={totalW} height={totalH} fill={groutFill} />
+      {tiles}
+    </svg>
+  );
+}
+
+function renderStripesVertical(opts: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+  tileWidth: number;
+  aspect: number;
+}) {
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect } = opts;
+  // Tall narrow tiles set in columns. Alternate columns get a darker tint
+  // overlay to simulate the two-tone stripe (e.g. fluted alternating color).
+  const tileW = tileWidth / Math.max(1.5, aspect);
+  const tileH = tileWidth * 1.5;
+  const groutWidth = 2;
   const totalW = cols * tileW + groutWidth * (cols + 1);
   const totalH = rows * tileH + groutWidth * (rows + 1);
 
@@ -436,7 +658,7 @@ function renderCheckerboard(opts: {
     for (let c = 0; c < cols; c++) {
       const x = c * tileW + groutWidth * (c + 1);
       const y = r * tileH + groutWidth * (r + 1);
-      const dimmed = (r + c) % 2 === 1;
+      const darker = c % 2 === 1;
       if (imageUrl) {
         tiles.push(
           <image
@@ -449,21 +671,97 @@ function renderCheckerboard(opts: {
             preserveAspectRatio="xMidYMid slice"
           />,
         );
+        if (darker) {
+          tiles.push(
+            <rect
+              key={`tint-${r}-${c}`}
+              x={x}
+              y={y}
+              width={tileW}
+              height={tileH}
+              fill="#000"
+              opacity={0.18}
+            />,
+          );
+        }
       } else {
         tiles.push(
-          <rect key={`bg-${r}-${c}`} x={x} y={y} width={tileW} height={tileH} fill={placeholderFill} />,
-        );
-      }
-      if (dimmed) {
-        tiles.push(
           <rect
-            key={`tint-${r}-${c}`}
+            key={`bg-${r}-${c}`}
             x={x}
             y={y}
             width={tileW}
             height={tileH}
-            fill={groutFill}
-            opacity={0.35}
+            fill={darker ? "#9a958a" : placeholderFill}
+          />,
+        );
+      }
+    }
+  }
+  return (
+    <svg
+      viewBox={`0 0 ${totalW} ${totalH}`}
+      className="pattern-preview"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <rect x={0} y={0} width={totalW} height={totalH} fill={groutFill} />
+      {tiles}
+    </svg>
+  );
+}
+
+function renderRandomRotation(opts: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+  tileWidth: number;
+  aspect: number;
+}) {
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect } = opts;
+  // "6x6 set random, all vertical" — same square-ish tile per cell, but each
+  // cell is rotated by one of {0, 90, 180, 270}° based on a deterministic
+  // pseudo-random seed so layouts are reproducible.
+  const side = Math.min(tileWidth, tileWidth / aspect) * 1.1;
+  const groutWidth = 2;
+  const totalW = cols * side + groutWidth * (cols + 1);
+  const totalH = rows * side + groutWidth * (rows + 1);
+
+  const tiles: React.ReactElement[] = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const x = c * side + groutWidth * (c + 1);
+      const y = r * side + groutWidth * (r + 1);
+      // Deterministic pseudo-randomization — same seed always picks the
+      // same rotation, so the layout matches the PDF.
+      const seed = (r * 31 + c * 17 + r * c) % 4;
+      const rot = seed * 90;
+      const cx = x + side / 2;
+      const cy = y + side / 2;
+      if (imageUrl) {
+        tiles.push(
+          <image
+            key={`r-${r}-${c}`}
+            href={imageUrl}
+            x={x}
+            y={y}
+            width={side}
+            height={side}
+            transform={`rotate(${rot} ${cx} ${cy})`}
+            preserveAspectRatio="xMidYMid slice"
+          />,
+        );
+      } else {
+        tiles.push(
+          <rect
+            key={`r-${r}-${c}`}
+            x={x}
+            y={y}
+            width={side}
+            height={side}
+            fill={placeholderFill}
+            transform={`rotate(${rot} ${cx} ${cy})`}
           />,
         );
       }
@@ -489,23 +787,26 @@ function renderRectangleGrid(opts: {
   rows: number;
   tileWidth: number;
   aspect: number;
-  pattern: string;
+  mode: RenderMode;
   groutWidth: number;
 }) {
-  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect, pattern, groutWidth } = opts;
-  const isVertical = pattern === "set vertical" || pattern === "staggered vertical";
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect, mode, groutWidth } = opts;
+  const isVertical = mode === "straight-vertical" || mode === "staggered-vertical";
   const tileW = isVertical ? tileWidth / aspect : tileWidth;
   const tileH = isVertical ? tileWidth : tileWidth / aspect;
-  const offsetX = pattern === "staggered horizontal" ? tileW / 2 : 0;
-  const offsetY = pattern === "staggered vertical" ? tileH / 2 : 0;
+  // Stagger offset — half-tile for plain staggered, ~1/3 tile for the
+  // 30/70 asymmetric variant Tamara uses (where each row offsets by 30%).
+  const offsetFraction = mode === "30-70" ? 0.3 : 0.5;
+  const offsetX = mode === "staggered-horizontal" || mode === "30-70" ? tileW * offsetFraction : 0;
+  const offsetY = mode === "staggered-vertical" ? tileH * 0.5 : 0;
   const totalW = cols * tileW + groutWidth * (cols + 1);
   const totalH = rows * tileH + groutWidth * (rows + 1);
 
   const tiles: React.ReactElement[] = [];
   for (let r = 0; r < rows; r++) {
-    const rowOffsetX = pattern === "staggered horizontal" ? (r % 2) * offsetX : 0;
+    const rowOffsetX = (mode === "staggered-horizontal" || mode === "30-70") ? (r % 2) * offsetX : 0;
     for (let c = 0; c < cols; c++) {
-      const colOffsetY = pattern === "staggered vertical" ? (c % 2) * offsetY : 0;
+      const colOffsetY = mode === "staggered-vertical" ? (c % 2) * offsetY : 0;
       const x = c * tileW + groutWidth * (c + 1) + rowOffsetX;
       const y = r * tileH + groutWidth * (r + 1) + colOffsetY;
       if (x >= totalW || y >= totalH) continue;
