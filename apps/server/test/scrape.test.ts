@@ -407,3 +407,188 @@ describe("americanOleanScraper", () => {
     expect(opts.imageSelectors.length).toBeGreaterThan(0);
   });
 });
+
+describe("floridaTileScraper", () => {
+  beforeEach(async () => {
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    vi.mocked(mod.fetchProductImagePlaywright).mockClear();
+  });
+
+  it("findScraper resolves the Florida Tile adapter by exact brand", async () => {
+    const { findScraper } = await import("../src/services/scrapers/index.js");
+    const s = findScraper("Florida Tile");
+    expect(s).not.toBeNull();
+    expect(s!.brand).toBe("Florida Tile");
+  });
+
+  it("matches 'Florida Tile' case-insensitively but not unrelated 'Florida ...' brands", async () => {
+    const { floridaTileScraper } = await import(
+      "../src/services/scrapers/floridaTile.js"
+    );
+    expect(floridaTileScraper.matches("Florida Tile")).toBe(true);
+    expect(floridaTileScraper.matches("florida tile")).toBe(true);
+    expect(floridaTileScraper.matches("FLORIDA TILE")).toBe(true);
+    expect(floridaTileScraper.matches(" Florida Tile ")).toBe(true);
+    // Legacy vendor-as-brand strings normalized away in bb058e5 — must NOT match.
+    expect(floridaTileScraper.matches("Florida Ainslee")).toBe(false);
+    expect(floridaTileScraper.matches("Florida")).toBe(false);
+    // Sanity: don't bleed into sibling brands.
+    expect(floridaTileScraper.matches("Daltile")).toBe(false);
+    expect(floridaTileScraper.matches("Marazzi")).toBe(false);
+  });
+
+  it("scrape() builds a floridatile.com /product-search/ URL with the shape-first query and a /products/ link selector", async () => {
+    const { floridaTileScraper } = await import(
+      "../src/services/scrapers/floridaTile.js"
+    );
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    const fetchMock = vi.mocked(mod.fetchProductImagePlaywright);
+
+    const result = await floridaTileScraper.scrape({
+      brand: "Florida Tile",
+      sku: null,
+      style: "Ainslee Park",
+      color: "Calacatta Gold",
+      notes: "12x24 polished",
+    });
+
+    expect(result).not.toBeNull();
+    expect(result!.imageBuffer.length).toBeGreaterThan(0);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const opts = fetchMock.mock.calls[0]![0];
+    expect(
+      opts.searchUrl.startsWith("https://floridatile.com/product-search/?keyword="),
+    ).toBe(true);
+    // Shape (rectangle from 12x24) leads the query.
+    expect(decodeURIComponent(opts.searchUrl)).toContain("rectangle");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Ainslee Park");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Calacatta Gold");
+    // /products/<slug>/ is the canonical collection-detail URL.
+    expect(opts.productLinkSelector).toContain("/products/");
+    expect(opts.imageSelectors.length).toBeGreaterThan(0);
+  });
+});
+
+describe("lungarnoScraper", () => {
+  beforeEach(async () => {
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    vi.mocked(mod.fetchProductImagePlaywright).mockClear();
+  });
+
+  it("findScraper resolves the Lungarno adapter by exact brand", async () => {
+    const { findScraper } = await import("../src/services/scrapers/index.js");
+    const s = findScraper("Lungarno");
+    expect(s).not.toBeNull();
+    expect(s!.brand).toBe("Lungarno");
+  });
+
+  it("matches 'Lungarno' on word boundary, not arbitrary Italian-named brands", async () => {
+    const { lungarnoScraper } = await import(
+      "../src/services/scrapers/lungarno.js"
+    );
+    expect(lungarnoScraper.matches("Lungarno")).toBe(true);
+    expect(lungarnoScraper.matches("lungarno")).toBe(true);
+    expect(lungarnoScraper.matches("LUNGARNO")).toBe(true);
+    expect(lungarnoScraper.matches(" Lungarno ")).toBe(true);
+    expect(lungarnoScraper.matches("Lungarno Ceramics")).toBe(true);
+    // Sanity: don't bleed into other Italian-sounding tile brands.
+    expect(lungarnoScraper.matches("Marazzi")).toBe(false);
+    expect(lungarnoScraper.matches("Ragno")).toBe(false);
+    expect(lungarnoScraper.matches("Sartoria")).toBe(false);
+    // And not a substring match on a prefix.
+    expect(lungarnoScraper.matches("Lungarnoid")).toBe(false);
+  });
+
+  it("scrape() builds a thelungarno.com ?s= search URL with the shape-first query", async () => {
+    const { lungarnoScraper } = await import(
+      "../src/services/scrapers/lungarno.js"
+    );
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    const fetchMock = vi.mocked(mod.fetchProductImagePlaywright);
+
+    const result = await lungarnoScraper.scrape({
+      brand: "Lungarno",
+      sku: null,
+      style: "Zellige Classique",
+      color: "Bone",
+      notes: "subway 2x6",
+    });
+
+    expect(result).not.toBeNull();
+    expect(result!.imageBuffer.length).toBeGreaterThan(0);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const opts = fetchMock.mock.calls[0]![0];
+    expect(opts.searchUrl.startsWith("https://thelungarno.com/?s=")).toBe(true);
+    // Subway is a named shape — it must lead the query.
+    expect(decodeURIComponent(opts.searchUrl)).toContain("subway");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Zellige Classique");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Bone");
+    expect(opts.imageSelectors.length).toBeGreaterThan(0);
+  });
+});
+
+describe("marbleSystemsScraper", () => {
+  beforeEach(async () => {
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    vi.mocked(mod.fetchProductImagePlaywright).mockClear();
+  });
+
+  it("findScraper resolves the Marble Systems adapter by exact brand", async () => {
+    const { findScraper } = await import("../src/services/scrapers/index.js");
+    const s = findScraper("Marble Systems");
+    expect(s).not.toBeNull();
+    expect(s!.brand).toBe("Marble Systems");
+  });
+
+  it("requires both 'marble' and 'systems' — never matches either word alone", async () => {
+    const { marbleSystemsScraper } = await import(
+      "../src/services/scrapers/marbleSystems.js"
+    );
+    expect(marbleSystemsScraper.matches("Marble Systems")).toBe(true);
+    expect(marbleSystemsScraper.matches("marble systems")).toBe(true);
+    expect(marbleSystemsScraper.matches("MARBLE SYSTEMS")).toBe(true);
+    expect(marbleSystemsScraper.matches(" Marble  Systems ")).toBe(true);
+    // The whole point of the tight matcher: must NOT match "marble" or
+    // "systems" in isolation, nor unrelated vendors using either word.
+    expect(marbleSystemsScraper.matches("Marble")).toBe(false);
+    expect(marbleSystemsScraper.matches("Systems")).toBe(false);
+    expect(marbleSystemsScraper.matches("Italian Marble")).toBe(false);
+    expect(marbleSystemsScraper.matches("Sonoma Systems")).toBe(false);
+    // Sanity: don't bleed into other brands.
+    expect(marbleSystemsScraper.matches("Daltile")).toBe(false);
+    expect(marbleSystemsScraper.matches("Marazzi")).toBe(false);
+  });
+
+  it("scrape() builds a marblesystems.com ?s= search URL with the shape-first query and a /product/ link selector", async () => {
+    const { marbleSystemsScraper } = await import(
+      "../src/services/scrapers/marbleSystems.js"
+    );
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    const fetchMock = vi.mocked(mod.fetchProductImagePlaywright);
+
+    const result = await marbleSystemsScraper.scrape({
+      brand: "Marble Systems",
+      sku: null,
+      style: "Belvedere",
+      color: "Beach",
+      notes: "12x24",
+    });
+
+    expect(result).not.toBeNull();
+    expect(result!.imageBuffer.length).toBeGreaterThan(0);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const opts = fetchMock.mock.calls[0]![0];
+    expect(opts.searchUrl.startsWith("https://www.marblesystems.com/?s=")).toBe(
+      true,
+    );
+    // Shape (rectangle from 12x24) leads the query.
+    expect(decodeURIComponent(opts.searchUrl)).toContain("rectangle");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Belvedere");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Beach");
+    // Singular /product/<slug>/ is the canonical detail URL.
+    expect(opts.productLinkSelector).toContain("/product/");
+    // But it should NOT navigate to /products/ (plural) — that's an unrelated path.
+    expect(opts.productLinkSelector).not.toContain("/products/");
+    expect(opts.imageSelectors.length).toBeGreaterThan(0);
+  });
+});
