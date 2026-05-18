@@ -1,16 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { TRADE_KINDS } from "@custom-homes/shared";
+import { TRADE_KINDS, type TradeKind } from "@custom-homes/shared";
 import { api, type ProjectDetailResponse } from "../lib/api.js";
-
-const HIDE_KEYS = new Set([
-  "id",
-  "room_id",
-  "created_at",
-  "synced_at",
-  "external_id",
-  "external_source",
-]);
 
 export function ProjectDetail() {
   const { id } = useParams<{ id: string }>();
@@ -25,6 +16,27 @@ export function ProjectDetail() {
       .catch((err: Error) => setError(err.message));
   }, [id]);
 
+  const summary = useMemo(() => {
+    if (!data) return null;
+    const counts: Record<TradeKind, number> = {
+      tile: 0,
+      paint: 0,
+      carpet: 0,
+      hardwood: 0,
+      cabinet: 0,
+      countertop: 0,
+    };
+    let total = 0;
+    for (const room of data.rooms) {
+      for (const trade of TRADE_KINDS) {
+        const n = room.entries_by_trade[trade]?.length ?? 0;
+        counts[trade] += n;
+        total += n;
+      }
+    }
+    return { counts, total };
+  }, [data]);
+
   if (error)
     return (
       <>
@@ -32,7 +44,17 @@ export function ProjectDetail() {
         <div className="errors">Failed to load: {error}</div>
       </>
     );
-  if (!data) return <p>Loading…</p>;
+  if (!data || !summary)
+    return (
+      <>
+        <h1>Loading…</h1>
+        <div className="project-detail-loading">
+          <div className="skeleton skeleton-line skeleton-line-lg" />
+          <div className="skeleton skeleton-line" />
+          <div className="skeleton skeleton-block" />
+        </div>
+      </>
+    );
 
   const { project, rooms } = data;
 
@@ -41,62 +63,109 @@ export function ProjectDetail() {
       <p>
         <Link to="/projects">← All projects</Link>
       </p>
-      <h1>{project.name}</h1>
-      {project.address && <p>{project.address}</p>}
-      <p>
-        <Link to={`/selections/${project.id}`}>Edit selections →</Link>
-      </p>
-      {project.external_id && (
-        <p>
-          <code>
-            {project.external_source}:{project.external_id}
-          </code>
-        </p>
-      )}
+      <div className="project-detail-header">
+        <div>
+          <h1>{project.name}</h1>
+          {project.address && <p className="subtle">{project.address}</p>}
+          {project.external_id && (
+            <p className="muted">
+              <code>
+                {project.external_source}:{project.external_id}
+              </code>
+            </p>
+          )}
+        </div>
+        <Link to={`/selections/${project.id}`} className="primary-link">
+          Open in editor →
+        </Link>
+      </div>
 
-      {rooms.map((room) => (
-        <div key={room.id} className="room-block">
-          <h2>{room.room_name}</h2>
-          {TRADE_KINDS.map((trade) => {
-            const entries = room.entries_by_trade[trade] ?? [];
-            if (entries.length === 0) return null;
-            const cols = collectColumns(entries);
-            return (
-              <div key={trade} className="trade-section">
-                <h3>{trade}</h3>
-                <table className="trade-table">
-                  <thead>
-                    <tr>
-                      {cols.map((c) => (
-                        <th key={c}>{c}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {entries.map((e, i) => (
-                      <tr key={i}>
+      <div className="summary-tiles">
+        <div className="summary-tile">
+          <div className="summary-tile-value">{rooms.length}</div>
+          <div className="summary-tile-label">Rooms</div>
+        </div>
+        <div className="summary-tile">
+          <div className="summary-tile-value">{summary.total}</div>
+          <div className="summary-tile-label">Total selections</div>
+        </div>
+        {TRADE_KINDS.filter((t) => summary.counts[t] > 0).map((t) => (
+          <div key={t} className="summary-tile">
+            <div className="summary-tile-value">{summary.counts[t]}</div>
+            <div className="summary-tile-label">{t}</div>
+          </div>
+        ))}
+      </div>
+
+      {rooms.map((room) => {
+        const roomTotal = TRADE_KINDS.reduce(
+          (n, t) => n + (room.entries_by_trade[t]?.length ?? 0),
+          0,
+        );
+        return (
+          <div key={room.id} className="room-block">
+            <div className="room-header">
+              <h2>{room.room_name}</h2>
+              <span className="room-count">
+                {roomTotal} {roomTotal === 1 ? "selection" : "selections"}
+              </span>
+            </div>
+            {TRADE_KINDS.map((trade) => {
+              const entries = room.entries_by_trade[trade] ?? [];
+              if (entries.length === 0) return null;
+              const cols = collectColumns(entries);
+              return (
+                <div key={trade} className="trade-section">
+                  <h3>{trade}</h3>
+                  <table className="trade-table">
+                    <thead>
+                      <tr>
                         {cols.map((c) => (
-                          <td key={c}>{formatCell(e[c])}</td>
+                          <th key={c}>{c.replace(/_/g, " ")}</th>
                         ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            );
-          })}
-        </div>
-      ))}
+                    </thead>
+                    <tbody>
+                      {entries.map((e, i) => (
+                        <tr key={i}>
+                          {cols.map((c) => (
+                            <td key={c}>{formatCell(e[c])}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
     </>
   );
 }
+
+const HIDE_KEYS = new Set([
+  "id",
+  "room_id",
+  "created_at",
+  "synced_at",
+  "external_id",
+  "external_source",
+  "trade",
+  "is_new_entry",
+  "status",
+  "allowance",
+  "deadline",
+  "image_url",
+]);
 
 function collectColumns(rows: Array<Record<string, unknown>>): string[] {
   const set = new Set<string>();
   for (const r of rows) {
     for (const k of Object.keys(r)) {
       if (HIDE_KEYS.has(k)) continue;
-      if (r[k] === null || r[k] === undefined) continue;
+      if (r[k] === null || r[k] === undefined || r[k] === "") continue;
       set.add(k);
     }
   }

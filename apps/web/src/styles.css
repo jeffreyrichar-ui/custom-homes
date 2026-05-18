@@ -798,3 +798,123 @@ button.link.experimental {
   margin-top: var(--sp-4);
 }
 .add-room-form .ac-input { width: 280px; }
+
+/* -------- Project detail header -------- */
+
+.project-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-5);
+  flex-wrap: wrap;
+}
+.project-detail-header h1 { margin: 0 0 var(--sp-1); }
+.project-detail-header > div { flex: 1; }
+
+.summary-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-5);
+}
+.summary-tile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-3) var(--sp-4);
+  transition: border-color var(--t-fast);
+}
+.summary-tile:hover { border-color: var(--border-strong); }
+.summary-tile-value {
+  font-family: var(--font-serif);
+  font-size: var(--fs-2xl);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.summary-tile-label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: var(--sp-2);
+}
+
+/* -------- Loading skeletons -------- */
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 0%,
+    var(--border) 50%,
+    var(--surface-2) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: var(--r);
+  animation: skel 1.4s linear infinite;
+}
+.skeleton-line {
+  height: 14px;
+  margin-bottom: var(--sp-2);
+}
+.skeleton-line-lg { height: 28px; width: 60%; }
+.skeleton-block {
+  height: 120px;
+  margin-top: var(--sp-4);
+}
+.project-detail-loading {
+  padding: var(--sp-4);
+  max-width: 600px;
+}
+
+@keyframes skel {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+/* -------- Toasts -------- */
+
+.toast-stack {
+  position: fixed;
+  bottom: var(--sp-5);
+  right: var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  z-index: 1000;
+  pointer-events: none;
+}
+.toast {
+  background: var(--text);
+  color: var(--bg);
+  padding: 10px 16px 10px 14px;
+  border-radius: var(--r);
+  font-size: var(--fs-sm);
+  box-shadow: var(--shadow-3);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 240px;
+  max-width: 360px;
+  pointer-events: auto;
+  animation: toast-in 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+.toast-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 8px;
+}
+.toast-success .toast-dot { background: #6ec45f; }
+.toast-error { background: var(--danger); }
+.toast-error .toast-dot { background: white; opacity: 0.85; }
+.toast-info .toast-dot { background: #7eb6e6; }
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}

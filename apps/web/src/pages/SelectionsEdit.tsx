@@ -6,6 +6,7 @@ import { TradeForm } from "../components/TradeForm.js";
 import { PdfActions } from "../components/PdfActions.js";
 import { EntryCard } from "../components/EntryCard.js";
 import { ShowerView } from "../components/ShowerView.js";
+import { useToast } from "../lib/toast.js";
 
 type EditingState = {
   roomId: string;
@@ -23,6 +24,7 @@ export function SelectionsEdit() {
   const [pendingRoomName, setPendingRoomName] = useState("");
   const [editing, setEditing] = useState<EditingState>(null);
   const [viewMode, setViewMode] = useState<Record<string, "cards" | "shower">>({});
+  const { notify } = useToast();
 
   const refresh = () => {
     if (!id) return;
@@ -53,22 +55,40 @@ export function SelectionsEdit() {
       setPendingRoomName("");
       setShowAddRoom(false);
       refresh();
+      notify("success", `Added room "${pendingRoomName.trim()}"`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
+      notify("error", err instanceof Error ? err.message : String(err));
     }
   };
 
   const handleSaveNewEntry = async (roomId: string, entry: Record<string, unknown>) => {
-    await api.saveEntry(roomId, entry);
-    setTradePicker((s) => ({ ...s, [roomId]: null }));
-    refresh();
+    try {
+      const res = await api.saveEntry(roomId, entry);
+      setTradePicker((s) => ({ ...s, [roomId]: null }));
+      refresh();
+      notify(
+        "success",
+        res.is_new_entry
+          ? `Saved · tagged as new combination`
+          : `Saved`,
+      );
+    } catch (err) {
+      notify("error", err instanceof Error ? err.message : String(err));
+      throw err;
+    }
   };
 
   const handleSaveEdit = async (entry: Record<string, unknown>) => {
     if (!editing) return;
-    await api.updateEntry(editing.trade, editing.entry.id as string, entry);
-    setEditing(null);
-    refresh();
+    try {
+      await api.updateEntry(editing.trade, editing.entry.id as string, entry);
+      setEditing(null);
+      refresh();
+      notify("success", "Entry updated");
+    } catch (err) {
+      notify("error", err instanceof Error ? err.message : String(err));
+      throw err;
+    }
   };
 
   const handleDuplicate = async (
@@ -81,8 +101,14 @@ export function SelectionsEdit() {
       if (["id", "room_id", "created_at", "synced_at", "external_id", "external_source"].includes(k)) continue;
       payload[k] = sourceEntry[k];
     }
-    await api.saveEntry(targetRoomId, payload);
-    refresh();
+    try {
+      await api.saveEntry(targetRoomId, payload);
+      refresh();
+      const targetRoom = rooms.find((r) => r.id === targetRoomId);
+      notify("success", `Duplicated to ${targetRoom?.room_name ?? "room"}`);
+    } catch (err) {
+      notify("error", err instanceof Error ? err.message : String(err));
+    }
   };
 
   const handleDelete = async (trade: string, entryId: string) => {
@@ -90,8 +116,9 @@ export function SelectionsEdit() {
     try {
       await api.deleteEntry(trade, entryId);
       refresh();
+      notify("success", "Entry deleted");
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
+      notify("error", err instanceof Error ? err.message : String(err));
     }
   };
 
