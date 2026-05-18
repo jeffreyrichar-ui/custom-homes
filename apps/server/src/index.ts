@@ -10,6 +10,7 @@ import { healthRouter } from "./routes/health.js";
 import { makeProjectsRouter } from "./routes/projects.js";
 import { makeAdminImportRouter } from "./routes/adminImport.js";
 import { makeSuggestRouter } from "./routes/suggest.js";
+import { makeStatsRouter } from "./routes/stats.js";
 import { makeSelectionsRouter } from "./routes/selections.js";
 import { makeManufacturerImagesRouter } from "./routes/manufacturerImages.js";
 import { makePdfsRouter, pdfServeConfig } from "./routes/pdfs.js";
@@ -47,6 +48,7 @@ export async function buildApp() {
   // Read-only endpoints: open (selections form + admin import call /api/projects)
   app.use("/api/projects", makeProjectsRouter(getDbi));
   app.use("/api/suggest", makeSuggestRouter(getDbi));
+  app.use("/api/stats", makeStatsRouter(getDbi));
 
   // Auth-gated write endpoints (replaces former x-admin-token; legacy token still accepted)
   app.use("/api/admin", authMiddleware, makeAdminImportRouter(getDbi));

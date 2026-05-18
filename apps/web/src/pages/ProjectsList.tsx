@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, type ProjectSummary } from "../lib/api.js";
+import { StatsStrip } from "../components/StatsStrip.js";
 
 type Sort = "recent" | "name" | "rooms";
 
@@ -64,6 +65,8 @@ export function ProjectsList() {
           + New project
         </Link>
       </div>
+
+      <StatsStrip />
 
       {projects.length === 0 ? (
         <div className="empty-state">

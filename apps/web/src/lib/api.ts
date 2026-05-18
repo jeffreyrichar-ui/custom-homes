@@ -73,6 +73,15 @@ export type ProjectDetailResponse = {
 
 export const api = {
   listProjects: () => request<{ projects: ProjectSummary[] }>("/api/projects"),
+  getStats: () =>
+    request<{
+      projects: number;
+      rooms: number;
+      entries: Record<string, number>;
+      top_brands: { brand: string; count: number }[];
+      top_vendors: { vendor: string; count: number }[];
+      novel_entries: number;
+    }>("/api/stats"),
   getProject: (id: string) =>
     request<ProjectDetailResponse>(`/api/projects/${id}`),
   importDryRun: (payload: unknown) =>
