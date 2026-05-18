@@ -16,6 +16,7 @@
     "db:dump-image-prompts": "pnpm --filter @custom-homes/server db:dump-image-prompts",
     "db:import-tile-images": "pnpm --filter @custom-homes/server db:import-tile-images",
     "db:normalize-brands": "pnpm --filter @custom-homes/server db:normalize-brands",
+    "db:audit-brands": "pnpm --filter @custom-homes/server db:audit-brands",
     "db:test-scraper": "pnpm --filter @custom-homes/server db:test-scraper"
   },
   "devDependencies": {

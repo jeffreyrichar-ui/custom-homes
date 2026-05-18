@@ -18,6 +18,7 @@
     "db:dump-image-prompts": "tsx src/db/dumpImagePrompts.ts",
     "db:import-tile-images": "tsx src/db/importTileImages.ts",
     "db:normalize-brands": "tsx src/db/normalizeSeedBrands.ts",
+    "db:audit-brands": "tsx src/db/auditBrands.ts",
     "db:test-scraper": "tsx src/db/testScraper.ts"
   },
   "dependencies": {
