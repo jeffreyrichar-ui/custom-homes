@@ -38,3 +38,6 @@ apps/server/pdfs/
 
 # Puppeteer-managed Chromium download
 .cache/puppeteer/
+
+# Claude Code session metadata (worktrees etc.)
+.claude/
