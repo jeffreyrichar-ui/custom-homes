@@ -30,3 +30,6 @@ jobs:
 
       - name: Test server
         run: pnpm --filter @custom-homes/server test
+
+      - name: Test web
+        run: pnpm --filter @custom-homes/web test
