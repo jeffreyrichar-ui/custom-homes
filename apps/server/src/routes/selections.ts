@@ -10,6 +10,11 @@ import type { Dbi } from "../db/dbi.js";
 import { tradeMeta, isTradeKind } from "../lib/tradeRegistry.js";
 import type { ScrapeQueue } from "../services/scrapeQueue.js";
 
+// Columns we never want to copy across when deep-cloning entry rows: the
+// primary key, the foreign key to room (we're assigning a new one), and the
+// timestamp (let the DB default re-stamp it for the new row).
+const ENTRY_COPY_SKIP = new Set(["id", "room_id", "created_at"]);
+
 async function detectNovel(
   dbi: Dbi,
   trade: TradeKind,
@@ -58,6 +63,170 @@ export function makeSelectionsRouter(
         [id, name, address || null],
       );
       res.status(201).json({ id, name, address });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  // Rename / update address on a project
+  router.patch("/projects/:projectId", async (req, res, next) => {
+    try {
+      const dbi = getDbi();
+      const body = (req.body ?? {}) as { name?: unknown; address?: unknown };
+      const hasName = Object.prototype.hasOwnProperty.call(body, "name");
+      const hasAddress = Object.prototype.hasOwnProperty.call(body, "address");
+
+      let name: string | undefined;
+      if (hasName) {
+        const raw = typeof body.name === "string" ? body.name.trim() : "";
+        if (!raw) {
+          res.status(400).json({ error: "name must not be empty" });
+          return;
+        }
+        name = raw;
+      }
+
+      let address: string | null | undefined;
+      if (hasAddress) {
+        if (body.address === null) {
+          address = null;
+        } else if (typeof body.address === "string") {
+          const trimmed = body.address.trim();
+          address = trimmed === "" ? null : trimmed;
+        } else {
+          res.status(400).json({ error: "address must be a string or null" });
+          return;
+        }
+      }
+
+      const existing = await dbi.query<{ id: string }>(
+        `SELECT id FROM projects WHERE id = $1`,
+        [req.params.projectId],
+      );
+      if (existing.length === 0) {
+        res.status(404).json({ error: "project not found" });
+        return;
+      }
+
+      const sets: string[] = [];
+      const values: unknown[] = [];
+      if (name !== undefined) {
+        values.push(name);
+        sets.push(`name = $${values.length}`);
+      }
+      if (address !== undefined) {
+        values.push(address);
+        sets.push(`address = $${values.length}`);
+      }
+      if (sets.length > 0) {
+        values.push(req.params.projectId);
+        await dbi.exec(
+          `UPDATE projects SET ${sets.join(", ")} WHERE id = $${values.length}`,
+          values,
+        );
+      }
+
+      const rows = await dbi.query<{
+        id: string;
+        name: string;
+        address: string | null;
+        created_at: string;
+        external_id: string | null;
+        external_source: string | null;
+      }>(
+        `SELECT id, name, address, created_at, external_id, external_source
+         FROM projects WHERE id = $1`,
+        [req.params.projectId],
+      );
+      res.json(rows[0]);
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  // Delete a project. Rooms + entries cascade via FK ON DELETE CASCADE.
+  router.delete("/projects/:projectId", async (req, res, next) => {
+    try {
+      const dbi = getDbi();
+      const existing = await dbi.query<{ id: string }>(
+        `SELECT id FROM projects WHERE id = $1`,
+        [req.params.projectId],
+      );
+      if (existing.length === 0) {
+        res.status(404).json({ error: "project not found" });
+        return;
+      }
+      await dbi.exec(`DELETE FROM projects WHERE id = $1`, [req.params.projectId]);
+      res.status(204).end();
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  // Deep-clone a project: new project row + rooms + all trade entries.
+  router.post("/projects/:projectId/duplicate", async (req, res, next) => {
+    try {
+      const dbi = getDbi();
+      const name = typeof req.body?.name === "string" ? req.body.name.trim() : "";
+      if (!name) {
+        res.status(400).json({ error: "name is required" });
+        return;
+      }
+      const source = await dbi.query<{ id: string }>(
+        `SELECT id FROM projects WHERE id = $1`,
+        [req.params.projectId],
+      );
+      if (source.length === 0) {
+        res.status(404).json({ error: "project not found" });
+        return;
+      }
+
+      const newProjectId = await dbi.withTransaction(async (tx) => {
+        const projectId = randomUUID();
+        await tx.exec(
+          `INSERT INTO projects (id, name, address) VALUES ($1, $2, $3)`,
+          [projectId, name, null],
+        );
+
+        const sourceRooms = await tx.query<{ id: string; room_name: string }>(
+          `SELECT id, room_name FROM rooms WHERE project_id = $1`,
+          [req.params.projectId],
+        );
+
+        for (const room of sourceRooms) {
+          const newRoomId = randomUUID();
+          await tx.exec(
+            `INSERT INTO rooms (id, project_id, room_name) VALUES ($1, $2, $3)`,
+            [newRoomId, projectId, room.room_name],
+          );
+
+          for (const trade of TRADE_KINDS) {
+            const table = ENTRY_TABLE_BY_TRADE[trade];
+            const sourceEntries = await tx.query<Record<string, unknown>>(
+              `SELECT * FROM ${table} WHERE room_id = $1`,
+              [room.id],
+            );
+            for (const src of sourceEntries) {
+              const cols: string[] = ["id", "room_id"];
+              const vals: unknown[] = [randomUUID(), newRoomId];
+              for (const key of Object.keys(src)) {
+                if (ENTRY_COPY_SKIP.has(key)) continue;
+                cols.push(key);
+                vals.push(src[key]);
+              }
+              const placeholders = cols.map((_, i) => `$${i + 1}`).join(", ");
+              await tx.exec(
+                `INSERT INTO ${table} (${cols.join(", ")}) VALUES (${placeholders})`,
+                vals,
+              );
+            }
+          }
+        }
+
+        return projectId;
+      });
+
+      res.status(201).json({ id: newProjectId, name });
     } catch (err) {
       next(err);
     }
