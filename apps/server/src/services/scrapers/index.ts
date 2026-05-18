@@ -3,6 +3,7 @@ import { daltileScraper } from "./daltile.js";
 import { emserScraper } from "./emser.js";
 import { marazziScraper } from "./marazzi.js";
 import { msiScraper } from "./msi.js";
+import { portobelloScraper } from "./portobello.js";
 import { schluterScraper } from "./schluter.js";
 import type { Scraper } from "./types.js";
 
@@ -10,9 +11,9 @@ export * from "./types.js";
 export { closeScraperBrowser } from "./playwrightFetch.js";
 
 /**
- * Six brand adapters covering ~70% of bath/shower tile entries in the
- * seed data. Each uses Playwright (sharing the Chromium installed for
- * Phase 5 PDF generation) to render the manufacturer's search page,
+ * Seven brand adapters covering the bulk of bath/shower tile entries in
+ * the seed data. Each uses Playwright (sharing the Chromium installed
+ * for Phase 5 PDF generation) to render the manufacturer's search page,
  * navigate to the first product result, and resolve the product image
  * via brand-specific CSS selectors with og:image fallback.
  *
@@ -28,6 +29,7 @@ const SCRAPERS: Scraper[] = [
   emserScraper,
   marazziScraper,
   msiScraper,
+  portobelloScraper,
   schluterScraper,
 ];
 

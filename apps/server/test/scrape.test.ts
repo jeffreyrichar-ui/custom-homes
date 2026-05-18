@@ -6,7 +6,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import { migrate } from "drizzle-orm/better-sqlite3/migrator";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { AppDb } from "../src/db/client.js";
 import { makeDbi, type Dbi } from "../src/db/dbi.js";
 import * as sqliteSchema from "../src/db/schema.sqlite.js";
@@ -16,6 +16,19 @@ import {
   type ImageStorage,
 } from "../src/services/imageStorage.js";
 import { makeScrapeQueue } from "../src/services/scrapeQueue.js";
+
+// Mock the playwright helper at module scope so every Scraper that depends
+// on it picks up the fake. We only assert on the Portobello-specific
+// invocation; other tests in this file never reach a real scraper (they
+// use "FakeBrandThatDoesNotExist"), so the mock is inert for them.
+vi.mock("../src/services/scrapers/playwrightFetch.js", () => ({
+  fetchProductImagePlaywright: vi.fn(async () => ({
+    imageBuffer: Buffer.from([0xff, 0xd8, 0xff, 0xe0]),
+    contentType: "image/jpeg",
+    sourceUrl: "https://www.portobelloamerica.com/produto/borghini-classico/",
+  })),
+  closeScraperBrowser: vi.fn(async () => {}),
+}));
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const MIGRATIONS = path.resolve(__dirname, "../src/db/migrations/sqlite");
@@ -200,5 +213,76 @@ describe("makeLocalStorage()", () => {
     const putUrl = await storage.put("hello-world", Buffer.from("hi"), "image/png");
     const found = await storage.urlFor("hello-world");
     expect(found).toBe(putUrl);
+  });
+});
+
+describe("portobelloScraper", () => {
+  beforeEach(async () => {
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    vi.mocked(mod.fetchProductImagePlaywright).mockClear();
+  });
+
+  it("findScraper resolves the Portobello adapter by exact brand", async () => {
+    const { findScraper } = await import("../src/services/scrapers/index.js");
+    const s = findScraper("Portobello");
+    expect(s).not.toBeNull();
+    expect(s!.brand).toBe("Portobello");
+  });
+
+  it("matches Portobello brand variants case-insensitively and tolerates a common misspelling", async () => {
+    const { portobelloScraper } = await import("../src/services/scrapers/portobello.js");
+    expect(portobelloScraper.matches("Portobello")).toBe(true);
+    expect(portobelloScraper.matches("portobello")).toBe(true);
+    expect(portobelloScraper.matches("PORTOBELLO")).toBe(true);
+    expect(portobelloScraper.matches("Portobello America")).toBe(true);
+    // Single-l misspelling occasionally appears in legacy spreadsheets.
+    expect(portobelloScraper.matches("Portobelo")).toBe(true);
+    // Sanity: must not match unrelated brands.
+    expect(portobelloScraper.matches("Daltile")).toBe(false);
+    expect(portobelloScraper.matches("Marazzi")).toBe(false);
+  });
+
+  it("scrape() returns null when there is nothing to query on", async () => {
+    const { portobelloScraper } = await import("../src/services/scrapers/portobello.js");
+    const result = await portobelloScraper.scrape({
+      brand: "Portobello",
+      sku: null,
+      style: null,
+      color: null,
+      size: null,
+      notes: null,
+    });
+    expect(result).toBeNull();
+  });
+
+  it("scrape() hits the WordPress ?s= search URL with the encoded query and returns the mocked image", async () => {
+    const { portobelloScraper } = await import("../src/services/scrapers/portobello.js");
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    const fetchMock = vi.mocked(mod.fetchProductImagePlaywright);
+
+    const result = await portobelloScraper.scrape({
+      brand: "Portobello",
+      sku: null,
+      style: "Borghini Classico",
+      color: "Bucatini",
+      notes: "12x24 polished",
+    });
+
+    expect(result).not.toBeNull();
+    expect(result!.contentType).toBe("image/jpeg");
+    expect(result!.sourceUrl).toContain("portobelloamerica.com/produto/");
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const opts = fetchMock.mock.calls[0]![0];
+    // Search URL is the WordPress default (?s=) on the .com host.
+    expect(opts.searchUrl.startsWith("https://www.portobelloamerica.com/?s=")).toBe(true);
+    // Shape comes first (rectangle inferred from 12x24), then style/color.
+    expect(decodeURIComponent(opts.searchUrl)).toContain("rectangle");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Borghini Classico");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Bucatini");
+    // Singular /produto/ — collection landing pages live at /product-category/.
+    expect(opts.productLinkSelector).toContain("/produto/");
+    expect(Array.isArray(opts.imageSelectors)).toBe(true);
+    expect(opts.imageSelectors.length).toBeGreaterThan(0);
   });
 });
