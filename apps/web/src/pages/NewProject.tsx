@@ -28,8 +28,12 @@ export function NewProject() {
   };
 
   return (
-    <>
-      <h1>New project</h1>
+    <div className="new-project-page">
+      <h1>Start a new project</h1>
+      <p className="subtle">
+        Name it, drop the address, and you'll land on the room editor.
+        You can add rooms and selections from there.
+      </p>
       <form onSubmit={handleSubmit} className="trade-form">
         <div className="trade-form-grid">
           <div className="ac-wrapper">
@@ -61,6 +65,6 @@ export function NewProject() {
           </button>
         </div>
       </form>
-    </>
+    </div>
   );
 }

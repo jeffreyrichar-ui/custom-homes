@@ -242,6 +242,22 @@ button.link.danger { color: var(--danger); }
   text-decoration: none;
   color: white;
 }
+.secondary-link {
+  background: var(--surface);
+  color: var(--text);
+  padding: 7px 13px;
+  border-radius: var(--r);
+  font-weight: 500;
+  font-size: var(--fs-sm);
+  border: 1px solid var(--border-strong);
+  transition: background var(--t-fast), border-color var(--t-fast);
+}
+.secondary-link:hover {
+  background: var(--surface-2);
+  border-color: var(--text-3);
+  text-decoration: none;
+  color: var(--text);
+}
 
 /* -------- Forms -------- */
 
@@ -722,7 +738,27 @@ button.link.experimental {
   border-radius: var(--r-sm);
   margin-bottom: var(--sp-4);
   font-size: var(--fs-sm);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
 }
+.token-banner-ok {
+  background: #eef5e4;
+  border-left-color: var(--success);
+  color: var(--success);
+}
+
+.admin-import-header {
+  margin-bottom: var(--sp-5);
+}
+.admin-import-header h1 { margin: 0 0 var(--sp-2); }
+.admin-import-header p { max-width: 640px; }
+
+.new-project-page {
+  max-width: 720px;
+}
+.new-project-page h1 { margin-bottom: var(--sp-2); }
+.new-project-page .subtle { margin-bottom: var(--sp-5); max-width: 540px; }
 
 /* -------- Auth page -------- */
 
@@ -738,6 +774,24 @@ button.link.experimental {
 .auth-page h1 { margin: 0 0 var(--sp-4); }
 .auth-page .ac-wrapper { margin-bottom: var(--sp-3); }
 .auth-page .button-row { margin-top: var(--sp-5); }
+.auth-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-5);
+}
+.auth-brand-mark {
+  width: 32px;
+  height: 2px;
+  background: var(--primary);
+  display: inline-block;
+}
+.auth-brand-name {
+  font-family: var(--font-serif);
+  font-size: var(--fs-md);
+  letter-spacing: -0.01em;
+  font-weight: 500;
+}
 
 /* -------- Project detail page -------- */
 

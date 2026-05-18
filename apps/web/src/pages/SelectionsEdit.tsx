@@ -127,10 +127,27 @@ export function SelectionsEdit() {
       <p>
         <Link to="/projects">← All projects</Link>
       </p>
-      <h1>{project.name}</h1>
-      {project.address && <p className="subtle">{project.address}</p>}
+      <div className="project-detail-header">
+        <div>
+          <h1>{project.name}</h1>
+          {project.address && <p className="subtle">{project.address}</p>}
+        </div>
+        <Link to={`/projects/${project.id}`} className="secondary-link">
+          View summary
+        </Link>
+      </div>
 
       <PdfActions projectId={project.id} />
+
+      {rooms.length === 0 && !showAddRoom && (
+        <div className="empty-state">
+          <p>No rooms yet.</p>
+          <p>Start with the most important bathroom — usually the master.</p>
+          <button onClick={() => setShowAddRoom(true)} style={{ marginTop: 12 }}>
+            Add the first room
+          </button>
+        </div>
+      )}
 
       {rooms.map((room) => {
         const mode = viewMode[room.id] ?? "cards";

@@ -79,7 +79,16 @@ export function Login({ onLoggedIn }: Props) {
 
   return (
     <div className="auth-page">
-      <h1>{mode === "login" ? "Sign in" : "Create the first user"}</h1>
+      <div className="auth-brand">
+        <span className="auth-brand-mark" />
+        <span className="auth-brand-name">Custom Homes</span>
+      </div>
+      <h1>{mode === "login" ? "Welcome back" : "First-time setup"}</h1>
+      <p className="subtle" style={{ marginTop: -8, marginBottom: 24 }}>
+        {mode === "login"
+          ? "Sign in to access your projects."
+          : "Create the owner account for this workspace."}
+      </p>
       <form onSubmit={mode === "login" ? submitLogin : submitBootstrap}>
         {mode === "bootstrap" && (
           <div className="ac-wrapper">

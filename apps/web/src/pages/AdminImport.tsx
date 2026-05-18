@@ -76,7 +76,14 @@ export function AdminImport() {
 
   return (
     <>
-      <h1>Admin — JSON Import</h1>
+      <div className="admin-import-header">
+        <h1>Import historical projects</h1>
+        <p className="subtle">
+          Paste structured JSON from a past project. <strong>Validate</strong>{" "}
+          runs a dry-run; <strong>Import</strong> commits the rows.
+          Re-importing is idempotent.
+        </p>
+      </div>
 
       {!token && (
         <div className="token-banner">
@@ -96,10 +103,11 @@ export function AdminImport() {
         </div>
       )}
       {token && (
-        <div className="token-banner">
-          Admin token set.{" "}
+        <div className="token-banner token-banner-ok">
+          ✓ Admin token configured.
           <button
-            className="secondary"
+            className="link"
+            style={{ marginLeft: "auto" }}
             onClick={() => {
               clearAdminToken();
               setToken(null);
@@ -109,11 +117,6 @@ export function AdminImport() {
           </button>
         </div>
       )}
-
-      <p>
-        Paste the JSON output from Claude desktop below. Use <strong>Validate</strong>{" "}
-        for a dry-run (no DB writes), then <strong>Import</strong> when ready.
-      </p>
 
       <div className="import-layout">
         <div>
