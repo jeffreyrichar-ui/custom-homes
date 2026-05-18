@@ -6,48 +6,35 @@ import { Icon, type IconName } from "./Icon.js";
 
 type BrandSuggestion = { value: string; count: number };
 
-type Item =
-  | {
-      kind: "project";
-      id: string;
-      label: string;
-      sublabel: string | null;
-      icon: IconName;
-      typeLabel: string;
-    }
-  | {
-      kind: "brand";
-      label: string;
-      sublabel: string | null;
-      icon: IconName;
-      typeLabel: string;
-    };
+type GroupKey = "quick" | "recent" | "pages" | "projects" | "brands";
 
-const RECENT_KEY = "custom-homes:cmdk:recent";
+type Item = {
+  key: string;
+  group: GroupKey;
+  label: string;
+  sublabel: string | null;
+  icon: IconName;
+  typeLabel: string;
+  onSelect: () => void;
+};
+
+const GROUP_LABELS: Record<GroupKey, string> = {
+  quick: "Quick actions",
+  recent: "Recent projects",
+  pages: "Pages",
+  projects: "Projects",
+  brands: "Brands",
+};
+
 const MAX_RECENT = 5;
 const MAX_RESULTS = 20;
 
-function loadRecent(): string[] {
-  try {
-    const raw = window.localStorage.getItem(RECENT_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter((v): v is string => typeof v === "string") : [];
-  } catch {
-    return [];
-  }
-}
-
-function pushRecent(key: string): void {
-  const current = loadRecent().filter((k) => k !== key);
-  current.unshift(key);
-  const trimmed = current.slice(0, MAX_RECENT);
-  try {
-    window.localStorage.setItem(RECENT_KEY, JSON.stringify(trimmed));
-  } catch {
-    /* ignore quota errors */
-  }
-}
+type Page = { label: string; path: string; icon: IconName };
+const PAGES: Page[] = [
+  { label: "Projects", path: "/projects", icon: "list" },
+  { label: "New project", path: "/selections/new", icon: "plus" },
+  { label: "Import", path: "/admin/import", icon: "upload" },
+];
 
 export function CommandBar() {
   const navigate = useNavigate();
@@ -57,7 +44,6 @@ export function CommandBar() {
   const [projects, setProjects] = useState<ProjectSummary[] | null>(null);
   const [brands, setBrands] = useState<BrandSuggestion[] | null>(null);
   const [loading, setLoading] = useState(false);
-  const [recent, setRecent] = useState<string[]>(() => loadRecent());
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const dataLoadedRef = useRef(false);
@@ -96,7 +82,6 @@ export function CommandBar() {
     if (open) {
       setQuery("");
       setHighlight(0);
-      setRecent(loadRecent());
       // Defer focus so the input is mounted
       requestAnimationFrame(() => inputRef.current?.focus());
     }
@@ -112,67 +97,139 @@ export function CommandBar() {
     };
   }, [open]);
 
-  const allItems = useMemo<Item[]>(() => {
-    const out: Item[] = [];
-    if (projects) {
-      for (const p of projects) {
-        out.push({
-          kind: "project",
-          id: p.id,
-          label: p.name,
-          sublabel: p.address ?? null,
-          icon: "grid",
-          typeLabel: "Project",
-        });
-      }
+  const close = useCallback(() => setOpen(false), []);
+
+  const goto = useCallback(
+    (path: string) => {
+      close();
+      navigate(path);
+    },
+    [navigate, close],
+  );
+
+  const signOut = useCallback(async () => {
+    close();
+    try {
+      await api.authLogout();
+    } catch {
+      /* ignore — still navigate to login */
     }
-    if (brands) {
-      for (const b of brands) {
-        out.push({
-          kind: "brand",
-          label: b.value,
-          sublabel: b.count > 0 ? `${b.count} ${b.count === 1 ? "entry" : "entries"}` : null,
-          icon: "image",
-          typeLabel: "Brand",
-        });
-      }
-    }
-    return out;
-  }, [projects, brands]);
+    navigate("/login");
+  }, [navigate, close]);
+
+  // Build searchable project items (used when query is non-empty)
+  const projectItems = useMemo<Item[]>(() => {
+    if (!projects) return [];
+    return projects.map((p) => ({
+      key: `project:${p.id}`,
+      group: "projects",
+      label: p.name,
+      sublabel: p.address ?? null,
+      icon: "grid",
+      typeLabel: "Project",
+      onSelect: () => goto(`/selections/${p.id}`),
+    }));
+  }, [projects, goto]);
+
+  const brandItems = useMemo<Item[]>(() => {
+    if (!brands) return [];
+    return brands.map((b) => ({
+      key: `brand:${b.value}`,
+      group: "brands",
+      label: b.value,
+      sublabel: b.count > 0 ? `${b.count} ${b.count === 1 ? "entry" : "entries"}` : null,
+      icon: "image",
+      typeLabel: "Brand",
+      onSelect: () => close(),
+    }));
+  }, [brands, close]);
 
   const fuse = useMemo(
     () =>
-      new Fuse(allItems, {
+      new Fuse([...projectItems, ...brandItems], {
         keys: ["label", "sublabel"],
         threshold: 0.4,
         ignoreLocation: true,
       }),
-    [allItems],
+    [projectItems, brandItems],
   );
 
-  const results = useMemo<Item[]>(() => {
+  // Flat, ordered list of all visible items. Group headers are derived from
+  // adjacent items sharing the same `group`, so the highlight index is linear.
+  const items = useMemo<Item[]>(() => {
     const q = query.trim();
+
     if (!q) {
-      // Default view: recent projects first, then remaining items
-      const recentKeys = new Set(recent);
-      const recentItems: Item[] = [];
-      const otherItems: Item[] = [];
-      for (const item of allItems) {
-        const key = itemKey(item);
-        if (recentKeys.has(key)) recentItems.push(item);
-        else otherItems.push(item);
-      }
-      // Preserve recent order
-      recentItems.sort((a, b) => recent.indexOf(itemKey(a)) - recent.indexOf(itemKey(b)));
-      return [...recentItems, ...otherItems].slice(0, MAX_RESULTS);
+      const quick: Item[] = [
+        {
+          key: "action:new-project",
+          group: "quick",
+          label: "New project",
+          sublabel: null,
+          icon: "plus",
+          typeLabel: "Action",
+          onSelect: () => goto("/selections/new"),
+        },
+        {
+          key: "action:import",
+          group: "quick",
+          label: "Import historical data",
+          sublabel: null,
+          icon: "upload",
+          typeLabel: "Action",
+          onSelect: () => goto("/admin/import"),
+        },
+        {
+          key: "action:sign-out",
+          group: "quick",
+          label: "Sign out",
+          sublabel: null,
+          icon: "logout",
+          typeLabel: "Action",
+          onSelect: signOut,
+        },
+      ];
+      const recent: Item[] = projectItems.slice(0, MAX_RECENT).map((p) => ({
+        ...p,
+        group: "recent",
+      }));
+      return [...quick, ...recent];
     }
-    return fuse.search(q).slice(0, MAX_RESULTS).map((r) => r.item);
-  }, [query, allItems, fuse, recent]);
+
+    const ql = q.toLowerCase();
+    const pageItems: Item[] = PAGES.filter((p) =>
+      p.label.toLowerCase().includes(ql),
+    ).map((p) => ({
+      key: `page:${p.path}`,
+      group: "pages",
+      label: p.label,
+      sublabel: p.path,
+      icon: p.icon,
+      typeLabel: "Page",
+      onSelect: () => goto(p.path),
+    }));
+
+    const matched = fuse.search(q).map((r) => r.item);
+    const matchedProjects = matched.filter((i) => i.group === "projects");
+    const matchedBrands = matched.filter((i) => i.group === "brands");
+
+    return [...pageItems, ...matchedProjects, ...matchedBrands].slice(
+      0,
+      MAX_RESULTS,
+    );
+  }, [query, fuse, projectItems, goto, signOut]);
 
   // Reset highlight when results change
   useEffect(() => {
     setHighlight(0);
   }, [query]);
+
+  // Clamp highlight if the visible list shrinks beneath it
+  useEffect(() => {
+    if (highlight > 0 && highlight >= items.length) {
+      setHighlight(Math.max(0, items.length - 1));
+    }
+  }, [items.length, highlight]);
 
   // Keep highlighted item in view
   useEffect(() => {
@@ -184,18 +241,11 @@ export function CommandBar() {
     }
   }, [highlight]);
 
-  const close = useCallback(() => setOpen(false), []);
-
   const activate = useCallback(
     (item: Item) => {
-      pushRecent(itemKey(item));
-      if (item.kind === "project") {
-        navigate(`/selections/${item.id}`);
-      }
-      // Brands are informational for now — closing the palette is enough.
-      close();
+      item.onSelect();
     },
-    [navigate, close],
+    [],
   );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -206,7 +256,7 @@ export function CommandBar() {
     }
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setHighlight((h) => (results.length === 0 ? 0 : Math.min(h + 1, results.length - 1)));
+      setHighlight((h) => (items.length === 0 ? 0 : Math.min(h + 1, items.length - 1)));
       return;
     }
     if (e.key === "ArrowUp") {
@@ -215,7 +265,7 @@ export function CommandBar() {
       return;
     }
     if (e.key === "Enter") {
-      const item = results[highlight];
+      const item = items[highlight];
       if (item) {
         e.preventDefault();
         activate(item);
@@ -225,7 +275,21 @@ export function CommandBar() {
 
   if (!open) return null;
 
-  const showEmpty = !loading && results.length === 0;
+  const showEmpty = !loading && items.length === 0;
+
+  // Render the flat list with inline group-header rows when the group changes.
+  const rendered: Array<
+    | { kind: "header"; group: GroupKey }
+    | { kind: "row"; item: Item; index: number }
+  > = [];
+  let lastGroup: GroupKey | null = null;
+  items.forEach((item, index) => {
+    if (item.group !== lastGroup) {
+      rendered.push({ kind: "header", group: item.group });
+      lastGroup = item.group;
+    }
+    rendered.push({ kind: "row", item, index });
+  });
 
   return (
     <div
@@ -250,7 +314,7 @@ export function CommandBar() {
             ref={inputRef}
             className="cmdk-input"
             type="text"
-            placeholder="Search projects and brands…"
+            placeholder="Search projects, pages, and actions…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
@@ -269,47 +333,55 @@ export function CommandBar() {
               {query.trim() ? "No matches" : "Nothing here yet"}
             </div>
           )}
-          {results.length > 0 && (
+          {items.length > 0 && (
             <ul className="cmdk-list" ref={listRef} role="listbox">
-              {results.map((item, i) => (
-                <li
-                  key={itemKey(item)}
-                  data-cmdk-idx={i}
-                  role="option"
-                  aria-selected={i === highlight}
-                  className={`cmdk-item${i === highlight ? " cmdk-item--hl" : ""}`}
-                  onMouseEnter={() => setHighlight(i)}
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    activate(item);
-                  }}
-                >
-                  <span className="cmdk-item-icon" aria-hidden="true">
-                    <Icon name={item.icon} size={14} />
-                  </span>
-                  <span className="cmdk-item-text">
-                    <span className="cmdk-item-label">{item.label}</span>
-                    {item.sublabel && (
-                      <span className="cmdk-item-sublabel">{item.sublabel}</span>
-                    )}
-                  </span>
-                  <span className="cmdk-item-type">{item.typeLabel}</span>
-                </li>
-              ))}
+              {rendered.map((row) =>
+                row.kind === "header" ? (
+                  <li
+                    key={`hdr:${row.group}`}
+                    className="command-bar-group"
+                    role="presentation"
+                    aria-hidden="true"
+                  >
+                    {GROUP_LABELS[row.group]}
+                  </li>
+                ) : (
+                  <li
+                    key={row.item.key}
+                    data-cmdk-idx={row.index}
+                    role="option"
+                    aria-selected={row.index === highlight}
+                    className={`cmdk-item${row.index === highlight ? " cmdk-item--hl" : ""}`}
+                    onMouseEnter={() => setHighlight(row.index)}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      activate(row.item);
+                    }}
+                  >
+                    <span className="cmdk-item-icon" aria-hidden="true">
+                      <Icon name={row.item.icon} size={14} />
+                    </span>
+                    <span className="cmdk-item-text">
+                      <span className="cmdk-item-label">{row.item.label}</span>
+                      {row.item.sublabel && (
+                        <span className="cmdk-item-sublabel">{row.item.sublabel}</span>
+                      )}
+                    </span>
+                    <span className="cmdk-item-type">{row.item.typeLabel}</span>
+                  </li>
+                ),
+              )}
             </ul>
           )}
         </div>
 
-        <div className="cmdk-footer" aria-hidden="true">
-          <span className="cmdk-hint"><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
-          <span className="cmdk-hint"><kbd>Enter</kbd> open</span>
-          <span className="cmdk-hint"><kbd>Esc</kbd> close</span>
+        <div className="cmdk-footer command-bar-footer" aria-hidden="true">
+          <span className="cmdk-hint"><kbd>↑</kbd><kbd>↓</kbd> move</span>
+          <span className="cmdk-hint"><kbd>↵</kbd> select</span>
+          <span className="cmdk-hint"><kbd>esc</kbd> close</span>
+          <span className="cmdk-hint"><kbd>⌘K</kbd> toggle</span>
         </div>
       </div>
     </div>
   );
-}
-
-function itemKey(item: Item): string {
-  return item.kind === "project" ? `project:${item.id}` : `brand:${item.label}`;
 }
