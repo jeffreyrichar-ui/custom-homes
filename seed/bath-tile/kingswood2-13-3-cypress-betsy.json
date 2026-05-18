@@ -11,7 +11,7 @@
       "entries": [
         {
           "trade": "tile",
-          "brand": "Masonry Center",
+          "brand": "Unknown",
           "style": "Pins Blue Mosaic",
           "color": "Rolling Fog",
           "sku": null,
@@ -24,7 +24,7 @@
         },
         {
           "trade": "tile",
-          "brand": "Masonry Center",
+          "brand": "Unknown",
           "style": "Pins Blue Mosaic",
           "color": "Rolling Fog",
           "sku": null,
@@ -37,7 +37,7 @@
         },
         {
           "trade": "tile",
-          "brand": "Masonry Center",
+          "brand": "Unknown",
           "style": "Pins Blue Mosaic",
           "color": "Rolling Fog",
           "sku": null,
@@ -107,8 +107,8 @@
         },
         {
           "trade": "tile",
-          "brand": "Hustle",
-          "style": "Shimmie",
+          "brand": "Sonoma Tilemakers",
+          "style": "Hustle Shimmie",
           "color": "Soul City",
           "sku": null,
           "grout_color": "Bleached Wood",

@@ -221,7 +221,7 @@
       "entries": [
         {
           "trade": "tile",
-          "brand": "Masonry Center",
+          "brand": "Lungarno",
           "style": "Zellige Classique",
           "color": "Atlas White Sahara Rose",
           "sku": null,
@@ -229,7 +229,7 @@
           "edge_profile": null,
           "pattern": "set straight",
           "location_in_room": "vanity_backsplash",
-          "notes": "Full wall behind sink | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "notes": "Full wall behind sink",
           "vendor": "Masonry Center"
         }
       ]

@@ -11,7 +11,7 @@
       "entries": [
         {
           "trade": "tile",
-          "brand": "Masonry Center",
+          "brand": "Unknown",
           "style": "Simple Stone",
           "color": "Blanco Penny Round",
           "sku": null,
@@ -24,8 +24,8 @@
         },
         {
           "trade": "tile",
-          "brand": "Florida Ainslee",
-          "style": null,
+          "brand": "Florida Tile",
+          "style": "Ainslee Park",
           "color": "Calcatta Gold Matte",
           "sku": null,
           "grout_color": "Bleached Wood",
@@ -37,8 +37,8 @@
         },
         {
           "trade": "tile",
-          "brand": "Florida Ainslee",
-          "style": null,
+          "brand": "Florida Tile",
+          "style": "Ainslee Park",
           "color": "Calcatta Gold Matte",
           "sku": null,
           "grout_color": "Bleached Wood",
@@ -50,8 +50,8 @@
         },
         {
           "trade": "tile",
-          "brand": "Florida Ainslee",
-          "style": null,
+          "brand": "Florida Tile",
+          "style": "Ainslee Park",
           "color": "Calcatta Gold Matte",
           "sku": null,
           "grout_color": "Bleached Wood",
@@ -99,8 +99,8 @@
         },
         {
           "trade": "tile",
-          "brand": "Florida Ainslee",
-          "style": null,
+          "brand": "Florida Tile",
+          "style": "Ainslee Park",
           "color": "Calcatta Gold Matte",
           "sku": null,
           "grout_color": "Bleached Wood",

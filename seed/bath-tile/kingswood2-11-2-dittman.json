@@ -11,8 +11,8 @@
       "entries": [
         {
           "trade": "tile",
-          "brand": "Glace",
-          "style": "Mastice 3D Raye",
+          "brand": "Ragno",
+          "style": "Glac\u00e9 Mastice 3D Raye",
           "color": null,
           "sku": null,
           "grout_color": "Bleached Wood",
@@ -24,8 +24,8 @@
         },
         {
           "trade": "tile",
-          "brand": "Glace",
-          "style": "Mastice 3D Raye",
+          "brand": "Ragno",
+          "style": "Glac\u00e9 Mastice 3D Raye",
           "color": null,
           "sku": null,
           "grout_color": "Bleached Wood",
@@ -81,8 +81,8 @@
       "entries": [
         {
           "trade": "tile",
-          "brand": "Costa Clara",
-          "style": null,
+          "brand": "Marazzi",
+          "style": "Costa Clara",
           "color": "Cloud Matte",
           "sku": null,
           "grout_color": "Bleached Wood",
@@ -195,8 +195,8 @@
         },
         {
           "trade": "tile",
-          "brand": "Costa Clara",
-          "style": null,
+          "brand": "Marazzi",
+          "style": "Costa Clara",
           "color": "Cloud",
           "sku": null,
           "grout_color": "Bleached Wood",

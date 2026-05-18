@@ -107,7 +107,7 @@
         },
         {
           "trade": "tile",
-          "brand": "Masonry Center",
+          "brand": "Unknown",
           "style": "Ceppo",
           "color": "Sapia",
           "sku": null,
@@ -120,7 +120,7 @@
         },
         {
           "trade": "tile",
-          "brand": "Masonry Center",
+          "brand": "Unknown",
           "style": "Ceppo",
           "color": "Sapia",
           "sku": null,
@@ -239,8 +239,8 @@
       "entries": [
         {
           "trade": "tile",
-          "brand": "Highland Lake",
-          "style": null,
+          "brand": "Portobello",
+          "style": "Highland Lake",
           "color": "Flower & Almond",
           "sku": null,
           "grout_color": "Linene",

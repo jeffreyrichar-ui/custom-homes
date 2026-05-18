@@ -11,8 +11,8 @@
       "entries": [
         {
           "trade": "tile",
-          "brand": "Glace",
-          "style": "Bianco Raye 3D Rael",
+          "brand": "Ragno",
+          "style": "Glac\u00e9 Bianco Raye 3D Rael",
           "color": null,
           "sku": null,
           "grout_color": "Bleached Wood",
@@ -24,8 +24,8 @@
         },
         {
           "trade": "tile",
-          "brand": "Glace",
-          "style": "Bianco Raye 3D Rael",
+          "brand": "Ragno",
+          "style": "Glac\u00e9 Bianco Raye 3D Rael",
           "color": null,
           "sku": null,
           "grout_color": "Bleached Wood",
@@ -81,7 +81,7 @@
       "entries": [
         {
           "trade": "tile",
-          "brand": "Sami",
+          "brand": "Sartoria",
           "style": "Materici",
           "color": "Visone + Latte",
           "sku": null,
@@ -94,7 +94,7 @@
         },
         {
           "trade": "tile",
-          "brand": "Sami",
+          "brand": "Sartoria",
           "style": "Materici",
           "color": "Visone + Latte",
           "sku": null,
@@ -120,7 +120,7 @@
         },
         {
           "trade": "tile",
-          "brand": "Sami",
+          "brand": "Sartoria",
           "style": "Materici",
           "color": "Visone + Latte",
           "sku": null,
@@ -138,8 +138,8 @@
       "entries": [
         {
           "trade": "tile",
-          "brand": "Costa Clara",
-          "style": null,
+          "brand": "Marazzi",
+          "style": "Costa Clara",
           "color": "Cloud Gloss",
           "sku": null,
           "grout_color": "Bright White",
@@ -151,8 +151,8 @@
         },
         {
           "trade": "tile",
-          "brand": "Chameleon",
-          "style": null,
+          "brand": "Maniscalco",
+          "style": "Chameleon",
           "color": "OPAL",
           "sku": null,
           "grout_color": "Bright White",
@@ -164,8 +164,8 @@
         },
         {
           "trade": "tile",
-          "brand": "Chameleon",
-          "style": null,
+          "brand": "Maniscalco",
+          "style": "Chameleon",
           "color": "OPAL",
           "sku": null,
           "grout_color": "Bright White",
@@ -234,7 +234,7 @@
         },
         {
           "trade": "tile",
-          "brand": "Masonry Center",
+          "brand": "Unknown",
           "style": null,
           "color": null,
           "sku": null,
