@@ -709,6 +709,203 @@ button.link.experimental {
   color: var(--text-3);
 }
 
+/* -------- Empty-state card (premium, centered hero) -------- */
+
+.empty-state-card {
+  background: var(--bg-subtle, var(--surface-2));
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--sp-8) var(--sp-6);
+  margin: var(--sp-5) auto;
+  max-width: 560px;
+  text-align: center;
+  box-shadow: var(--shadow-1);
+}
+.empty-state-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--primary);
+  margin-bottom: var(--sp-4);
+}
+.empty-state-card h2 {
+  font-family: var(--font-serif);
+  font-size: var(--fs-xl);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--sp-3);
+  color: var(--text);
+}
+.empty-state-card p {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  margin: 0 auto var(--sp-5);
+  max-width: 420px;
+}
+.empty-state-card-actions {
+  display: inline-flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Soft variant for nested contexts (e.g. an empty room) */
+.empty-state-soft {
+  border: 1px dashed var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-5) var(--sp-4);
+  text-align: center;
+  color: var(--text-3);
+  background: transparent;
+}
+.empty-state-soft .empty-state-card-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: var(--sp-2);
+  background: var(--surface-2);
+  color: var(--text-3);
+}
+.empty-state-soft p { margin: 0 auto var(--sp-1); font-size: var(--fs-sm); }
+.empty-state-soft .empty-hint {
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+}
+
+/* -------- Project card meta + serif name (polish) -------- */
+
+.project-card-name {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: var(--fs-lg);
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--text);
+  margin: 0 0 var(--sp-1);
+}
+.project-card-meta-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--sp-3);
+  padding-top: var(--sp-2);
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  letter-spacing: 0.02em;
+}
+.project-card-meta-strip .dot { color: var(--border-strong); }
+
+/* Override existing :hover transform with elevation-only */
+.project-grid .project-card:hover {
+  transform: none;
+  box-shadow: var(--shadow-3);
+}
+
+/* -------- Onboarding banner -------- */
+
+.onboarding-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  background: var(--primary-soft);
+  border-left: 3px solid var(--primary);
+  border-radius: var(--r);
+  padding: var(--sp-2) var(--sp-3);
+  margin-bottom: var(--sp-4);
+  font-size: var(--fs-sm);
+  color: var(--text);
+}
+.onboarding-banner-icon {
+  display: inline-flex;
+  color: var(--primary);
+  flex: 0 0 auto;
+}
+.onboarding-banner-text { flex: 1 1 auto; }
+.onboarding-banner kbd {
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+.onboarding-banner-dismiss {
+  background: transparent;
+  color: var(--text-3);
+  border: none;
+  padding: var(--sp-1);
+  cursor: pointer;
+  display: inline-flex;
+}
+.onboarding-banner-dismiss:hover {
+  background: transparent;
+  color: var(--text);
+}
+
+/* -------- Skeleton placeholders (gentle pulse) -------- */
+
+.skeleton-pulse {
+  background: var(--surface-2);
+  border-radius: var(--r);
+  animation: skel-pulse 1.2s ease-in-out infinite;
+}
+@keyframes skel-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.skeleton-project-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.skeleton-project-card .sk-title {
+  height: 22px;
+  width: 60%;
+}
+.skeleton-project-card .sk-sub {
+  height: 14px;
+  width: 80%;
+}
+.skeleton-project-card .sk-meta {
+  height: 12px;
+  width: 50%;
+  margin-top: var(--sp-3);
+}
+.skeleton-room {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-5);
+  margin-bottom: var(--sp-5);
+  box-shadow: var(--shadow-1);
+}
+.skeleton-room .sk-room-title {
+  height: 26px;
+  width: 35%;
+  margin-bottom: var(--sp-4);
+}
+.skeleton-room .sk-entry-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--sp-3);
+}
+.skeleton-room .sk-entry {
+  height: 96px;
+  border-radius: var(--r-md);
+}
+
 /* -------- Admin import -------- */
 
 .import-layout {

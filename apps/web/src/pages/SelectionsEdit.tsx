@@ -55,7 +55,23 @@ export function SelectionsEdit() {
       </>
     );
   }
-  if (!data || !id) return <p>Loading…</p>;
+  if (!data || !id) {
+    return (
+      <div aria-busy="true" aria-label="Loading project">
+        <div className="skeleton-pulse sk-title" style={{ height: 36, width: "40%", marginBottom: 24 }} />
+        {Array.from({ length: 2 }).map((_, ri) => (
+          <div key={ri} className="skeleton-room">
+            <div className="skeleton-pulse sk-room-title" />
+            <div className="sk-entry-row">
+              {Array.from({ length: 3 }).map((_, ei) => (
+                <div key={ei} className="skeleton-pulse sk-entry" />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   const { project, rooms } = data;
 
@@ -241,12 +257,21 @@ export function SelectionsEdit() {
       <PdfActions projectId={project.id} />
 
       {rooms.length === 0 && !showAddRoom && (
-        <div className="empty-state">
-          <p>No rooms yet.</p>
-          <p>Start with the most important bathroom — usually the master.</p>
-          <button onClick={() => setShowAddRoom(true)} style={{ marginTop: 12 }}>
-            Add the first room
-          </button>
+        <div className="empty-state-card">
+          <div className="empty-state-card-icon" aria-hidden="true">
+            <Icon name="plus" size={28} />
+          </div>
+          <h2>No rooms yet</h2>
+          <p>
+            Start with the most important bathroom — usually the master. Tile,
+            paint, and the rest of the finishes follow from there.
+          </p>
+          <div className="empty-state-card-actions">
+            <button onClick={() => setShowAddRoom(true)} className="icon-button">
+              <Icon name="plus" />
+              <span>Add the first room</span>
+            </button>
+          </div>
         </div>
       )}
 
@@ -328,6 +353,18 @@ export function SelectionsEdit() {
 
             {mode === "shower" && (
               <ShowerView room={room} />
+            )}
+
+            {mode === "cards" && totalEntries === 0 && !tradePicker[room.id] && (
+              <div className="empty-state-soft">
+                <div className="empty-state-card-icon" aria-hidden="true">
+                  <Icon name="plus" size={20} />
+                </div>
+                <p>No selections in this room yet.</p>
+                <p className="empty-hint">
+                  Press the <strong>+ Add trade</strong> button above to start with tile.
+                </p>
+              </div>
             )}
 
             {mode === "cards" &&

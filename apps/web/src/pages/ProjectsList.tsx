@@ -2,20 +2,35 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, type ProjectSummary } from "../lib/api.js";
 import { StatsStrip } from "../components/StatsStrip.js";
+import { Icon } from "../components/Icon.js";
 
 type Sort = "recent" | "name" | "rooms";
+
+const ONBOARDING_KEY = "cb_onboarding_dismissed";
 
 export function ProjectsList() {
   const [projects, setProjects] = useState<ProjectSummary[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("recent");
+  const [totalEntries, setTotalEntries] = useState<number | null>(null);
+  const [bannerDismissed, setBannerDismissed] = useState<boolean>(() => {
+    try {
+      return window.localStorage.getItem(ONBOARDING_KEY) === "1";
+    } catch {
+      return false;
+    }
+  });
 
   useEffect(() => {
     api
       .listProjects()
       .then((res) => setProjects(res.projects))
       .catch((err: Error) => setError(err.message));
+    api
+      .getStats()
+      .then((s) => setTotalEntries(s.entries.total ?? 0))
+      .catch(() => setTotalEntries(0));
   }, []);
 
   const filtered = useMemo(() => {
@@ -41,6 +56,15 @@ export function ProjectsList() {
     return out;
   }, [projects, query, sort]);
 
+  const dismissBanner = () => {
+    try {
+      window.localStorage.setItem(ONBOARDING_KEY, "1");
+    } catch {
+      /* ignore */
+    }
+    setBannerDismissed(true);
+  };
+
   if (error)
     return (
       <>
@@ -48,33 +72,79 @@ export function ProjectsList() {
         <div className="errors">Failed to load: {error}</div>
       </>
     );
+
   if (!projects) {
     return (
       <>
         <h1>Projects</h1>
-        <div className="projects-loading">Loading…</div>
+        <div className="project-grid" aria-busy="true" aria-label="Loading projects">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="skeleton-project-card">
+              <div className="skeleton-pulse sk-title" />
+              <div className="skeleton-pulse sk-sub" />
+              <div className="skeleton-pulse sk-meta" />
+            </div>
+          ))}
+        </div>
       </>
     );
   }
+
+  const showOnboardingBanner =
+    !bannerDismissed && projects.length > 0 && totalEntries === 0;
 
   return (
     <>
       <div className="projects-header">
         <h1>Projects</h1>
-        <Link to="/selections/new" className="primary-link">
-          + New project
-        </Link>
+        {projects.length > 0 && (
+          <Link to="/selections/new" className="primary-link">
+            + New project
+          </Link>
+        )}
       </div>
+
+      {showOnboardingBanner && (
+        <div className="onboarding-banner" role="status">
+          <span className="onboarding-banner-icon" aria-hidden="true">
+            <Icon name="search" size={16} />
+          </span>
+          <span className="onboarding-banner-text">
+            Tip: open a project and press <kbd>⌘K</kbd> to jump quickly between
+            rooms and tools.
+          </span>
+          <button
+            type="button"
+            className="onboarding-banner-dismiss"
+            aria-label="Dismiss tip"
+            onClick={dismissBanner}
+          >
+            <Icon name="x" size={14} />
+          </button>
+        </div>
+      )}
 
       <StatsStrip />
 
       {projects.length === 0 ? (
-        <div className="empty-state">
-          <p>No projects yet.</p>
+        <div className="empty-state-card">
+          <div className="empty-state-card-icon" aria-hidden="true">
+            <Icon name="plus" size={28} />
+          </div>
+          <h2>Start your first project</h2>
           <p>
-            <Link to="/selections/new">Create your first project →</Link> or{" "}
-            <Link to="/admin/import">import from JSON →</Link>
+            Custom Homes structures finish selections — tile, paint, hardwood,
+            cabinets — per room per home. Begin with the master bath, the tile
+            that everything else negotiates around.
           </p>
+          <div className="empty-state-card-actions">
+            <Link to="/selections/new" className="primary-link">
+              New project
+            </Link>
+            <Link to="/admin/import" className="secondary-link">
+              Import historical data
+            </Link>
+          </div>
         </div>
       ) : (
         <>
@@ -107,14 +177,16 @@ export function ProjectsList() {
                   key={p.id}
                   className="project-card"
                 >
-                  <h3>{p.name}</h3>
+                  <h3 className="project-card-name">{p.name}</h3>
                   {p.address && <p className="subtle">{p.address}</p>}
-                  <div className="project-meta">
+                  <div className="project-card-meta-strip">
                     <span>
                       {p.room_count} {p.room_count === 1 ? "room" : "rooms"}
                     </span>
-                    <span>·</span>
-                    <span>{new Date(p.created_at).toLocaleDateString()}</span>
+                    <span className="dot">·</span>
+                    <span>
+                      Added {new Date(p.created_at).toLocaleDateString()}
+                    </span>
                   </div>
                 </Link>
               ))}
