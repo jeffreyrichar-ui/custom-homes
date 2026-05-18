@@ -286,3 +286,124 @@ describe("portobelloScraper", () => {
     expect(opts.imageSelectors.length).toBeGreaterThan(0);
   });
 });
+
+describe("ragnoScraper", () => {
+  beforeEach(async () => {
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    vi.mocked(mod.fetchProductImagePlaywright).mockClear();
+  });
+
+  it("findScraper resolves the Ragno adapter by exact brand", async () => {
+    const { findScraper } = await import("../src/services/scrapers/index.js");
+    const s = findScraper("Ragno");
+    expect(s).not.toBeNull();
+    expect(s!.brand).toBe("Ragno");
+  });
+
+  it("matches Ragno brand variants case-insensitively but not unrelated brands", async () => {
+    const { ragnoScraper } = await import("../src/services/scrapers/ragno.js");
+    expect(ragnoScraper.matches("Ragno")).toBe(true);
+    expect(ragnoScraper.matches("ragno")).toBe(true);
+    expect(ragnoScraper.matches("RAGNO")).toBe(true);
+    expect(ragnoScraper.matches("Ragno USA")).toBe(true);
+    expect(ragnoScraper.matches("ragno usa")).toBe(true);
+    // Sanity: must not bleed into other brands.
+    expect(ragnoScraper.matches("Daltile")).toBe(false);
+    expect(ragnoScraper.matches("Marazzi")).toBe(false);
+    expect(ragnoScraper.matches("Portobello")).toBe(false);
+    // And not a substring match on something that merely starts the same way.
+    expect(ragnoScraper.matches("Ragnola")).toBe(false);
+  });
+
+  it("scrape() builds a ragnousa.com search URL with the shape-first query and a /collections/ link selector", async () => {
+    const { ragnoScraper } = await import("../src/services/scrapers/ragno.js");
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    const fetchMock = vi.mocked(mod.fetchProductImagePlaywright);
+
+    const result = await ragnoScraper.scrape({
+      brand: "Ragno",
+      sku: null,
+      style: "Lungarno",
+      color: "Beige",
+      notes: "12x24",
+    });
+
+    expect(result).not.toBeNull();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const opts = fetchMock.mock.calls[0]![0];
+    expect(opts.searchUrl.startsWith("https://www.ragnousa.com/?s=")).toBe(true);
+    // Shape (rectangle from 12x24) leads the query — disambiguator first.
+    expect(decodeURIComponent(opts.searchUrl)).toContain("rectangle");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Lungarno");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Beige");
+    // Collections are the canonical landing pages on ragnousa.com.
+    expect(opts.productLinkSelector).toContain("/collections/");
+    expect(opts.imageSelectors.length).toBeGreaterThan(0);
+  });
+});
+
+describe("americanOleanScraper", () => {
+  beforeEach(async () => {
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    vi.mocked(mod.fetchProductImagePlaywright).mockClear();
+  });
+
+  it("findScraper resolves the American Olean adapter by 'AO' and by full name", async () => {
+    const { findScraper } = await import("../src/services/scrapers/index.js");
+    expect(findScraper("AO")?.brand).toBe("American Olean");
+    expect(findScraper("American Olean")?.brand).toBe("American Olean");
+  });
+
+  it("matches 'AO' as a discrete token only, never as a prefix of unrelated brands", async () => {
+    const { americanOleanScraper } = await import(
+      "../src/services/scrapers/americanOlean.js"
+    );
+    // Accepted forms.
+    expect(americanOleanScraper.matches("AO")).toBe(true);
+    expect(americanOleanScraper.matches("ao")).toBe(true);
+    expect(americanOleanScraper.matches(" AO ")).toBe(true); // trim
+    expect(americanOleanScraper.matches("American Olean")).toBe(true);
+    expect(americanOleanScraper.matches("american olean")).toBe(true);
+    expect(americanOleanScraper.matches("AMERICAN OLEAN")).toBe(true);
+    expect(americanOleanScraper.matches("americanolean")).toBe(true);
+    // The whole point: "AO" must NOT match anything that merely starts with AO.
+    expect(americanOleanScraper.matches("AO Smith Water Heater")).toBe(false);
+    expect(americanOleanScraper.matches("AOSmith")).toBe(false);
+    expect(americanOleanScraper.matches("Aon")).toBe(false);
+    expect(americanOleanScraper.matches("Aoki")).toBe(false);
+    // And not bleed into sibling brands.
+    expect(americanOleanScraper.matches("Daltile")).toBe(false);
+    expect(americanOleanScraper.matches("Marazzi")).toBe(false);
+  });
+
+  it("scrape() builds an americanolean.com search URL with the shape-first query and a /products/ link selector", async () => {
+    const { americanOleanScraper } = await import(
+      "../src/services/scrapers/americanOlean.js"
+    );
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    const fetchMock = vi.mocked(mod.fetchProductImagePlaywright);
+
+    const result = await americanOleanScraper.scrape({
+      brand: "AO",
+      sku: null,
+      style: "Color Story Mosaics",
+      color: "Navy",
+      notes: "penny round",
+    });
+
+    expect(result).not.toBeNull();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const opts = fetchMock.mock.calls[0]![0];
+    expect(opts.searchUrl.startsWith("https://www.americanolean.com/search?q=")).toBe(
+      true,
+    );
+    // Penny round is a named shape — it must lead the query for the
+    // pattern compositor to pick up the right texture later on.
+    expect(decodeURIComponent(opts.searchUrl)).toContain("penny round");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Color Story Mosaics");
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Navy");
+    // /products/<category>/<series>/<variant> is the canonical detail URL.
+    expect(opts.productLinkSelector).toContain("/products/");
+    expect(opts.imageSelectors.length).toBeGreaterThan(0);
+  });
+});
