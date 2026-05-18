@@ -1,26 +1,37 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { normalizePattern, RENDER_MODES, type RenderMode } from "@custom-homes/shared";
 
-// Tamara's full pattern catalogue, dumped from seed/bath-tile/*.json with:
-//   jq -r '.rooms[].entries[] | select(.trade=="tile") | .pattern' \
-//     seed/bath-tile/*.json | grep -v '^null$' | sort | uniq -c | sort -rn
-// The file holds every distinct string she's written across 218 historical
-// entries. If this drifts and the count changes, regenerate the file and
-// extend the explicit-mapping assertions below as needed.
-const FREQ_TABLE_PATH = "/tmp/tamara-patterns.txt";
+// Tamara's full pattern catalogue, computed at test time from the checked-in
+// seed corpus so this test stays accurate as the data evolves. Every distinct
+// non-null pattern string she's written across the 218 historical entries
+// must round-trip through normalizePattern to a known render mode.
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const SEED_DIR = path.resolve(__dirname, "../../../seed/bath-tile");
 
 function loadFreqTable(): Array<{ count: number; pattern: string }> {
-  const text = readFileSync(FREQ_TABLE_PATH, "utf8");
-  const out: Array<{ count: number; pattern: string }> = [];
-  for (const line of text.split("\n")) {
-    const trimmed = line.trim();
-    if (!trimmed) continue;
-    const m = trimmed.match(/^(\d+)\s+(.+)$/);
-    if (!m) continue;
-    out.push({ count: parseInt(m[1]!, 10), pattern: m[2]! });
+  const files = readdirSync(SEED_DIR).filter(
+    (f) => f.endsWith(".json") && f !== "audit.json" && f !== "image-prompts.json",
+  );
+  const counts = new Map<string, number>();
+  for (const file of files) {
+    const raw = JSON.parse(readFileSync(path.join(SEED_DIR, file), "utf8")) as {
+      rooms: Array<{ entries: Array<{ trade: string; pattern?: string | null }> }>;
+    };
+    for (const room of raw.rooms ?? []) {
+      for (const entry of room.entries ?? []) {
+        if (entry.trade !== "tile") continue;
+        const p = entry.pattern?.trim();
+        if (!p) continue;
+        counts.set(p, (counts.get(p) ?? 0) + 1);
+      }
+    }
   }
-  return out;
+  return Array.from(counts.entries())
+    .map(([pattern, count]) => ({ count, pattern }))
+    .sort((a, b) => b.count - a.count);
 }
 
 const VALID: ReadonlySet<RenderMode> = new Set(RENDER_MODES);
