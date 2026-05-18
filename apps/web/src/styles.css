@@ -454,6 +454,12 @@ textarea:focus {
   gap: 4px;
 }
 .icon-link svg { color: currentColor; }
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.icon-button svg { color: currentColor; }
 
 .entry-primary {
   display: grid;

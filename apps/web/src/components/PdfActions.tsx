@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { TRADE_KINDS } from "@custom-homes/shared";
 import { api } from "../lib/api.js";
+import { Icon } from "./Icon.js";
 
 type Props = { projectId: string };
 
@@ -27,12 +28,14 @@ export function PdfActions({ projectId }: Props) {
     <div className="pdf-actions">
       <button
         type="button"
+        className="icon-button"
         disabled={state.kind === "running"}
         onClick={() =>
           run("Full project", () => api.generateFullPdf(projectId))
         }
       >
-        Full project PDF
+        <Icon name="download" />
+        <span>Full project PDF</span>
       </button>
       <select
         className="ac-input"
@@ -57,9 +60,14 @@ export function PdfActions({ projectId }: Props) {
       )}
       {state.kind === "done" && (
         <span className="pdf-status">
-          {state.label} ready —{" "}
-          <a href={state.url} target="_blank" rel="noopener noreferrer">
-            open / copy link
+          <Icon name="check" /> {state.label} ready —{" "}
+          <a
+            href={state.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="icon-link"
+          >
+            open <Icon name="external" size={12} />
           </a>
         </span>
       )}

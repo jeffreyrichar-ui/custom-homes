@@ -7,6 +7,7 @@ import {
   setAdminToken,
   clearAdminToken,
 } from "../lib/api.js";
+import { Icon } from "../components/Icon.js";
 
 const STARTER_TEXT = JSON.stringify(exampleProject, null, 2);
 
@@ -128,25 +129,34 @@ export function AdminImport() {
           />
           <div className="button-row">
             <button
+              className="icon-button"
               onClick={() => run("dry-run")}
               disabled={!parsedPayload || status.kind === "running"}
             >
-              Validate
+              <Icon name="check" />
+              <span>Validate</span>
             </button>
             <button
+              className="icon-button"
               onClick={() => run("import")}
               disabled={!parsedPayload || status.kind === "running"}
             >
-              Import
+              <Icon name="upload" />
+              <span>Import</span>
             </button>
             <button
-              className="secondary"
+              className="secondary icon-button"
               onClick={() => setText(STARTER_TEXT)}
             >
-              Load example
+              <Icon name="image" />
+              <span>Load example</span>
             </button>
-            <button className="secondary" onClick={() => setText("")}>
-              Clear
+            <button
+              className="secondary icon-button"
+              onClick={() => setText("")}
+            >
+              <Icon name="x" />
+              <span>Clear</span>
             </button>
           </div>
           {parseError && (
