@@ -49,18 +49,20 @@ function Nav({ user, onLogout }: { user: User | null; onLogout: () => void }) {
   const navigate = useNavigate();
   return (
     <nav>
-      <strong>Custom Homes</strong>
+      <Link to={user ? "/projects" : "/login"} style={{ textDecoration: "none" }}>
+        <strong>Custom Homes</strong>
+      </Link>
       {user && (
         <>
           <Link to="/projects">Projects</Link>
-          <Link to="/selections/new">+ New project</Link>
-          <Link to="/admin/import">Admin Import</Link>
+          <Link to="/selections/new">New project</Link>
+          <Link to="/admin/import">Import</Link>
         </>
       )}
-      <span style={{ marginLeft: "auto", display: "flex", gap: 12, alignItems: "center" }}>
+      <span className="nav-right">
         {user ? (
           <>
-            <span style={{ opacity: 0.7, fontSize: 13 }}>{user.email}</span>
+            <span className="muted">{user.email}</span>
             <button
               className="secondary"
               onClick={async () => {
