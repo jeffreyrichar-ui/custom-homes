@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { TradeKind } from "@custom-homes/shared";
+import { TAMARA_PATTERN_OPTIONS, type TradeKind } from "@custom-homes/shared";
 import { api } from "../lib/api.js";
 import { AutoComplete, type Suggestion } from "./AutoComplete.js";
 import { PatternPreview } from "./PatternPreview.js";
@@ -36,16 +36,10 @@ const TRADE_FIELDS: Record<TradeKind, FieldDef[]> = {
       key: "pattern",
       label: "Pattern",
       kind: "select",
-      options: [
-        "",
-        "set straight",
-        "set vertical",
-        "staggered horizontal",
-        "staggered vertical",
-        "herringbone",
-        "checkerboard",
-        "stacked",
-      ],
+      // Tamara's verbatim vocabulary, ordered by frequency in seed data.
+      // Both the live SVG preview and PDF renderer normalize these strings
+      // to a render-mode ID at draw time.
+      options: [...TAMARA_PATTERN_OPTIONS],
     },
     {
       key: "location_in_room",

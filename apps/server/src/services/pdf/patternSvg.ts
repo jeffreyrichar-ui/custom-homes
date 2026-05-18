@@ -1,4 +1,10 @@
-import { detectShape, detectAspect, type TileShape } from "@custom-homes/shared";
+import {
+  detectShape,
+  detectAspect,
+  normalizePattern,
+  type RenderMode,
+  type TileShape,
+} from "@custom-homes/shared";
 
 const NAMED_GROUT_COLORS: Record<string, string> = {
   "delorean gray": "#9a9a96",
@@ -24,18 +30,6 @@ function resolveGrout(input: string | null | undefined): string {
   if (NAMED_GROUT_COLORS[key]) return NAMED_GROUT_COLORS[key]!;
   if (/^#([0-9a-f]{3}){1,2}$/i.test(input.trim())) return input.trim();
   return "#cccccc";
-}
-
-function normalizePattern(p?: string | null): string {
-  const n = (p ?? "").trim().toLowerCase();
-  if (n.includes("set vertical")) return "set vertical";
-  if (n.includes("staggered horizontal") || n.includes("brick") || n.includes("running bond"))
-    return "staggered horizontal";
-  if (n.includes("staggered vertical")) return "staggered vertical";
-  if (n.includes("checkerboard")) return "checkerboard";
-  if (n.includes("stacked")) return "stacked";
-  if (n.includes("herringbone")) return "herringbone";
-  return "set straight";
 }
 
 function esc(s: string): string {
@@ -73,22 +67,32 @@ export function renderPatternSvg(opts: {
     return renderPicketSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows: rows + 2 });
   }
   const aspect = shape === "square" ? 1 : detectAspect({ notes: opts.notes });
-  const pattern = normalizePattern(opts.pattern);
-  if (pattern === "herringbone") {
-    return renderHerringboneSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows, aspect });
+  const mode = normalizePattern(opts.pattern);
+
+  switch (mode) {
+    case "herringbone":
+      return renderHerringboneSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows, aspect });
+    case "checkerboard-on-point":
+      return renderCheckerboardOnPointSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows });
+    case "parquet":
+      return renderParquetSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows });
+    case "lattice":
+      return renderLatticeSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows });
+    case "stripes-vertical":
+      return renderStripesVerticalSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows, aspect });
+    case "random":
+      return renderRandomRotationSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows, aspect });
+    default:
+      return renderRectSvg({
+        imageUrl: opts.imageUrl,
+        groutFill,
+        placeholderFill,
+        cols,
+        rows,
+        aspect,
+        mode,
+      });
   }
-  if (pattern === "checkerboard") {
-    return renderCheckerboardSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows });
-  }
-  return renderRectSvg({
-    imageUrl: opts.imageUrl,
-    groutFill,
-    placeholderFill,
-    cols,
-    rows,
-    aspect,
-    pattern,
-  });
 }
 
 function renderCirclesSvg(o: { imageUrl?: string | null; groutFill: string; placeholderFill: string; cols: number; rows: number }) {
@@ -218,18 +222,145 @@ function renderHerringboneSvg(o: {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} ${totalH}" preserveAspectRatio="xMidYMid meet" class="pattern-svg"><rect x="0" y="0" width="${totalW}" height="${totalH}" fill="${o.groutFill}"/>${parts.join("")}</svg>`;
 }
 
-function renderCheckerboardSvg(o: {
+function renderCheckerboardOnPointSvg(o: {
   imageUrl?: string | null;
   groutFill: string;
   placeholderFill: string;
   cols: number;
   rows: number;
 }) {
-  // Mirror of renderCheckerboard in PatternPreview.tsx — square cells, alternating
-  // cells get a translucent grout-color overlay to fake the two-tone contrast.
+  // Mirror of renderCheckerboardOnPoint — diamond tessellation, alternate
+  // cells get a translucent grout-color tint.
+  const side = 80;
+  const diag = side * Math.SQRT2;
+  const step = diag / 2;
+  const pad = step;
+  const totalW = o.cols * step + 2 * pad;
+  const totalH = o.rows * step + 2 * pad;
+  const parts: string[] = [];
+  for (let r = 0; r < o.rows + 1; r++) {
+    for (let c = 0; c < o.cols + 1; c++) {
+      const cx = pad + c * step;
+      const cy = pad + r * step;
+      const ox = r % 2 === 1 ? step : 0;
+      const x = cx + ox - side / 2;
+      const y = cy - side / 2;
+      const dimmed = (r + c) % 2 === 1;
+      const ccx = x + side / 2;
+      const ccy = y + side / 2;
+      if (o.imageUrl) {
+        const id = `cob-${r}-${c}`;
+        parts.push(`<g transform="rotate(45 ${ccx} ${ccy})">`);
+        parts.push(`<defs><clipPath id="${id}"><rect x="${x}" y="${y}" width="${side}" height="${side}"/></clipPath></defs>`);
+        parts.push(`<image href="${esc(o.imageUrl)}" x="${x}" y="${y}" width="${side}" height="${side}" clip-path="url(#${id})" preserveAspectRatio="xMidYMid slice"/>`);
+        if (dimmed) {
+          parts.push(`<rect x="${x}" y="${y}" width="${side}" height="${side}" fill="${o.groutFill}" opacity="0.45"/>`);
+        }
+        parts.push(`</g>`);
+      } else {
+        parts.push(`<rect x="${x}" y="${y}" width="${side}" height="${side}" fill="${dimmed ? o.groutFill : o.placeholderFill}" transform="rotate(45 ${ccx} ${ccy})"/>`);
+      }
+    }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} ${totalH}" preserveAspectRatio="xMidYMid meet" class="pattern-svg"><rect x="0" y="0" width="${totalW}" height="${totalH}" fill="${o.groutFill}"/>${parts.join("")}</svg>`;
+}
+
+function renderParquetSvg(o: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+}) {
+  // 4-vertical + 4-horizontal alternating blocks. Each block is a square.
+  const tileLong = 80;
+  const tileShort = tileLong / 4;
+  const block = tileLong;
+  const groutWidth = 2;
+  const bcols = Math.max(2, Math.ceil(o.cols / 2));
+  const brows = Math.max(2, Math.ceil(o.rows / 2));
+  const totalW = bcols * block + groutWidth * (bcols + 1);
+  const totalH = brows * block + groutWidth * (brows + 1);
+  const parts: string[] = [];
+  for (let br = 0; br < brows; br++) {
+    for (let bc = 0; bc < bcols; bc++) {
+      const x0 = bc * block + groutWidth * (bc + 1);
+      const y0 = br * block + groutWidth * (br + 1);
+      const vertical = (br + bc) % 2 === 0;
+      for (let i = 0; i < 4; i++) {
+        const x = vertical ? x0 + i * tileShort : x0;
+        const y = vertical ? y0 : y0 + i * tileShort;
+        const w = vertical ? tileShort : tileLong;
+        const h = vertical ? tileLong : tileShort;
+        if (o.imageUrl) {
+          parts.push(`<image href="${esc(o.imageUrl)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice"/>`);
+        } else {
+          parts.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${o.placeholderFill}"/>`);
+        }
+      }
+    }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} ${totalH}" preserveAspectRatio="xMidYMid meet" class="pattern-svg"><rect x="0" y="0" width="${totalW}" height="${totalH}" fill="${o.groutFill}"/>${parts.join("")}</svg>`;
+}
+
+function renderLatticeSvg(o: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+}) {
+  // Basket weave. Each super-cell alternates which strip pair is "over".
+  const long = 80;
+  const short = long / 2;
+  const cell = long;
+  const groutWidth = 2;
+  const ucols = Math.max(2, Math.ceil(o.cols / 2));
+  const urows = Math.max(2, Math.ceil(o.rows / 2));
+  const totalW = ucols * cell + groutWidth * (ucols + 1);
+  const totalH = urows * cell + groutWidth * (urows + 1);
+  const parts: string[] = [];
+  for (let ur = 0; ur < urows; ur++) {
+    for (let uc = 0; uc < ucols; uc++) {
+      const x0 = uc * cell + groutWidth * (uc + 1);
+      const y0 = ur * cell + groutWidth * (ur + 1);
+      const flip = (ur + uc) % 2 === 1;
+      // Horizontal-pair pieces.
+      const hPair = [
+        { x: x0, y: y0, w: long, h: short },
+        { x: x0, y: y0 + short, w: long, h: short },
+      ];
+      // Vertical-pair pieces.
+      const vPair = [
+        { x: x0, y: y0, w: short, h: long },
+        { x: x0 + short, y: y0, w: short, h: long },
+      ];
+      const order = flip ? [...vPair, ...hPair] : [...hPair, ...vPair];
+      for (const p of order) {
+        if (o.imageUrl) {
+          parts.push(`<image href="${esc(o.imageUrl)}" x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" preserveAspectRatio="xMidYMid slice"/>`);
+        } else {
+          parts.push(`<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" fill="${o.placeholderFill}"/>`);
+        }
+      }
+    }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} ${totalH}" preserveAspectRatio="xMidYMid meet" class="pattern-svg"><rect x="0" y="0" width="${totalW}" height="${totalH}" fill="${o.groutFill}"/>${parts.join("")}</svg>`;
+}
+
+function renderStripesVerticalSvg(o: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+  aspect: number;
+}) {
+  // Mirror of renderStripesVertical — alternating columns get a darker
+  // tint overlay.
   const tileBase = 80;
-  const tileW = tileBase;
-  const tileH = tileBase;
+  const tileW = tileBase / Math.max(1.5, o.aspect);
+  const tileH = tileBase * 1.5;
   const groutWidth = 2;
   const totalW = o.cols * tileW + groutWidth * (o.cols + 1);
   const totalH = o.rows * tileH + groutWidth * (o.rows + 1);
@@ -238,14 +369,48 @@ function renderCheckerboardSvg(o: {
     for (let c = 0; c < o.cols; c++) {
       const x = c * tileW + groutWidth * (c + 1);
       const y = r * tileH + groutWidth * (r + 1);
-      const dimmed = (r + c) % 2 === 1;
+      const darker = c % 2 === 1;
       if (o.imageUrl) {
         parts.push(`<image href="${esc(o.imageUrl)}" x="${x}" y="${y}" width="${tileW}" height="${tileH}" preserveAspectRatio="xMidYMid slice"/>`);
+        if (darker) {
+          parts.push(`<rect x="${x}" y="${y}" width="${tileW}" height="${tileH}" fill="#000" opacity="0.18"/>`);
+        }
       } else {
-        parts.push(`<rect x="${x}" y="${y}" width="${tileW}" height="${tileH}" fill="${o.placeholderFill}"/>`);
+        parts.push(`<rect x="${x}" y="${y}" width="${tileW}" height="${tileH}" fill="${darker ? "#9a958a" : o.placeholderFill}"/>`);
       }
-      if (dimmed) {
-        parts.push(`<rect x="${x}" y="${y}" width="${tileW}" height="${tileH}" fill="${o.groutFill}" opacity="0.35"/>`);
+    }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} ${totalH}" preserveAspectRatio="xMidYMid meet" class="pattern-svg"><rect x="0" y="0" width="${totalW}" height="${totalH}" fill="${o.groutFill}"/>${parts.join("")}</svg>`;
+}
+
+function renderRandomRotationSvg(o: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+  aspect: number;
+}) {
+  // Each cell rotated 0/90/180/270° based on a deterministic seed so the
+  // PDF matches the live preview exactly.
+  const tileBase = 80;
+  const side = Math.min(tileBase, tileBase / o.aspect) * 1.1;
+  const groutWidth = 2;
+  const totalW = o.cols * side + groutWidth * (o.cols + 1);
+  const totalH = o.rows * side + groutWidth * (o.rows + 1);
+  const parts: string[] = [];
+  for (let r = 0; r < o.rows; r++) {
+    for (let c = 0; c < o.cols; c++) {
+      const x = c * side + groutWidth * (c + 1);
+      const y = r * side + groutWidth * (r + 1);
+      const seed = (r * 31 + c * 17 + r * c) % 4;
+      const rot = seed * 90;
+      const cx = x + side / 2;
+      const cy = y + side / 2;
+      if (o.imageUrl) {
+        parts.push(`<image href="${esc(o.imageUrl)}" x="${x}" y="${y}" width="${side}" height="${side}" transform="rotate(${rot} ${cx} ${cy})" preserveAspectRatio="xMidYMid slice"/>`);
+      } else {
+        parts.push(`<rect x="${x}" y="${y}" width="${side}" height="${side}" fill="${o.placeholderFill}" transform="rotate(${rot} ${cx} ${cy})"/>`);
       }
     }
   }
@@ -259,20 +424,22 @@ function renderRectSvg(o: {
   cols: number;
   rows: number;
   aspect: number;
-  pattern: string;
+  mode: RenderMode;
 }) {
   const tileBase = 80;
-  const isVertical = o.pattern === "set vertical" || o.pattern === "staggered vertical";
+  const isVertical = o.mode === "straight-vertical" || o.mode === "staggered-vertical";
   const tileW = isVertical ? tileBase / o.aspect : tileBase;
   const tileH = isVertical ? tileBase : tileBase / o.aspect;
   const groutWidth = 2;
   const totalW = o.cols * tileW + groutWidth * (o.cols + 1);
   const totalH = o.rows * tileH + groutWidth * (o.rows + 1);
+  // 30-70 uses a 30%-width row offset; plain staggered uses 50%.
+  const offsetFraction = o.mode === "30-70" ? 0.3 : 0.5;
   const parts: string[] = [];
   for (let r = 0; r < o.rows; r++) {
-    const rowOffsetX = o.pattern === "staggered horizontal" ? (r % 2) * (tileW / 2) : 0;
+    const rowOffsetX = (o.mode === "staggered-horizontal" || o.mode === "30-70") ? (r % 2) * (tileW * offsetFraction) : 0;
     for (let c = 0; c < o.cols; c++) {
-      const colOffsetY = o.pattern === "staggered vertical" ? (c % 2) * (tileH / 2) : 0;
+      const colOffsetY = o.mode === "staggered-vertical" ? (c % 2) * (tileH * 0.5) : 0;
       const x = c * tileW + groutWidth * (c + 1) + rowOffsetX;
       const y = r * tileH + groutWidth * (r + 1) + colOffsetY;
       if (x >= totalW || y >= totalH) continue;
