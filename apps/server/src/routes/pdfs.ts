@@ -98,7 +98,10 @@ export function makePdfsRouter(getDbi: () => Dbi): Router {
         imageByBrandSku: imageMap,
         generatedAt: new Date(),
       });
-      const buf = await htmlToPdf(html);
+      const buf = await htmlToPdf(html, {
+        projectName: data.project.name,
+        centerLabel: "Full Selections",
+      });
       await fs.mkdir(PDF_DIR, { recursive: true });
       const filename = `${data.project.id}-full.pdf`;
       await fs.writeFile(path.join(PDF_DIR, filename), buf);
@@ -131,7 +134,11 @@ export function makePdfsRouter(getDbi: () => Dbi): Router {
         imageByBrandSku: imageMap,
         generatedAt: new Date(),
       });
-      const buf = await htmlToPdf(html);
+      const tradeLabel = trade.charAt(0).toUpperCase() + trade.slice(1);
+      const buf = await htmlToPdf(html, {
+        projectName: data.project.name,
+        centerLabel: `${tradeLabel} schedule`,
+      });
       await fs.mkdir(PDF_DIR, { recursive: true });
       const filename = `${data.project.id}-${trade}.pdf`;
       await fs.writeFile(path.join(PDF_DIR, filename), buf);
