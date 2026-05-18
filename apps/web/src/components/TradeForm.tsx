@@ -411,6 +411,9 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
             imageUrl={previewImage}
             groutColor={values.grout_color}
             pattern={values.pattern}
+            style={values.style}
+            color={values.color}
+            notes={values.notes}
           />
           {!previewImage && (
             <small className="hint">

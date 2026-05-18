@@ -38,12 +38,16 @@ export function TileEntryPreview({ entry }: Props) {
     return <EntryImage brand={brand} sku={sku} />;
   }
 
+  const notes = typeof entry.notes === "string" ? entry.notes : null;
   return (
     <div className="tile-entry-preview">
       <PatternPreview
         imageUrl={imageUrl}
         groutColor={groutColor}
         pattern={pattern}
+        style={style}
+        color={color}
+        notes={notes}
         cols={5}
         rows={4}
       />

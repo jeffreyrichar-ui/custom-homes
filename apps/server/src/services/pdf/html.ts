@@ -35,6 +35,9 @@ function entryTable(trade: TradeKind, entries: Entry[], imageByBrandSku: Map<str
           imageUrl: url,
           groutColor: String(e.grout_color ?? "") || null,
           pattern: String(e.pattern ?? "") || null,
+          style: String(e.style ?? "") || null,
+          color: String(e.color ?? "") || null,
+          notes: String(e.notes ?? "") || null,
           cols: 5,
           rows: 4,
         });
