@@ -1,18 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { exampleProject, type ImportResult } from "@custom-homes/shared";
-import {
-  api,
-  getAdminToken,
-  setAdminToken,
-  clearAdminToken,
-} from "../lib/api.js";
+import { api, getAdminToken, setAdminToken, clearAdminToken } from "../lib/api.js";
+import { Icon } from "../components/Icon.js";
+import { useToast } from "../lib/toast.js";
 
 const STARTER_TEXT = JSON.stringify(exampleProject, null, 2);
+const FORMAT_DOCS_URL =
+  "https://github.com/toddcampbellcustomhomes/custom-homes/blob/main/packages/shared/src/importContract.ts";
+const TABLE_LABELS: Record<string, string> = {
+  projects: "Projects", rooms: "Rooms",
+  tile_entries: "Tile", paint_entries: "Paint", carpet_entries: "Carpet",
+  hardwood_entries: "Hardwood", cabinet_entries: "Cabinets", countertop_entries: "Countertops",
+};
 
 type Status =
   | { kind: "idle" }
-  | { kind: "running" }
+  | { kind: "running"; mode: "dry-run" | "import" }
   | { kind: "ok"; mode: "dry-run" | "import"; result: ImportResult }
   | { kind: "error"; message: string };
 
@@ -21,204 +25,204 @@ export function AdminImport() {
   const [token, setToken] = useState<string | null>(getAdminToken());
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const [parseError, setParseError] = useState<string | null>(null);
+  const { notify } = useToast();
 
   useEffect(() => {
     if (!token) {
-      const entered = window.prompt(
-        "Enter ADMIN_TOKEN (matches your server's .env)",
-      );
-      if (entered) {
-        setAdminToken(entered);
-        setToken(entered);
-      }
+      const entered = window.prompt("Enter ADMIN_TOKEN (matches your server's .env)");
+      if (entered) { setAdminToken(entered); setToken(entered); }
     }
   }, [token]);
 
   const parsedPayload = useMemo(() => {
     if (!text.trim()) return null;
-    try {
-      return JSON.parse(text);
-    } catch (err) {
-      setParseError(err instanceof Error ? err.message : String(err));
-      return null;
-    }
+    try { return JSON.parse(text); } catch { return null; }
   }, [text]);
 
   useEffect(() => {
-    if (text.trim()) {
-      try {
-        JSON.parse(text);
-        setParseError(null);
-      } catch (err) {
-        setParseError(err instanceof Error ? err.message : String(err));
-      }
-    } else {
-      setParseError(null);
-    }
+    if (!text.trim()) { setParseError(null); return; }
+    try { JSON.parse(text); setParseError(null); }
+    catch (err) { setParseError(err instanceof Error ? err.message : String(err)); }
   }, [text]);
+
+  const resetToken = () => { clearAdminToken(); setToken(null); notify("info", "Admin token cleared."); };
 
   const run = async (mode: "dry-run" | "import") => {
     if (!parsedPayload) return;
-    setStatus({ kind: "running" });
+    setStatus({ kind: "running", mode });
     try {
-      const result =
-        mode === "dry-run"
-          ? await api.importDryRun(parsedPayload)
-          : await api.import(parsedPayload);
+      const result = mode === "dry-run"
+        ? await api.importDryRun(parsedPayload)
+        : await api.import(parsedPayload);
       setStatus({ kind: "ok", mode, result });
+      if (result.errors.length === 0) {
+        notify("success", mode === "import" ? "Import complete." : "Validation passed.");
+      } else {
+        notify("error", `${result.errors.length} validation error(s).`);
+      }
     } catch (err) {
-      setStatus({
-        kind: "error",
-        message: err instanceof Error ? err.message : String(err),
-      });
+      const message = err instanceof Error ? err.message : String(err);
+      setStatus({ kind: "error", message });
+      notify("error", message);
     }
   };
 
+  const isRunning = status.kind === "running";
+  const canRun = Boolean(parsedPayload) && !isRunning;
+  const runningLabel = !isRunning ? null : status.mode === "dry-run" ? "Validating…" : "Importing…";
+
   return (
-    <>
-      <h1>Admin — JSON Import</h1>
+    <div className="admin-import-page">
+      <div className="admin-import-header">
+        <h1>Import historical data</h1>
+        <p className="subtle">
+          Paste a project JSON exported from Claude desktop. Use this to backfill
+          spreadsheet-era selections so they're searchable and printable alongside new work.
+        </p>
+        <p className="muted">
+          <a href={FORMAT_DOCS_URL} target="_blank" rel="noopener noreferrer" className="icon-link">
+            Format docs <Icon name="external" size={11} />
+          </a>
+        </p>
+      </div>
 
-      {!token && (
-        <div className="token-banner">
-          No admin token set.{" "}
-          <button
-            className="secondary"
-            onClick={() => {
-              const entered = window.prompt("Enter ADMIN_TOKEN");
-              if (entered) {
-                setAdminToken(entered);
-                setToken(entered);
-              }
-            }}
-          >
-            Set token
-          </button>
-        </div>
-      )}
-      {token && (
-        <div className="token-banner">
-          Admin token set.{" "}
-          <button
-            className="secondary"
-            onClick={() => {
-              clearAdminToken();
-              setToken(null);
-            }}
-          >
-            Clear
-          </button>
-        </div>
-      )}
-
-      <p>
-        Paste the JSON output from Claude desktop below. Use <strong>Validate</strong>{" "}
-        for a dry-run (no DB writes), then <strong>Import</strong> when ready.
-      </p>
-
-      <div className="import-layout">
-        <div>
-          <textarea
-            rows={32}
-            placeholder="Paste project JSON here..."
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-          />
-          <div className="button-row">
-            <button
-              onClick={() => run("dry-run")}
-              disabled={!parsedPayload || status.kind === "running"}
-            >
-              Validate
-            </button>
-            <button
-              onClick={() => run("import")}
-              disabled={!parsedPayload || status.kind === "running"}
-            >
-              Import
-            </button>
-            <button
-              className="secondary"
-              onClick={() => setText(STARTER_TEXT)}
-            >
-              Load example
-            </button>
-            <button className="secondary" onClick={() => setText("")}>
-              Clear
-            </button>
+      <div className="admin-import-card">
+        <textarea
+          className="admin-import-textarea"
+          rows={32}
+          placeholder="Paste project JSON here…"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          spellCheck={false}
+          disabled={isRunning}
+        />
+        {parseError && (
+          <div className="errors admin-import-parse-error">
+            <strong>JSON parse error:</strong> {parseError}
           </div>
-          {parseError && (
-            <div className="errors">
-              <strong>JSON parse error:</strong> {parseError}
-            </div>
+        )}
+        <div className="button-row admin-import-actions">
+          <button className="secondary icon-button" onClick={() => setText(STARTER_TEXT)} disabled={isRunning}>
+            <Icon name="image" /><span>Load example</span>
+          </button>
+          <button className="secondary icon-button" onClick={() => run("dry-run")} disabled={!canRun}>
+            <Icon name="check" /><span>Validate</span>
+          </button>
+          <button className="icon-button" onClick={() => run("import")} disabled={!canRun}>
+            <Icon name="upload" /><span>Import</span>
+          </button>
+          {runningLabel && (
+            <span className="subtle admin-import-running" role="status" aria-live="polite">
+              <span className="skeleton-pulse admin-import-running-dot" />
+              {runningLabel}
+            </span>
           )}
         </div>
-
-        <div>
-          <ResultsPanel status={status} />
+        <div className="admin-import-token-footer">
+          <span className="muted">
+            {token ? "Authenticated as admin" : "No admin token set"} ·{" "}
+          </span>
+          <button className="link" onClick={resetToken}>Reset token</button>
         </div>
       </div>
-    </>
+
+      {status.kind === "error" && (
+        <div className="import-result-card import-result-card--error">
+          <div className="import-result-header">
+            <span className="import-result-icon" aria-hidden="true"><Icon name="warn" size={16} /></span>
+            <div>
+              <h2 className="import-result-title">Request failed</h2>
+              <p className="subtle">{status.message}</p>
+            </div>
+          </div>
+        </div>
+      )}
+      {status.kind === "ok" && <ResultPanel status={status} />}
+    </div>
   );
 }
 
-function ResultsPanel({ status }: { status: Status }) {
-  if (status.kind === "idle") {
-    return (
-      <div className="results">
-        <em>Run Validate or Import to see results.</em>
-      </div>
-    );
-  }
-  if (status.kind === "running") {
-    return (
-      <div className="results">
-        <em>Running…</em>
-      </div>
-    );
-  }
-  if (status.kind === "error") {
-    return (
-      <div className="results errors">
-        <strong>Request failed:</strong> {status.message}
-      </div>
-    );
-  }
+function ResultPanel({ status }: { status: Extract<Status, { kind: "ok" }> }) {
   const { result, mode } = status;
+  const passed = result.errors.length === 0;
+  const totals = Object.values(result.summary).reduce(
+    (a, s) => ({ created: a.created + s.created, updated: a.updated + s.updated }),
+    { created: 0, updated: 0 },
+  );
+  const headline = mode === "dry-run"
+    ? passed ? "Validation passed" : "Validation found issues"
+    : passed ? "Import complete" : "Import finished with errors";
+  const rows = (n: number) => `${n} row${n === 1 ? "" : "s"}`;
+  const summary = totals.created > 0 ? `${rows(totals.created)} created`
+    : totals.updated > 0 ? `${rows(totals.updated)} updated` : "No changes";
+
   return (
-    <div className="results">
-      <h3>{mode === "dry-run" ? "Dry-run result" : "Import result"}</h3>
-      {mode === "import" && result.project_id && (
-        <p>
-          Project saved.{" "}
-          <Link to={`/projects/${result.project_id}`}>View project →</Link>
-        </p>
-      )}
-      {Object.entries(result.summary).map(([table, s]) => {
-        const total = s.created + s.updated + s.skipped + s.failed;
-        if (total === 0) return null;
-        return (
-          <div key={table} className="summary-row">
-            <span>{table}</span>
-            <span>
-              {s.created > 0 && <span className="tag created">+{s.created}</span>}
-              {s.updated > 0 && <span className="tag updated">~{s.updated}</span>}
-              {s.skipped > 0 && <span className="tag skipped">·{s.skipped}</span>}
-              {s.failed > 0 && <span className="tag failed">!{s.failed}</span>}
-            </span>
-          </div>
-        );
-      })}
-      {result.errors.length > 0 && (
-        <details className="errors" open>
-          <summary>{result.errors.length} error(s)</summary>
-          {result.errors.map((e, i) => (
-            <div key={i} className="error-item">
-              <strong>{e.path}</strong> {e.trade && <code>{e.trade}</code>} —{" "}
-              {e.message}
+    <div className={`import-result-card ${passed ? "import-result-card--ok" : "import-result-card--warn"}`}>
+      <div className="import-result-header">
+        <span className="import-result-icon" aria-hidden="true">
+          <Icon name={passed ? "check" : "warn"} size={16} />
+        </span>
+        <div>
+          <h2 className="import-result-title">
+            {headline}<span className="import-result-subtitle"> · {summary}</span>
+          </h2>
+          <p className="subtle">
+            {mode === "dry-run"
+              ? "Dry-run — no rows were written. Run Import to commit."
+              : "Rows have been written to the database."}
+          </p>
+        </div>
+      </div>
+      <div className="import-result-grid">
+        {Object.entries(result.summary).map(([table, s]) => {
+          if (s.created + s.updated + s.skipped + s.failed === 0) return null;
+          return (
+            <div key={table} className="import-result-cell">
+              <div className="import-result-cell-label">{TABLE_LABELS[table] ?? table}</div>
+              <div className="import-result-cell-counts">
+                {s.created > 0 && <span className="import-count import-count--created">+{s.created} created</span>}
+                {s.updated > 0 && <span className="import-count import-count--updated">~{s.updated} updated</span>}
+                {s.skipped > 0 && <span className="import-count import-count--skipped">·{s.skipped} skipped</span>}
+                {s.failed > 0 && <span className="import-count import-count--failed">!{s.failed} failed</span>}
+              </div>
             </div>
-          ))}
-        </details>
+          );
+        })}
+      </div>
+      {result.errors.length > 0 && <ImportErrorList errors={result.errors} />}
+      {mode === "import" && passed && result.project_id && (
+        <div className="import-result-cta">
+          <Link to={`/selections/${result.project_id}`} className="primary-link">View imported project →</Link>
+        </div>
       )}
     </div>
+  );
+}
+
+function ImportErrorList({ errors }: { errors: ImportResult["errors"] }) {
+  const grouped = useMemo(() => {
+    const map = new Map<string, ImportResult["errors"]>();
+    for (const err of errors) {
+      const prefix = err.path.split(/[./]/).slice(0, 2).join(".") || "(root)";
+      map.set(prefix, [...(map.get(prefix) ?? []), err]);
+    }
+    return Array.from(map.entries());
+  }, [errors]);
+  return (
+    <details className="import-error-group" open={errors.length <= 10}>
+      <summary>{errors.length} validation error{errors.length === 1 ? "" : "s"}</summary>
+      {grouped.map(([prefix, items]) => (
+        <div key={prefix} className="import-error-prefix">
+          <div className="import-error-prefix-label">{prefix}</div>
+          {items.map((e, i) => (
+            <div key={i} className="import-error-item">
+              <code>{e.path}</code>
+              {e.trade && <span className="muted"> · {e.trade}</span>}
+              <span> — {e.message}</span>
+            </div>
+          ))}
+        </div>
+      ))}
+    </details>
   );
 }

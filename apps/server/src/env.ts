@@ -7,6 +7,10 @@ const envSchema = z.object({
   PORT: z.coerce.number().int().positive().default(4000),
   ADMIN_TOKEN: z.string().min(1, "ADMIN_TOKEN is required"),
   WEB_ORIGIN: z.string().default("http://localhost:5173"),
+  JWT_SECRET: z
+    .string()
+    .min(16, "JWT_SECRET must be at least 16 chars")
+    .default("dev-jwt-secret-please-change-me"),
 });
 
 const parsed = envSchema.safeParse(process.env);

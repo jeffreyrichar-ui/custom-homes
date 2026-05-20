@@ -1,0 +1,238 @@
+{
+  "external_id": "TCCH-1137",
+  "external_source": "toddcampbell-portal",
+  "project": {
+    "name": "Kingswood Est 7/3 - Verraso 2",
+    "address": "5036 W Braveheart Street"
+  },
+  "rooms": [
+    {
+      "room_name": "Master Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Portobello",
+          "style": "Artfact",
+          "color": "Fendi Deco",
+          "sku": null,
+          "grout_color": "New Taupe",
+          "edge_profile": "Miter",
+          "pattern": "set vertical stripes",
+          "location_in_room": "vanity_backsplash",
+          "notes": "6x6; to ceiling behind all vanities, over door",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Portobello",
+          "style": "Artfact",
+          "color": "Fendi Deco",
+          "sku": null,
+          "grout_color": "New Taupe",
+          "edge_profile": "Miter",
+          "pattern": "set vertical stripes",
+          "location_in_room": "shower_niche",
+          "notes": "6x6; inside master niche",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Portobello",
+          "style": "Artfact",
+          "color": "Fendi Deco",
+          "sku": null,
+          "grout_color": "New Taupe",
+          "edge_profile": "Miter",
+          "pattern": "set vertical stripes",
+          "location_in_room": "tub_surround",
+          "notes": "6x6; tub curb",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Poetry Stone",
+          "color": "Ivory Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight",
+          "location_in_room": "floor",
+          "notes": "12x24; under tub and follow arch",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Poetry Stone",
+          "color": "Ivory Satin",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set vertical straight",
+          "location_in_room": "shower_walls",
+          "notes": "12x24",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Frammente",
+          "color": "White Mosaic Palladiana",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": null,
+          "location_in_room": "shower_floor",
+          "notes": "Mosaic Palladiana; wraps to match tub shape (also goes under tub)",
+          "vendor": null
+        }
+      ]
+    },
+    {
+      "room_name": "Main Suite Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Contempoee CE30 SQU44 STAGLE",
+          "color": "Jasmine Square Star Glossy",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match or TSI Ivory",
+          "pattern": "set vertical straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": "2x6; to ceiling, miter edge, block out for 24x36 mirror",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Contempoee CE30 SQU44 STAGLE",
+          "color": "Jasmine Square Star Glossy",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match or TSI Ivory",
+          "pattern": "set vertical straight",
+          "location_in_room": "shower_niche",
+          "notes": "2x6; back of shower niche",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Spirit Mesmerist MM30",
+          "color": "Glossy",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Miter edges",
+          "pattern": "one row straight + one row horizontal repeat",
+          "location_in_room": "shower_walls",
+          "notes": "3x12; trim Jolly to match",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Sand and Stone SS70 Summit Rectangle Stone",
+          "color": "Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "floor",
+          "notes": "12x24",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Sand and Stone SS70 Summit Rectangle Stone",
+          "color": "Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight",
+          "location_in_room": "shower_floor",
+          "notes": "2x2",
+          "vendor": null
+        }
+      ]
+    },
+    {
+      "room_name": "Upstairs Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Sahara",
+          "color": "Cotta",
+          "sku": null,
+          "grout_color": "Urban Putty",
+          "edge_profile": null,
+          "pattern": "to ceiling vertical, no returns",
+          "location_in_room": "shower_walls_accent",
+          "notes": "1x12 Mesh Mounts; 6 rows border around shower (vertical sides, miter corners, horizontal top)",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Sahara",
+          "color": "Ecru",
+          "sku": null,
+          "grout_color": "Urban Putty",
+          "edge_profile": "Flat polish through body Cotto",
+          "pattern": "set straight parallel with vanity",
+          "location_in_room": "floor",
+          "notes": "12x24",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Sahara",
+          "color": "Ecru",
+          "sku": null,
+          "grout_color": "Urban Putty",
+          "edge_profile": null,
+          "pattern": "set vertical straight",
+          "location_in_room": "shower_walls",
+          "notes": "12x24; inside shower",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Bedrosians",
+          "style": "Sahara",
+          "color": "Ecru",
+          "sku": null,
+          "grout_color": "Urban Putty",
+          "edge_profile": null,
+          "pattern": null,
+          "location_in_room": "shower_floor",
+          "notes": "0.5x4 mosaic",
+          "vendor": null
+        }
+      ]
+    },
+    {
+      "room_name": "Powder Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Lungarno",
+          "style": "Zellige Classique",
+          "color": "Atlas White Sahara Rose",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": "Full wall behind sink",
+          "vendor": "Masonry Center"
+        }
+      ]
+    }
+  ]
+}

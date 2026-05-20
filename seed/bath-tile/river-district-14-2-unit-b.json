@@ -1,0 +1,116 @@
+{
+  "external_id": "TCCH-1077",
+  "external_source": "toddcampbell-portal",
+  "project": {
+    "name": "River District 14/2 - Unit B (Clara)",
+    "address": "18 Ogden Street"
+  },
+  "rooms": [
+    {
+      "room_name": "Master Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Unknown",
+          "style": "Simple Stone",
+          "color": "Blanco Penny Round",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Black",
+          "pattern": "penny round",
+          "location_in_room": "vanity_backsplash",
+          "notes": "6 inch splash; penny size | MANUFACTURER UNKNOWN: confirm with Tamara",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Florida Tile",
+          "style": "Ainslee Park",
+          "color": "Calcatta Gold Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set 30/70",
+          "location_in_room": "floor",
+          "notes": "12x24; parallel with vanity",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Florida Tile",
+          "style": "Ainslee Park",
+          "color": "Calcatta Gold Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set vertical 30/70",
+          "location_in_room": "shower_walls",
+          "notes": "12x24; shower set 30/70 vertical",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Florida Tile",
+          "style": "Ainslee Park",
+          "color": "Calcatta Gold Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "cut to fit",
+          "location_in_room": "shower_floor",
+          "notes": "2x2 or cut to fit",
+          "vendor": null
+        }
+      ]
+    },
+    {
+      "room_name": "Powder Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Color Wheel",
+          "color": "White Matte",
+          "sku": null,
+          "grout_color": "Bright White",
+          "edge_profile": "Black",
+          "pattern": "Lattice",
+          "location_in_room": "vanity_backsplash",
+          "notes": "6 inch splash",
+          "vendor": null
+        }
+      ]
+    },
+    {
+      "room_name": "Up Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Cepac",
+          "style": "Krave",
+          "color": "KR5 SJ Cappucino",
+          "sku": null,
+          "grout_color": null,
+          "edge_profile": "Black",
+          "pattern": null,
+          "location_in_room": "vanity_backsplash",
+          "notes": "6 inch splash; series KR5 SJ",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Florida Tile",
+          "style": "Ainslee Park",
+          "color": "Calcatta Gold Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set 30/70",
+          "location_in_room": "floor",
+          "notes": "12x24; parallel with vanity",
+          "vendor": null
+        }
+      ]
+    }
+  ]
+}

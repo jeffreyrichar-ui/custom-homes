@@ -23,6 +23,7 @@ const entryCommon = {
 
 export const tileEntrySchema = z.object({
   trade: z.literal("tile"),
+  vendor: z.string().nullish(),
   brand: z.string().min(1),
   style: z.string().nullish(),
   color: z.string().nullish(),

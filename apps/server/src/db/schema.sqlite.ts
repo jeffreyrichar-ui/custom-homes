@@ -76,6 +76,7 @@ export const tile_entries = sqliteTable(
     room_id: text("room_id")
       .notNull()
       .references(() => rooms.id, { onDelete: "cascade" }),
+    vendor: text("vendor"),
     brand: text("brand").notNull(),
     style: text("style"),
     color: text("color"),
@@ -196,6 +197,23 @@ export const countertop_entries = sqliteTable(
       t.material,
       t.color,
     ),
+  }),
+);
+
+export const users = sqliteTable(
+  "users",
+  {
+    id: uuidPk(),
+    email: text("email").notNull(),
+    password_hash: text("password_hash").notNull(),
+    name: text("name"),
+    role: text("role").notNull().default("editor"),
+    created_at: text("created_at")
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`),
+  },
+  (t) => ({
+    emailKey: uniqueIndex("users_email_key").on(t.email),
   }),
 );
 

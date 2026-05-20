@@ -152,4 +152,33 @@ describe("runImport", () => {
     expect(result.project_id).toBeNull();
     expect(result.errors.length).toBeGreaterThan(0);
   });
+
+  it("persists the tile vendor field round-trip", async () => {
+    const payload = {
+      project: { name: "Vendor Test", address: "1 Test St" },
+      rooms: [
+        {
+          room_name: "Master Bath",
+          entries: [
+            {
+              trade: "tile",
+              vendor: "Masonry Center",
+              brand: "Marazzi",
+              style: "Persuade PS 41",
+              color: "Beige Matte",
+              location_in_room: "floor",
+            },
+          ],
+        },
+      ],
+    };
+    const result = await runImport(ctx.dbi, payload, { dryRun: false });
+    expect(result.errors).toEqual([]);
+    const rows = await ctx.dbi.query<{ vendor: string | null; brand: string }>(
+      "SELECT vendor, brand FROM tile_entries WHERE brand = $1",
+      ["Marazzi"],
+    );
+    expect(rows[0]?.vendor).toBe("Masonry Center");
+    expect(rows[0]?.brand).toBe("Marazzi");
+  });
 });

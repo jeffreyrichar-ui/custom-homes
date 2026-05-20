@@ -1,11 +1,9 @@
 import { Router } from "express";
 import type { Dbi } from "../db/dbi.js";
-import { adminAuth } from "../middleware/adminAuth.js";
 import { runImport } from "../services/importer.js";
 
 export function makeAdminImportRouter(getDbi: () => Dbi): Router {
   const router = Router();
-  router.use(adminAuth);
 
   router.post("/import", async (req, res, next) => {
     try {

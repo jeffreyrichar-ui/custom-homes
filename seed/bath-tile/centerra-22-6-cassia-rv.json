@@ -1,0 +1,142 @@
+{
+  "external_id": "TCCH-1161",
+  "external_source": "toddcampbell-portal",
+  "project": {
+    "name": "Centerra 22/6 - Cassia RV",
+    "address": "3506 W Retreat Street"
+  },
+  "rooms": [
+    {
+      "room_name": "Master Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Remedy",
+          "color": "RD 20",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "TSI Ivory",
+          "pattern": "8 inch splash",
+          "location_in_room": "vanity_backsplash",
+          "notes": "2x10; same tile applied to vanity backsplash + tub surround + inside niche",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Remedy",
+          "color": "RD 20",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "TSI Ivory",
+          "pattern": "8 inch splash",
+          "location_in_room": "tub_surround",
+          "notes": "2x10; face of shower/tub wall",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Remedy",
+          "color": "RD 20",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "TSI Ivory",
+          "pattern": "8 inch splash",
+          "location_in_room": "shower_niche",
+          "notes": "2x10; inside niche",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Emser",
+          "style": "Visconde",
+          "color": "Oro Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight",
+          "location_in_room": "floor",
+          "notes": "12x24; parallel with vanity",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Emser",
+          "style": "Visconde",
+          "color": "Oro Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "TSI Ivory",
+          "pattern": "set vertical straight",
+          "location_in_room": "shower_walls",
+          "notes": "12x24",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Emser",
+          "style": "Visconde",
+          "color": "Oro",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": null,
+          "location_in_room": "shower_floor",
+          "notes": "AMBIGUOUS: portal had Pattern:'d' (single letter, likely typo). Verify intended pattern.",
+          "vendor": null
+        }
+      ]
+    },
+    {
+      "room_name": "Main Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Miramo",
+          "color": "Pearl MR 44",
+          "sku": null,
+          "grout_color": "Bright White",
+          "edge_profile": "Jolly to match",
+          "pattern": "1x6 set straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": "6 inch splash",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Marazzi",
+          "style": "Persuade",
+          "color": "Persuade White",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight",
+          "location_in_room": "floor",
+          "notes": "12x24; parallel with vanity",
+          "vendor": "Masonry Center"
+        }
+      ]
+    },
+    {
+      "room_name": "Powder Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Miramo",
+          "color": "Pearl MR 44 PICKET",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Chrome",
+          "pattern": "set vertical straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": "6 inch splash; to ceiling, no returns",
+          "vendor": null
+        }
+      ]
+    }
+  ]
+}

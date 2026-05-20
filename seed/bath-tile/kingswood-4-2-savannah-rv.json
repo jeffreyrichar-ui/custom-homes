@@ -1,0 +1,124 @@
+{
+  "external_id": "TCCH-1177",
+  "external_source": "toddcampbell-portal",
+  "project": {
+    "name": "Kingswood Est 4/2 - Savannah RV",
+    "address": null
+  },
+  "rooms": [
+    {
+      "room_name": "Master Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Miramo",
+          "color": "Pearl MR 44",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolley to match",
+          "pattern": "set horizontal straight",
+          "location_in_room": "vanity_backsplash",
+          "notes": "6 inch splash",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Emser",
+          "style": "Visconde",
+          "color": "Oro Matte",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": null,
+          "pattern": "set straight parallel with door",
+          "location_in_room": "floor",
+          "notes": "12x24",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Emser",
+          "style": "Visconde",
+          "color": "Oro Polished",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "SBN or jolly to match",
+          "pattern": "set horizontal straight",
+          "location_in_room": "shower_walls",
+          "notes": "12x24",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Emser",
+          "style": "Visconde",
+          "color": "Oro Polished",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "SBN or jolly to match",
+          "pattern": null,
+          "location_in_room": "shower_floor",
+          "notes": "2x2; add niche with 2x2 flooring material",
+          "vendor": null
+        },
+        {
+          "trade": "tile",
+          "brand": "Emser",
+          "style": "Visconde",
+          "color": "Oro Polished",
+          "sku": "Rolling Fog",
+          "grout_color": "Bleached Wood",
+          "edge_profile": "SBN or jolly to match",
+          "pattern": "straight horizontal",
+          "location_in_room": "tub_surround",
+          "notes": "12x24; 48 inch tall wainscot, cap in SBN; trim Satin Nickel",
+          "vendor": null
+        }
+      ]
+    },
+    {
+      "room_name": "Main Bath",
+      "entries": [
+        {
+          "trade": "tile",
+          "brand": "Lungarno",
+          "style": "Oat",
+          "color": "Discs / Circles MMOATQTRMT",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "BBRZ or jolly to match",
+          "pattern": "1/2 sheet splash",
+          "location_in_room": "vanity_backsplash",
+          "notes": null,
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Marazzi",
+          "style": "PS 41",
+          "color": "Beige Matte",
+          "sku": null,
+          "grout_color": null,
+          "edge_profile": null,
+          "pattern": "straight parallel with vanity",
+          "location_in_room": "floor",
+          "notes": "12x24",
+          "vendor": "Masonry Center"
+        },
+        {
+          "trade": "tile",
+          "brand": "Daltile",
+          "style": "Visual Impression Quadrangle",
+          "color": "Beige VIII",
+          "sku": null,
+          "grout_color": "Bleached Wood",
+          "edge_profile": "Jolly to match",
+          "pattern": "set vertical straight",
+          "location_in_room": "tub_surround",
+          "notes": null,
+          "vendor": null
+        }
+      ]
+    }
+  ]
+}

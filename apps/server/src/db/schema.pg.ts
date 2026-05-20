@@ -71,6 +71,7 @@ export const tile_entries = pgTable(
     room_id: uuid("room_id")
       .notNull()
       .references(() => rooms.id, { onDelete: "cascade" }),
+    vendor: text("vendor"),
     brand: text("brand").notNull(),
     style: text("style"),
     color: text("color"),
@@ -191,6 +192,23 @@ export const countertop_entries = pgTable(
       t.material,
       t.color,
     ),
+  }),
+);
+
+export const users = pgTable(
+  "users",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    email: text("email").notNull(),
+    password_hash: text("password_hash").notNull(),
+    name: text("name"),
+    role: text("role").notNull().default("editor"),
+    created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => ({
+    emailKey: uniqueIndex("users_email_key").on(t.email),
   }),
 );
 

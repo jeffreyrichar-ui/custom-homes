@@ -1,0 +1,79 @@
+import { useState } from "react";
+import { TRADE_KINDS } from "@custom-homes/shared";
+import { api } from "../lib/api.js";
+import { Icon } from "./Icon.js";
+
+type Props = { projectId: string };
+
+type State =
+  | { kind: "idle" }
+  | { kind: "running"; label: string }
+  | { kind: "done"; url: string; label: string }
+  | { kind: "error"; message: string };
+
+export function PdfActions({ projectId }: Props) {
+  const [state, setState] = useState<State>({ kind: "idle" });
+
+  const run = async (label: string, fn: () => Promise<{ pdf_url: string }>) => {
+    setState({ kind: "running", label });
+    try {
+      const res = await fn();
+      setState({ kind: "done", url: res.pdf_url, label });
+    } catch (err) {
+      setState({ kind: "error", message: err instanceof Error ? err.message : String(err) });
+    }
+  };
+
+  return (
+    <div className="pdf-actions">
+      <button
+        type="button"
+        className="icon-button"
+        disabled={state.kind === "running"}
+        onClick={() =>
+          run("Full project", () => api.generateFullPdf(projectId))
+        }
+      >
+        <Icon name="download" />
+        <span>Full project PDF</span>
+      </button>
+      <select
+        className="ac-input"
+        style={{ width: "auto" }}
+        defaultValue=""
+        onChange={(e) => {
+          const t = e.target.value;
+          e.currentTarget.value = "";
+          if (!t) return;
+          run(`${t} sheet`, () => api.generateTradePdf(projectId, t));
+        }}
+      >
+        <option value="">Per-trade PDF…</option>
+        {TRADE_KINDS.map((t) => (
+          <option key={t} value={t}>
+            {t} sheet
+          </option>
+        ))}
+      </select>
+      {state.kind === "running" && (
+        <span className="pdf-status">Generating {state.label}…</span>
+      )}
+      {state.kind === "done" && (
+        <span className="pdf-status">
+          <Icon name="check" /> {state.label} ready —{" "}
+          <a
+            href={state.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="icon-link"
+          >
+            open <Icon name="external" size={12} />
+          </a>
+        </span>
+      )}
+      {state.kind === "error" && (
+        <span className="pdf-status error">{state.message}</span>
+      )}
+    </div>
+  );
+}

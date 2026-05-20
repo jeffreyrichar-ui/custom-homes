@@ -1,0 +1,1620 @@
+{
+  "generated_at": "2026-05-13T21:00:34.752Z",
+  "total_unique_tiles": 116,
+  "total_instances": 218,
+  "image_directory": "seed/bath-tile/images/",
+  "filename_format": "<brand-slug>__<cache-key-slug>.jpg (cache key = real SKU when present, otherwise AUTO-<hash>)",
+  "importer_command": "pnpm db:import-tile-images",
+  "prompts": [
+    {
+      "cache_key": "AUTO-ee0789",
+      "filename": "emser__auto-ee0789.jpg",
+      "brand": "Emser",
+      "style": "Visconde",
+      "color": "Oro Polished",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Emser. Style/collection: Visconde. Color: Oro Polished. polished glossy finish, reflective surface. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 7,
+      "used_in": [
+        "Kingswood Est 2/3 - Walker Custom — Master Bath — shower_walls",
+        "Kingswood Est 2/3 - Walker Custom — Master Bath — shower_bench",
+        "Kingswood Est 4/2 - Savannah RV — Master Bath — shower_walls",
+        "Kingswood Est 4/2 - Savannah RV — Master Bath — shower_floor",
+        "Kingswood Est 5/5 - Owyhee RV — Master Bath — shower_walls",
+        "Kingswood Est 5/5 - Owyhee RV — Master Bath — shower_floor",
+        "Kingswood Est #2 12/2 - Cottonwood (Dahlia) — Master Bath — shower_walls"
+      ]
+    },
+    {
+      "cache_key": "AUTO-d880af",
+      "filename": "dal__auto-d880af.jpg",
+      "brand": "Dal",
+      "style": "Miramo",
+      "color": "Pearl MR 44",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Miramo. Color: Pearl MR 44. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 5,
+      "used_in": [
+        "Centerra 22/6 - Cassia RV — Main Bath — vanity_backsplash",
+        "Kingswood Est 4/2 - Savannah RV — Master Bath — vanity_backsplash",
+        "Kingswood Est #2 12/2 - Cottonwood (Dahlia) — Master Bath — vanity_backsplash",
+        "Kingswood Est #2 12/2 - Cottonwood (Dahlia) — Master Bath — tub_surround",
+        "Kingswood Est #2 12/2 - Cottonwood (Dahlia) — Master Bath — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-c167d8",
+      "filename": "dal__auto-c167d8.jpg",
+      "brand": "Dal",
+      "style": "Sand and Stone SS70 Summit Rectangle Stone",
+      "color": "Matte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Sand and Stone SS70 Summit Rectangle Stone. Color: Matte. matte finish, low sheen, soft micro-texture. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 5,
+      "used_in": [
+        "Centerra 27/6 - Cassia RV — Main Bath — floor",
+        "Centerra 8/2 - Adamson Custom — Primary 2 Bath — floor",
+        "Centerra 8/2 - Adamson Custom — Primary 2 Bath — shower_floor",
+        "Kingswood Est 7/3 - Verraso 2 — Main Suite Bath — floor",
+        "Kingswood Est 7/3 - Verraso 2 — Main Suite Bath — shower_floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-8f6bb3",
+      "filename": "dal__auto-8f6bb3.jpg",
+      "brand": "Dal",
+      "style": "Sand and Stone",
+      "color": "Basin",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Sand and Stone. Color: Basin. natural ceramic finish, slight surface variation. Approximate size: 24x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 5,
+      "used_in": [
+        "Centerra 8/2 - Adamson Custom — Master Bath — floor",
+        "Centerra 8/2 - Adamson Custom — Master Bath — shower_bench",
+        "Centerra 8/2 - Adamson Custom — Master Bath — shower_floor",
+        "Oakwood Meadows 1/1 - Eklund — Master Bath — floor",
+        "Oakwood Meadows 1/1 - Eklund — Master Bath — shower_floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-157dea",
+      "filename": "emser__auto-157dea.jpg",
+      "brand": "Emser",
+      "style": "Prodigy",
+      "color": "Agnesi",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Emser. Style/collection: Prodigy. Color: Agnesi. natural ceramic finish, slight surface variation. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 5,
+      "used_in": [
+        "Centerra 8/2 - Adamson Custom — Secondary Bath — floor",
+        "Centerra 8/2 - Adamson Custom — Secondary Bath — tub_surround",
+        "Kingswood Est 5/2 - Cassia RV (Hamptons) — Main Bath — floor",
+        "Kingswood Est #2 11/2 - Dittman Willoughby-RV (Abby) — Up Main Bath — floor",
+        "Kingswood Est #2 11/2 - Dittman Willoughby-RV (Abby) — Up Jack-n-Jill Bath — floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-fbe315",
+      "filename": "emser__auto-fbe315.jpg",
+      "brand": "Emser",
+      "style": "Visconde",
+      "color": "Oro Matte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Emser. Style/collection: Visconde. Color: Oro Matte. matte finish, low sheen, soft micro-texture. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 4,
+      "used_in": [
+        "Centerra 22/6 - Cassia RV — Master Bath — floor",
+        "Centerra 22/6 - Cassia RV — Master Bath — shower_walls",
+        "Kingswood Est 4/2 - Savannah RV — Master Bath — floor",
+        "Kingswood Est #2 12/2 - Cottonwood (Dahlia) — Master Bath — floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-83af24",
+      "filename": "masonry-center__auto-83af24.jpg",
+      "brand": "Masonry Center",
+      "style": "Borghini Classico Mos Vial",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Borghini Classico Mos Vial. natural ceramic finish, slight surface variation. Approximate size: 75 x 6 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 4,
+      "used_in": [
+        "Centerra 27/6 - Cassia RV — Master Bath — vanity_backsplash",
+        "Centerra 27/6 - Cassia RV — Master Bath — shower_niche",
+        "Kingswood Est 4/5 - Cassia RV — Master Bath — vanity_backsplash",
+        "Kingswood Est 4/5 - Cassia RV — Master Bath — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-7c8e99",
+      "filename": "emser__auto-7c8e99.jpg",
+      "brand": "Emser",
+      "style": "Prodigy",
+      "color": "Cruz Matte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Emser. Style/collection: Prodigy. Color: Cruz Matte. matte finish, low sheen, soft micro-texture. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 4,
+      "used_in": [
+        "Centerra 8/2 - Adamson Custom — Media Room Bath — floor",
+        "Kingswood Est 4/5 - Cassia RV — Main Bath — floor",
+        "Kingswood Est 4/5 - Cassia RV — Main Bath — tub_surround",
+        "Oakwood Meadows 3/1 - Tantillo Custom — Up Bathroom West — floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-1174f6",
+      "filename": "masonry-center__auto-1174f6.jpg",
+      "brand": "Masonry Center",
+      "style": "Belvedere",
+      "color": "Ivory Matte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Belvedere. Color: Ivory Matte. matte finish, low sheen, soft micro-texture. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 4,
+      "used_in": [
+        "Kingswood Est 2/3 - Walker Custom — Main Bath 2 — floor",
+        "Kingswood Est #2 11/2 - Dittman Willoughby-RV (Abby) — Master Bath — floor",
+        "Kingswood Est #2 11/2 - Dittman Willoughby-RV (Abby) — Master Bath — shower_floor",
+        "Oakwood Meadows 3/1 - Tantillo Custom — Up Bathroom East — floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-338b1d",
+      "filename": "masonry-center__auto-338b1d.jpg",
+      "brand": "Masonry Center",
+      "style": "Persuade PS 41",
+      "color": "Beige Matte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Persuade PS 41. Color: Beige Matte. matte finish, low sheen, soft micro-texture. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 4,
+      "used_in": [
+        "Kingswood Est 4/2 - Savannah RV — Main Bath — floor",
+        "Kingswood Est #2 12/2 - Cottonwood (Dahlia) — Main Bath — floor",
+        "Kingswood Estates 8/3 - Brentwood (Francie) — Bathroom 3 — floor",
+        "Kingswood Estates 8/3 - Brentwood (Francie) — Bathroom 3 — shower_walls"
+      ]
+    },
+    {
+      "cache_key": "AUTO-1f9a2e",
+      "filename": "florida-ainslee__auto-1f9a2e.jpg",
+      "brand": "Florida Ainslee",
+      "style": null,
+      "color": "Calcatta Gold Matte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Florida Ainslee. Color: Calcatta Gold Matte. matte finish, low sheen, soft micro-texture. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 4,
+      "used_in": [
+        "River District 14/2 - Unit B (Clara) — Master Bath — floor",
+        "River District 14/2 - Unit B (Clara) — Master Bath — shower_walls",
+        "River District 14/2 - Unit B (Clara) — Master Bath — shower_floor",
+        "River District 14/2 - Unit B (Clara) — Up Bath — floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-2c412b",
+      "filename": "dal__auto-2c412b.jpg",
+      "brand": "Dal",
+      "style": "Remedy",
+      "color": "RD 20",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Remedy. Color: RD 20. natural ceramic finish, slight surface variation. Approximate size: 2x10 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 3,
+      "used_in": [
+        "Centerra 22/6 - Cassia RV — Master Bath — vanity_backsplash",
+        "Centerra 22/6 - Cassia RV — Master Bath — tub_surround",
+        "Centerra 22/6 - Cassia RV — Master Bath — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-85a804",
+      "filename": "bedrosians__auto-85a804.jpg",
+      "brand": "Bedrosians",
+      "style": "Thaddeus",
+      "color": "Creme",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Thaddeus. Color: Creme. natural ceramic finish, slight surface variation. Approximate size: 24x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 3,
+      "used_in": [
+        "Centerra 27/6 - Cassia RV — Master Bath — floor",
+        "Centerra 27/6 - Cassia RV — Master Bath — shower_floor",
+        "Oakwood Meadows 1/1 - Eklund — Bed 3 Bathroom — floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-4f18b5",
+      "filename": "masonry-center__auto-4f18b5.jpg",
+      "brand": "Masonry Center",
+      "style": "Borghini Classico",
+      "color": "Polished",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Borghini Classico. Color: Polished. polished glossy finish, reflective surface. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 3,
+      "used_in": [
+        "Centerra 27/6 - Cassia RV — Master Bath — shower_walls",
+        "Kingswood Est 4/5 - Cassia RV — Master Bath — shower_walls",
+        "Kingswood Est 4/5 - Cassia RV — Master Bath — shower_floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-ae3008",
+      "filename": "dal-spirit__auto-ae3008.jpg",
+      "brand": "Dal Spirit",
+      "style": "Mesmerist MM30",
+      "color": "Glossy",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal Spirit. Style/collection: Mesmerist MM30. Color: Glossy. polished glossy finish, reflective surface. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 3,
+      "used_in": [
+        "Centerra 27/6 - Cassia RV — Main Bath — tub_surround",
+        "Centerra 8/2 - Adamson Custom — Primary 2 Bath — shower_walls",
+        "Kingswood Est 7/3 - Verraso 2 — Main Suite Bath — shower_walls"
+      ]
+    },
+    {
+      "cache_key": "AUTO-ca0890",
+      "filename": "bedrosians__auto-ca0890.jpg",
+      "brand": "Bedrosians",
+      "style": "Chroma",
+      "color": "White",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Chroma. Color: White. natural ceramic finish, slight surface variation. Approximate size: 2x18 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 3,
+      "used_in": [
+        "Centerra 8/2 - Adamson Custom — Master Bath — vanity_backsplash",
+        "Centerra 8/2 - Adamson Custom — Master Bath — tub_surround",
+        "Centerra 8/2 - Adamson Custom — Master Bath — shower_walls"
+      ]
+    },
+    {
+      "cache_key": "AUTO-2d08ab",
+      "filename": "masonry-center__auto-2d08ab.jpg",
+      "brand": "Masonry Center",
+      "style": "AO Studio Haven",
+      "color": "Espresso SN75 Glossy",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: AO Studio Haven. Color: Espresso SN75 Glossy. polished glossy finish, reflective surface. Approximate size: 4x12 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 3,
+      "used_in": [
+        "Kingswood Est 2/3 - Walker Custom — Master Bath — vanity_backsplash",
+        "Kingswood Est 2/3 - Walker Custom — Master Bath — shower_niche",
+        "Kingswood Est 5/5 - Owyhee RV — Master Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-a42dd8",
+      "filename": "masonry-center__auto-a42dd8.jpg",
+      "brand": "Masonry Center",
+      "style": "Marazzi Crafthouse CH44",
+      "color": "Argilla",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Marazzi Crafthouse CH44. Color: Argilla. natural ceramic finish, slight surface variation. Approximate size: 24x48 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 3,
+      "used_in": [
+        "Kingswood Est 2/3 - Walker Custom — Smaller Bedroom Bath — floor",
+        "Kingswood Est 2/3 - Walker Custom — Smaller Bedroom Bath — shower_floor",
+        "Kingswood Est 5/5 - Owyhee RV — Main Bath — floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-43ccfc",
+      "filename": "dal__auto-43ccfc.jpg",
+      "brand": "Dal",
+      "style": "Marble Attache Lavish MA 70",
+      "color": "Diamond",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Marble Attache Lavish MA 70. Color: Diamond. natural ceramic finish, slight surface variation. Approximate size: 24x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 3,
+      "used_in": [
+        "Kingswood Est 5/2 - Cassia RV (Hamptons) — Master Bath — floor",
+        "Kingswood Est 5/2 - Cassia RV (Hamptons) — Master Bath — shower_walls",
+        "Kingswood Est 5/2 - Cassia RV (Hamptons) — Master Bath — shower_floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-337d23",
+      "filename": "masonry-center__auto-337d23.jpg",
+      "brand": "Masonry Center",
+      "style": "Ragnos Look",
+      "color": "R8FP Beige",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Ragnos Look. Color: R8FP Beige. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 3,
+      "used_in": [
+        "Kingswood Est 5/5 - Owyhee RV — Main Bath — vanity_backsplash",
+        "Kingswood Est #2 13/2 - Winstead Modified (Gemma) — Flex Room Ensuite — vanity_backsplash",
+        "Kingswood Est #2 13/2 - Winstead Modified (Gemma) — Flex Room Ensuite — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-9dc4f6",
+      "filename": "masonry-center__auto-9dc4f6.jpg",
+      "brand": "Masonry Center",
+      "style": "Portabello Artfact",
+      "color": "Fendi Deco",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Portabello Artfact. Color: Fendi Deco. natural ceramic finish, slight surface variation. Approximate size: 6x6 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 3,
+      "used_in": [
+        "Kingswood Est 7/3 - Verraso 2 — Master Bath — vanity_backsplash",
+        "Kingswood Est 7/3 - Verraso 2 — Master Bath — shower_niche",
+        "Kingswood Est 7/3 - Verraso 2 — Master Bath — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-de4517",
+      "filename": "bedrosians__auto-de4517.jpg",
+      "brand": "Bedrosians",
+      "style": "Sahara",
+      "color": "Ecru",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Sahara. Color: Ecru. natural ceramic finish, slight surface variation. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 3,
+      "used_in": [
+        "Kingswood Est 7/3 - Verraso 2 — Upstairs Bath — floor",
+        "Kingswood Est 7/3 - Verraso 2 — Upstairs Bath — shower_walls",
+        "Kingswood Est 7/3 - Verraso 2 — Upstairs Bath — shower_floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-e441a4",
+      "filename": "masonry-center__auto-e441a4.jpg",
+      "brand": "Masonry Center",
+      "style": "Pins Blue Mosaic",
+      "color": "Rolling Fog",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Pins Blue Mosaic. Color: Rolling Fog. natural ceramic finish, slight surface variation. Approximate size: 1x6 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 3,
+      "used_in": [
+        "Kingswood Est #2 13/3 - Cypress Modified (Betsy) — Master Bath — vanity_backsplash",
+        "Kingswood Est #2 13/3 - Cypress Modified (Betsy) — Master Bath — tub_surround",
+        "Kingswood Est #2 13/3 - Cypress Modified (Betsy) — Master Bath — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-53d923",
+      "filename": "dal__auto-53d923.jpg",
+      "brand": "Dal",
+      "style": "Marble Attache Lavish MA 70",
+      "color": "Matte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Marble Attache Lavish MA 70. Color: Matte. matte finish, low sheen, soft micro-texture. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 3,
+      "used_in": [
+        "Kingswood Est #2 13/3 - Cypress Modified (Betsy) — Master Bath — floor",
+        "Kingswood Est #2 13/3 - Cypress Modified (Betsy) — Master Bath — shower_walls",
+        "Kingswood Est #2 13/3 - Cypress Modified (Betsy) — Master Bath — shower_floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-0870a5",
+      "filename": "masonry-center__auto-0870a5.jpg",
+      "brand": "Masonry Center",
+      "style": "Brechia Mandoria",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Brechia Mandoria. natural ceramic finish, slight surface variation. Approximate size: 24x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 3,
+      "used_in": [
+        "Kingswood Estates 8/3 - Brentwood (Francie) — Master Bath — floor",
+        "Kingswood Estates 8/3 - Brentwood (Francie) — Master Bath — shower_walls",
+        "Kingswood Estates 8/3 - Brentwood (Francie) — Master Bath — shower_floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-684010",
+      "filename": "dal__auto-684010.jpg",
+      "brand": "Dal",
+      "style": "Contempoee Jasmine CE30",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Contempoee Jasmine CE30. natural ceramic finish, slight surface variation. Approximate size: 4x4 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 3,
+      "used_in": [
+        "Kingswood Estates 8/3 - Brentwood (Francie) — Master Bath — tub_surround",
+        "Kingswood Estates 8/3 - Brentwood (Francie) — Master Bath — vanity_backsplash",
+        "Kingswood Estates 8/3 - Brentwood (Francie) — Master Bath — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-c0709f",
+      "filename": "dal__auto-c0709f.jpg",
+      "brand": "Dal",
+      "style": "Island Stone Phoenix",
+      "color": "Ivory",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Island Stone Phoenix. Color: Ivory. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 3,
+      "used_in": [
+        "Oakwood Meadows 1/1 - Eklund — Master Bath — vanity_backsplash",
+        "Oakwood Meadows 1/1 - Eklund — Master Bath — shower_walls",
+        "Oakwood Meadows 1/1 - Eklund — Master Bath — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-2ed5d0",
+      "filename": "tile-shop__auto-2ed5d0.jpg",
+      "brand": "Tile Shop",
+      "style": "Sami Materici",
+      "color": "Visone + Latte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Tile Shop. Style/collection: Sami Materici. Color: Visone + Latte. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 3,
+      "used_in": [
+        "Oakwood Meadows 3/1 - Tantillo Custom — Main Floor Guest — vanity_backsplash",
+        "Oakwood Meadows 3/1 - Tantillo Custom — Main Floor Guest — shower_walls_accent",
+        "Oakwood Meadows 3/1 - Tantillo Custom — Main Floor Guest — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-138d24",
+      "filename": "emser__auto-138d24.jpg",
+      "brand": "Emser",
+      "style": "Visconde",
+      "color": "Oro",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Emser. Style/collection: Visconde. Color: Oro. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Centerra 22/6 - Cassia RV — Master Bath — shower_floor",
+        "Kingswood Est 5/5 - Owyhee RV — Master Bath — floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-de7627",
+      "filename": "masonry-center__auto-de7627.jpg",
+      "brand": "Masonry Center",
+      "style": "Borghini Classico Bucatini",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Borghini Classico Bucatini. natural ceramic finish, slight surface variation. Approximate size: 4x16 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Centerra 27/6 - Cassia RV — Master Bath — tub_surround",
+        "Centerra 27/6 - Cassia RV — Master Bath — shower_walls_accent"
+      ]
+    },
+    {
+      "cache_key": "AUTO-792324",
+      "filename": "dal__auto-792324.jpg",
+      "brand": "Dal",
+      "style": "Contempee CE30 SQU 44 Stagle",
+      "color": "Jasmine Square Star Glossy",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Contempee CE30 SQU 44 Stagle. Color: Jasmine Square Star Glossy. polished glossy finish, reflective surface. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Centerra 27/6 - Cassia RV — Main Bath — vanity_backsplash",
+        "Centerra 27/6 - Cassia RV — Main Bath — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-b1a2e4",
+      "filename": "masonry-center__auto-b1a2e4.jpg",
+      "brand": "Masonry Center",
+      "style": "Marrazi CH 40",
+      "color": "Pumice",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Marrazi CH 40. Color: Pumice. natural ceramic finish, slight surface variation. Approximate size: 24x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Est 2/3 - Walker Custom — Master Bath — floor",
+        "Kingswood Est 2/3 - Walker Custom — Master Bath — shower_floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-8a16be",
+      "filename": "masonry-center__auto-8a16be.jpg",
+      "brand": "Masonry Center",
+      "style": "Portabello Charlestone",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Portabello Charlestone. natural ceramic finish, slight surface variation. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Est 2/5 - Cassia RV — Master Bath — floor",
+        "Kingswood Est 2/5 - Cassia RV — Master Bath — shower_floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-2a37d3",
+      "filename": "bedrosians__auto-2a37d3.jpg",
+      "brand": "Bedrosians",
+      "style": "Purestone 12",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Purestone 12. natural ceramic finish, slight surface variation. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Est 2/5 - Cassia RV — Main Bath — floor",
+        "Kingswood Est 2/5 - Cassia RV — Main Bath — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-3f1173",
+      "filename": "masonry-center__auto-3f1173.jpg",
+      "brand": "Masonry Center",
+      "style": "Lungarno Oat",
+      "color": "Discs / Circles MMOATQTRMT",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Lungarno Oat. Color: Discs / Circles MMOATQTRMT. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Est 4/2 - Savannah RV — Main Bath — vanity_backsplash",
+        "Kingswood Est #2 12/2 - Cottonwood (Dahlia) — Main Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-894422",
+      "filename": "dal__auto-894422.jpg",
+      "brand": "Dal",
+      "style": "Visual Impression Quadrangle",
+      "color": "Beige VIII",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Visual Impression Quadrangle. Color: Beige VIII. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Est 4/2 - Savannah RV — Main Bath — tub_surround",
+        "Kingswood Est #2 12/2 - Cottonwood (Dahlia) — Main Bath — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-494918",
+      "filename": "unknown__auto-494918.jpg",
+      "brand": "Unknown",
+      "style": null,
+      "color": "Rolling Fog",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Unknown. Color: Rolling Fog. natural ceramic finish, slight surface variation. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Est 5/2 - Cassia RV (Hamptons) — Master Bath — tub_surround",
+        "Kingswood Est 5/5 - Owyhee RV — Master Bath — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-b3b318",
+      "filename": "masonry-center__auto-b3b318.jpg",
+      "brand": "Masonry Center",
+      "style": "Hustle Shimmie",
+      "color": "Soul City",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Hustle Shimmie. Color: Soul City. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Est 5/2 - Cassia RV (Hamptons) — Main Bath — vanity_backsplash",
+        "Kingswood Est #2 13/3 - Cypress Modified (Betsy) — Main Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-08b7e8",
+      "filename": "dal__auto-08b7e8.jpg",
+      "brand": "Dal",
+      "style": "Contempoee CE30 SQU44 STAGLE",
+      "color": "Jasmine Square Star Glossy",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Contempoee CE30 SQU44 STAGLE. Color: Jasmine Square Star Glossy. polished glossy finish, reflective surface. Approximate size: 2x6 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Est 7/3 - Verraso 2 — Main Suite Bath — vanity_backsplash",
+        "Kingswood Est 7/3 - Verraso 2 — Main Suite Bath — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-5b1e1b",
+      "filename": "masonry-center__auto-5b1e1b.jpg",
+      "brand": "Masonry Center",
+      "style": "Glace Mastice 3D Raye",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Glace Mastice 3D Raye. natural ceramic finish, slight surface variation. Approximate size: 3x8 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Est #2 11/2 - Dittman Willoughby-RV (Abby) — Master Bath — vanity_backsplash",
+        "Kingswood Est #2 11/2 - Dittman Willoughby-RV (Abby) — Master Bath — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-e75e70",
+      "filename": "bedrosians__auto-e75e70.jpg",
+      "brand": "Bedrosians",
+      "style": "Marin",
+      "color": "Aloe Green Matte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Marin. Color: Aloe Green Matte. matte finish, low sheen, soft micro-texture. Penny round mosaic on mesh-mount sheet — show one square sheet, tiles ~1 inch round. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Est #2 11/2 - Dittman Willoughby-RV (Abby) — Up Main Bath — vanity_backsplash",
+        "Kingswood Est #2 11/2 - Dittman Willoughby-RV (Abby) — Up Main Bath — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-f37e50",
+      "filename": "bedrosians__auto-f37e50.jpg",
+      "brand": "Bedrosians",
+      "style": "Marin",
+      "color": "Aloe Green Light",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Marin. Color: Aloe Green Light. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Est #2 11/2 - Dittman Willoughby-RV (Abby) — Powder Bath — vanity_backsplash",
+        "Kingswood Est #2 13/3 - Cypress Modified (Betsy) — Powder Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-748d09",
+      "filename": "bedrosians__auto-748d09.jpg",
+      "brand": "Bedrosians",
+      "style": "Marin",
+      "color": "Aloe Green Glass / Misty Blue Gloss",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Marin. Color: Aloe Green Glass / Misty Blue Gloss. polished glossy finish, reflective surface. Approximate size: 5x10 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Est #2 11/2 - Dittman Willoughby-RV (Abby) — Up Jack-n-Jill Bath — vanity_backsplash",
+        "Kingswood Est #2 11/2 - Dittman Willoughby-RV (Abby) — Up Jack-n-Jill Bath — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-3af99a",
+      "filename": "emser__auto-3af99a.jpg",
+      "brand": "Emser",
+      "style": "Civillian",
+      "color": "Citizen",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Emser. Style/collection: Civillian. Color: Citizen. natural ceramic finish, slight surface variation. Approximate size: 2x2 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Est #2 12/2 - Cottonwood (Dahlia) — Master Bath — shower_floor",
+        "Kingswood Est #2 13/2 - Winstead Modified (Gemma) — Master Bath — shower_floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-d8f964",
+      "filename": "masonry-center__auto-d8f964.jpg",
+      "brand": "Masonry Center",
+      "style": "MSI Sinfonio",
+      "color": "Panio Abedul",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: MSI Sinfonio. Color: Panio Abedul. natural ceramic finish, slight surface variation. Approximate size: 5x9 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Est #2 12/2 - Cottonwood (Dahlia) — 2nd Master Suite — vanity_backsplash",
+        "Kingswood Est #2 12/2 - Cottonwood (Dahlia) — 2nd Master Suite — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-18a674",
+      "filename": "masonry-center__auto-18a674.jpg",
+      "brand": "Masonry Center",
+      "style": "Persuade PS 40",
+      "color": "White",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Persuade PS 40. Color: White. natural ceramic finish, slight surface variation. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Est #2 12/2 - Cottonwood (Dahlia) — 2nd Master Suite — floor",
+        "Kingswood Est #2 12/2 - Cottonwood (Dahlia) — 2nd Master Suite — shower_walls"
+      ]
+    },
+    {
+      "cache_key": "AUTO-fe8425",
+      "filename": "masonry-center__auto-fe8425.jpg",
+      "brand": "Masonry Center",
+      "style": "A Studio Haven",
+      "color": "Espresso SN75 Glossy",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: A Studio Haven. Color: Espresso SN75 Glossy. polished glossy finish, reflective surface. Approximate size: 4x12 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Est #2 13/2 - Winstead Modified (Gemma) — Master Bath — vanity_backsplash",
+        "Kingswood Est #2 13/2 - Winstead Modified (Gemma) — Master Bath — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-146c99",
+      "filename": "masonry-center__auto-146c99.jpg",
+      "brand": "Masonry Center",
+      "style": "Marrazi Crafthouse CH40",
+      "color": "PUMICE",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Marrazi Crafthouse CH40. Color: PUMICE. natural ceramic finish, slight surface variation. Approximate size: 8x8 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Est #2 13/2 - Winstead Modified (Gemma) — Flex Room Ensuite — floor",
+        "Kingswood Est #2 13/2 - Winstead Modified (Gemma) — Flex Room Ensuite — shower_walls"
+      ]
+    },
+    {
+      "cache_key": "AUTO-1a4bbd",
+      "filename": "masonry-center__auto-1a4bbd.jpg",
+      "brand": "Masonry Center",
+      "style": "Persuade",
+      "color": "White",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Persuade. Color: White. natural ceramic finish, slight surface variation. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Kingswood Estates 8/3 - Brentwood (Francie) — Bathroom 2 — floor",
+        "Kingswood Estates 8/3 - Brentwood (Francie) — Bathroom 2 — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-ce462c",
+      "filename": "masonry-center__auto-ce462c.jpg",
+      "brand": "Masonry Center",
+      "style": "Conrad Brick Siren",
+      "color": "CB95",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Conrad Brick Siren. Color: CB95. natural ceramic finish, slight surface variation. Approximate size: 30x40 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Oakwood Meadows 1/1 - Eklund — Gym Bath — vanity_backsplash",
+        "Oakwood Meadows 1/1 - Eklund — Gym Bath — shower_walls"
+      ]
+    },
+    {
+      "cache_key": "AUTO-1898db",
+      "filename": "masonry-center__auto-1898db.jpg",
+      "brand": "Masonry Center",
+      "style": "Ceppo",
+      "color": "Sapia",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Ceppo. Color: Sapia. natural ceramic finish, slight surface variation. Approximate size: 24x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Oakwood Meadows 1/1 - Eklund — Gym Bath — floor",
+        "Oakwood Meadows 1/1 - Eklund — Gym Bath — shower_floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-b88f87",
+      "filename": "masonry-center__auto-b88f87.jpg",
+      "brand": "Masonry Center",
+      "style": "Conrad Brick Border Linen",
+      "color": "CB91",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Conrad Brick Border Linen. Color: CB91. natural ceramic finish, slight surface variation. Approximate size: 2x8 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Oakwood Meadows 1/1 - Eklund — Gym Bath — shower_walls_accent",
+        "Oakwood Meadows 1/1 - Eklund — Gym Bath — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-6b25dd",
+      "filename": "masonry-center__auto-6b25dd.jpg",
+      "brand": "Masonry Center",
+      "style": "Glace Bianco Raye 3D Rael",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Glace Bianco Raye 3D Rael. natural ceramic finish, slight surface variation. Approximate size: 3x8 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Oakwood Meadows 3/1 - Tantillo Custom — Master Bath — vanity_backsplash",
+        "Oakwood Meadows 3/1 - Tantillo Custom — Master Bath — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-0fd2f3",
+      "filename": "bedrosians__auto-0fd2f3.jpg",
+      "brand": "Bedrosians",
+      "style": "Magnifica",
+      "color": "Calcatta Oro Matte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Magnifica. Color: Calcatta Oro Matte. matte finish, low sheen, soft micro-texture. Approximate size: 30x30 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Oakwood Meadows 3/1 - Tantillo Custom — Master Bath — floor",
+        "Oakwood Meadows 3/1 - Tantillo Custom — Master Bath — shower_floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-fef0ad",
+      "filename": "masonry-center__auto-fef0ad.jpg",
+      "brand": "Masonry Center",
+      "style": "Chameleon",
+      "color": "OPAL",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Chameleon. Color: OPAL. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Oakwood Meadows 3/1 - Tantillo Custom — Up Bathroom East — vanity_backsplash",
+        "Oakwood Meadows 3/1 - Tantillo Custom — Up Bathroom East — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-436aef",
+      "filename": "dal__auto-436aef.jpg",
+      "brand": "Dal",
+      "style": "Marimo",
+      "color": "Pearl MR 44",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Marimo. Color: Pearl MR 44. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 2,
+      "used_in": [
+        "Oakwood Meadows 3/1 - Tantillo Custom — Up Bathroom West — vanity_backsplash",
+        "Oakwood Meadows 3/1 - Tantillo Custom — Up Bathroom West — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-86750d",
+      "filename": "masonry-center__auto-86750d.jpg",
+      "brand": "Masonry Center",
+      "style": null,
+      "color": "Persuade White",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Color: Persuade White. natural ceramic finish, slight surface variation. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Centerra 22/6 - Cassia RV — Main Bath — floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-2fbd70",
+      "filename": "dal__auto-2fbd70.jpg",
+      "brand": "Dal",
+      "style": "Miramo",
+      "color": "Pearl MR 44 PICKET",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Miramo. Color: Pearl MR 44 PICKET. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Centerra 22/6 - Cassia RV — Powder Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-0c159d",
+      "filename": "dal__auto-0c159d.jpg",
+      "brand": "Dal",
+      "style": "Remedy Zen Rectangle Fluted",
+      "color": "RD 24 Antidote",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Remedy Zen Rectangle Fluted. Color: RD 24 Antidote. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Centerra 27/6 - Cassia RV — Powder Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-4195c2",
+      "filename": "masonry-center__auto-4195c2.jpg",
+      "brand": "Masonry Center",
+      "style": "Look Olivia",
+      "color": "RCu5 3D Yubi",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Look Olivia. Color: RCu5 3D Yubi. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Centerra 8/2 - Adamson Custom — Secondary Bath — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-498080",
+      "filename": "unknown__auto-498080.jpg",
+      "brand": "Unknown",
+      "style": "Lana ZL 07",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Unknown. Style/collection: Lana ZL 07. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Centerra 8/2 - Adamson Custom — Media Room Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-e77ad9",
+      "filename": "marrazzi__auto-e77ad9.jpg",
+      "brand": "Marrazzi",
+      "style": "Zellige Neo",
+      "color": "Bright White",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Marrazzi. Style/collection: Zellige Neo. Color: Bright White. natural ceramic finish, slight surface variation. Approximate size: 5x9 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Centerra 8/2 - Adamson Custom — Media Room Bath — shower_walls"
+      ]
+    },
+    {
+      "cache_key": "CE30 SQU44 STAGLE",
+      "filename": "dal__ce30-squ44-stagle.jpg",
+      "brand": "Dal",
+      "style": "Contempee CE 30 Jasmine Square Star Glossy",
+      "color": null,
+      "sku": "CE30 SQU44 STAGLE",
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Contempee CE 30 Jasmine Square Star Glossy. natural ceramic finish, slight surface variation. Approximate size: 4x4 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Centerra 8/2 - Adamson Custom — Main Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-55aed4",
+      "filename": "emser__auto-55aed4.jpg",
+      "brand": "Emser",
+      "style": "Jasmine Contempee Jasmine 30 STAR Wall Tile",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Emser. Style/collection: Jasmine Contempee Jasmine 30 STAR Wall Tile. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 2/3 - Walker Custom — Main Bath 2 — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-fbc6d6",
+      "filename": "masonry-center__auto-fbc6d6.jpg",
+      "brand": "Masonry Center",
+      "style": "Studio Haven",
+      "color": "AO Shea SN71 Glossy",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Studio Haven. Color: AO Shea SN71 Glossy. polished glossy finish, reflective surface. Approximate size: 4x12 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 2/3 - Walker Custom — Main Bath 2 — shower_walls"
+      ]
+    },
+    {
+      "cache_key": "AUTO-a5e9b3",
+      "filename": "masonry-center__auto-a5e9b3.jpg",
+      "brand": "Masonry Center",
+      "style": "Ragno Look",
+      "color": "R8FP Beige",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Ragno Look. Color: R8FP Beige. natural ceramic finish, slight surface variation. Approximate size: 2x9 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 2/3 - Walker Custom — Smaller Bedroom Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-eb4dd9",
+      "filename": "masonry-center__auto-eb4dd9.jpg",
+      "brand": "Masonry Center",
+      "style": "Marazzi Crafthouse CH40",
+      "color": "PUMICE Fluted Wall Tile",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Marazzi Crafthouse CH40. Color: PUMICE Fluted Wall Tile. natural ceramic finish, slight surface variation. Approximate size: 8x8 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 2/3 - Walker Custom — Smaller Bedroom Bath — shower_walls"
+      ]
+    },
+    {
+      "cache_key": "AUTO-d93d2c",
+      "filename": "dal__auto-d93d2c.jpg",
+      "brand": "Dal",
+      "style": "Remedy",
+      "color": "RD 27 Aura Fluted",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Remedy. Color: RD 27 Aura Fluted. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 2/3 - Walker Custom — Powder Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-5a6c54",
+      "filename": "masonry-center__auto-5a6c54.jpg",
+      "brand": "Masonry Center",
+      "style": "Zagara",
+      "color": "Matte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Zagara. Color: Matte. matte finish, low sheen, soft micro-texture. Approximate size: 3x6 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 2/5 - Cassia RV — Master Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-1a258b",
+      "filename": "masonry-center__auto-1a258b.jpg",
+      "brand": "Masonry Center",
+      "style": "Portabello Charlestone Graffi",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Portabello Charlestone Graffi. natural ceramic finish, slight surface variation. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 2/5 - Cassia RV — Master Bath — shower_walls"
+      ]
+    },
+    {
+      "cache_key": "AUTO-ead506",
+      "filename": "masonry-center__auto-ead506.jpg",
+      "brand": "Masonry Center",
+      "style": "Pascal",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Pascal. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 2/5 - Cassia RV — Main Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-c8ae1b",
+      "filename": "masonry-center__auto-c8ae1b.jpg",
+      "brand": "Masonry Center",
+      "style": "Pompei",
+      "color": "4035 Mararone",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Pompei. Color: 4035 Mararone. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 2/5 - Cassia RV — Powder Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "Rolling Fog",
+      "filename": "emser__rolling-fog.jpg",
+      "brand": "Emser",
+      "style": "Visconde",
+      "color": "Oro Polished",
+      "sku": "Rolling Fog",
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Emser. Style/collection: Visconde. Color: Oro Polished. polished glossy finish, reflective surface. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 4/2 - Savannah RV — Master Bath — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-32ba74",
+      "filename": "dal__auto-32ba74.jpg",
+      "brand": "Dal",
+      "style": "Indoterra",
+      "color": "Natural IN 42",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Indoterra. Color: Natural IN 42. natural ceramic finish, slight surface variation. Approximate size: 24x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 4/5 - Cassia RV — Master Bath — floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-4a3c2d",
+      "filename": "bedrosians__auto-4a3c2d.jpg",
+      "brand": "Bedrosians",
+      "style": "Marin Trapezoid",
+      "color": "Black Sea",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Marin Trapezoid. Color: Black Sea. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 4/5 - Cassia RV — Main Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-214161",
+      "filename": "masonry-center__auto-214161.jpg",
+      "brand": "Masonry Center",
+      "style": "Pins Blue Mosaic",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Pins Blue Mosaic. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 5/2 - Cassia RV (Hamptons) — Master Bath — shower_niche"
+      ]
+    },
+    {
+      "cache_key": "AUTO-1ae041",
+      "filename": "masonry-center__auto-1ae041.jpg",
+      "brand": "Masonry Center",
+      "style": "Marazzi Rhyme and Reason RR 16",
+      "color": "Bone Matte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Marazzi Rhyme and Reason RR 16. Color: Bone Matte. matte finish, low sheen, soft micro-texture. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 5/2 - Cassia RV (Hamptons) — Main Bath — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-cd7fff",
+      "filename": "masonry-center__auto-cd7fff.jpg",
+      "brand": "Masonry Center",
+      "style": "Marrazi Crafthouse CH40",
+      "color": "PUMICE Fluted Wall Tile",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Marrazi Crafthouse CH40. Color: PUMICE Fluted Wall Tile. natural ceramic finish, slight surface variation. Approximate size: 8x8 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 5/5 - Owyhee RV — Main Bath — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-414be4",
+      "filename": "bedrosians__auto-414be4.jpg",
+      "brand": "Bedrosians",
+      "style": "Poetry Stone",
+      "color": "Ivory Matte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Poetry Stone. Color: Ivory Matte. matte finish, low sheen, soft micro-texture. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 7/3 - Verraso 2 — Master Bath — floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-da0b88",
+      "filename": "bedrosians__auto-da0b88.jpg",
+      "brand": "Bedrosians",
+      "style": "Poetry Stone",
+      "color": "Ivory Satin",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Poetry Stone. Color: Ivory Satin. satin finish, smooth, very low sheen. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 7/3 - Verraso 2 — Master Bath — shower_walls"
+      ]
+    },
+    {
+      "cache_key": "AUTO-52ce1e",
+      "filename": "bedrosians__auto-52ce1e.jpg",
+      "brand": "Bedrosians",
+      "style": "Frammente",
+      "color": "White Mosaic Palladiana",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Frammente. Color: White Mosaic Palladiana. natural ceramic finish, slight surface variation. Mosaic sheet, mixed small pieces. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 7/3 - Verraso 2 — Master Bath — shower_floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-82bb31",
+      "filename": "bedrosians__auto-82bb31.jpg",
+      "brand": "Bedrosians",
+      "style": "Sahara",
+      "color": "Cotta",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Sahara. Color: Cotta. natural ceramic finish, slight surface variation. Approximate size: 1x12 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 7/3 - Verraso 2 — Upstairs Bath — shower_walls_accent"
+      ]
+    },
+    {
+      "cache_key": "AUTO-8015ab",
+      "filename": "masonry-center__auto-8015ab.jpg",
+      "brand": "Masonry Center",
+      "style": "Zellige Classique",
+      "color": "Atlas White Sahara Rose",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Zellige Classique. Color: Atlas White Sahara Rose. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est 7/3 - Verraso 2 — Powder Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-d341ce",
+      "filename": "masonry-center__auto-d341ce.jpg",
+      "brand": "Masonry Center",
+      "style": "Belvedere",
+      "color": "Ivory Polished",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Belvedere. Color: Ivory Polished. polished glossy finish, reflective surface. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est #2 11/2 - Dittman Willoughby-RV (Abby) — Master Bath — shower_walls"
+      ]
+    },
+    {
+      "cache_key": "AUTO-ad29ca",
+      "filename": "masonry-center__auto-ad29ca.jpg",
+      "brand": "Masonry Center",
+      "style": "Costa Clara",
+      "color": "Cloud Matte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Costa Clara. Color: Cloud Matte. matte finish, low sheen, soft micro-texture. Approximate size: 4x4 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est #2 11/2 - Dittman Willoughby-RV (Abby) — Up Main Bath — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-f3bb8e",
+      "filename": "masonry-center__auto-f3bb8e.jpg",
+      "brand": "Masonry Center",
+      "style": "Costa Clara",
+      "color": "Cloud",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Costa Clara. Color: Cloud. natural ceramic finish, slight surface variation. Approximate size: 3x12 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est #2 11/2 - Dittman Willoughby-RV (Abby) — Up Jack-n-Jill Bath — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-f6b321",
+      "filename": "dal__auto-f6b321.jpg",
+      "brand": "Dal",
+      "style": "Arcrafted",
+      "color": "Coconut AC 23 / Dune AC 24",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Arcrafted. Color: Coconut AC 23 / Dune AC 24. natural ceramic finish, slight surface variation. Approximate size: 4x4 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est #2 12/2 - Cottonwood (Dahlia) — Powder Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-0b0c4d",
+      "filename": "bedrosians__auto-0b0c4d.jpg",
+      "brand": "Bedrosians",
+      "style": "Magnifico",
+      "color": "Calcutto Oro Matte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Magnifico. Color: Calcutto Oro Matte. matte finish, low sheen, soft micro-texture. Approximate size: 24x48 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est #2 13/2 - Winstead Modified (Gemma) — Master Bath — floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-d3a256",
+      "filename": "bedrosians__auto-d3a256.jpg",
+      "brand": "Bedrosians",
+      "style": "Magnifico",
+      "color": "Calcutto Oro Polished",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Magnifico. Color: Calcutto Oro Polished. polished glossy finish, reflective surface. Approximate size: 24x48 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est #2 13/2 - Winstead Modified (Gemma) — Master Bath — shower_walls"
+      ]
+    },
+    {
+      "cache_key": "AUTO-0cb02d",
+      "filename": "masonry-center__auto-0cb02d.jpg",
+      "brand": "Masonry Center",
+      "style": "Studio Haven Shea SN71",
+      "color": "Gloss",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Studio Haven Shea SN71. Color: Gloss. polished glossy finish, reflective surface. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est #2 13/2 - Winstead Modified (Gemma) — Main Bath — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-e52ba4",
+      "filename": "masonry-center__auto-e52ba4.jpg",
+      "brand": "Masonry Center",
+      "style": "Marazzi Curatio CA 13",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Marazzi Curatio CA 13. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est #2 13/2 - Winstead Modified (Gemma) — Main Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-1790b1",
+      "filename": "masonry-center__auto-1790b1.jpg",
+      "brand": "Masonry Center",
+      "style": "Marrazi Curation CA 13",
+      "color": "Splatter Floor Tile Matte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Marrazi Curation CA 13. Color: Splatter Floor Tile Matte. matte finish, low sheen, soft micro-texture. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est #2 13/2 - Winstead Modified (Gemma) — Main Bath — floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-a80b21",
+      "filename": "masonry-center__auto-a80b21.jpg",
+      "brand": "Masonry Center",
+      "style": "Lungarno Zellige Classique",
+      "color": "al Hamra Papillon",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Lungarno Zellige Classique. Color: al Hamra Papillon. natural ceramic finish, slight surface variation. Approximate size: 4x4 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est #2 13/2 - Winstead Modified (Gemma) — Powder Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-f4d4c1",
+      "filename": "masonry-center__auto-f4d4c1.jpg",
+      "brand": "Masonry Center",
+      "style": "Rhyme and Reason RR 16",
+      "color": "Bone Matte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Rhyme and Reason RR 16. Color: Bone Matte. matte finish, low sheen, soft micro-texture. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est #2 13/3 - Cypress Modified (Betsy) — Main Bath — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-666f0d",
+      "filename": "emser__auto-666f0d.jpg",
+      "brand": "Emser",
+      "style": "Persuade",
+      "color": "Agnesi",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Emser. Style/collection: Persuade. Color: Agnesi. natural ceramic finish, slight surface variation. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Est #2 13/3 - Cypress Modified (Betsy) — Main Bath — floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-dc9fd1",
+      "filename": "dal__auto-dc9fd1.jpg",
+      "brand": "Dal",
+      "style": "Artefino Vintage",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Artefino Vintage. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Estates 8/3 - Brentwood (Francie) — Bathroom 2 — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-2b86d9",
+      "filename": "dal__auto-2b86d9.jpg",
+      "brand": "Dal",
+      "style": "Artefino Vintage",
+      "color": "Pearl Floret Apex AR 44",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Artefino Vintage. Color: Pearl Floret Apex AR 44. natural ceramic finish, slight surface variation. Approximate size: 4x4 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Estates 8/3 - Brentwood (Francie) — Powder Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-a725bb",
+      "filename": "dal__auto-a725bb.jpg",
+      "brand": "Dal",
+      "style": "Remedy Aura Rectangular Fluted RD 27",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Remedy Aura Rectangular Fluted RD 27. natural ceramic finish, slight surface variation. Approximate size: 5x9 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Kingswood Estates 8/3 - Brentwood (Francie) — Bathroom 3 — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-f6830b",
+      "filename": "dal__auto-f6830b.jpg",
+      "brand": "Dal",
+      "style": "Remedy Aurora FLUTED",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Remedy Aurora FLUTED. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Oakwood Meadows 1/1 - Eklund — Master Bath — shower_walls_accent"
+      ]
+    },
+    {
+      "cache_key": "AUTO-c55caa",
+      "filename": "emser__auto-c55caa.jpg",
+      "brand": "Emser",
+      "style": "Newtro",
+      "color": "Red Glossy",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Emser. Style/collection: Newtro. Color: Red Glossy. polished glossy finish, reflective surface. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Oakwood Meadows 1/1 - Eklund — Powder Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-b34278",
+      "filename": "masonry-center__auto-b34278.jpg",
+      "brand": "Masonry Center",
+      "style": "Lungarno Zellige",
+      "color": "Mint Tea / Atlas White",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Lungarno Zellige. Color: Mint Tea / Atlas White. natural ceramic finish, slight surface variation. Approximate size: 4x4 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Oakwood Meadows 1/1 - Eklund — Bed 2 Bathroom — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-afe60e",
+      "filename": "masonry-center__auto-afe60e.jpg",
+      "brand": "Masonry Center",
+      "style": "Cepac Serentity Series",
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Cepac Serentity Series. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Oakwood Meadows 1/1 - Eklund — Bed 2 Bathroom — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-58f558",
+      "filename": "bedrosians__auto-58f558.jpg",
+      "brand": "Bedrosians",
+      "style": "Thaddeus",
+      "color": "Almond",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Thaddeus. Color: Almond. natural ceramic finish, slight surface variation. Approximate size: 24x48 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Oakwood Meadows 1/1 - Eklund — Bed 2 Bathroom — floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-115f81",
+      "filename": "masonry-center__auto-115f81.jpg",
+      "brand": "Masonry Center",
+      "style": "Highland Lake",
+      "color": "Flower & Almond",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Highland Lake. Color: Flower & Almond. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Oakwood Meadows 1/1 - Eklund — Bed 3 Bathroom — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "Q503/9999457943",
+      "filename": "masonry-center__q503-9999457943.jpg",
+      "brand": "Masonry Center",
+      "style": "Maniscalco Botany Bay Pebbles",
+      "color": "Coins / Olive",
+      "sku": "Q503/9999457943",
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Maniscalco Botany Bay Pebbles. Color: Coins / Olive. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Oakwood Meadows 1/1 - Eklund — Bed 3 Bathroom — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-077dc1",
+      "filename": "bedrosians__auto-077dc1.jpg",
+      "brand": "Bedrosians",
+      "style": "Thaddeus",
+      "color": "Creme DECO",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Thaddeus. Color: Creme DECO. natural ceramic finish, slight surface variation. Approximate size: 24x48 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Oakwood Meadows 3/1 - Tantillo Custom — Master Bath — shower_walls"
+      ]
+    },
+    {
+      "cache_key": "AUTO-23147b",
+      "filename": "dal__auto-23147b.jpg",
+      "brand": "Dal",
+      "style": "Calligo",
+      "color": "Tusk",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Calligo. Color: Tusk. natural ceramic finish, slight surface variation. Approximate size: 15x30 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Oakwood Meadows 3/1 - Tantillo Custom — Main Floor Guest — floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-3815f8",
+      "filename": "masonry-center__auto-3815f8.jpg",
+      "brand": "Masonry Center",
+      "style": "Costa Clara",
+      "color": "Cloud Gloss",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Costa Clara. Color: Cloud Gloss. polished glossy finish, reflective surface. Approximate size: 3x12 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Oakwood Meadows 3/1 - Tantillo Custom — Up Bathroom East — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-3707e6",
+      "filename": "masonry-center__auto-3707e6.jpg",
+      "brand": "Masonry Center",
+      "style": "Zellige Neo ZL 11",
+      "color": "Gesso / White",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Zellige Neo ZL 11. Color: Gesso / White. natural ceramic finish, slight surface variation. Approximate size: 4x4 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Oakwood Meadows 3/1 - Tantillo Custom — Up Bathroom West — shower_walls"
+      ]
+    },
+    {
+      "cache_key": "AUTO-acf2de",
+      "filename": "masonry-center__auto-acf2de.jpg",
+      "brand": "Masonry Center",
+      "style": null,
+      "color": null,
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. natural ceramic finish, slight surface variation. Penny round mosaic on mesh-mount sheet — show one square sheet, tiles ~1 inch round. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Oakwood Meadows 3/1 - Tantillo Custom — Up Bathroom West — shower_floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-139dfc",
+      "filename": "dal__auto-139dfc.jpg",
+      "brand": "Dal",
+      "style": "Avery",
+      "color": "WHITE AV 17",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Avery. Color: WHITE AV 17. natural ceramic finish, slight surface variation. Approximate size: 12x24 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Oakwood Meadows 3/1 - Tantillo Custom — Pool Bath — floor"
+      ]
+    },
+    {
+      "cache_key": "AUTO-347731",
+      "filename": "bedrosians__auto-347731.jpg",
+      "brand": "Bedrosians",
+      "style": "Cloe",
+      "color": "Blue",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Bedrosians. Style/collection: Cloe. Color: Blue. natural ceramic finish, slight surface variation. Approximate size: 5x8 inches. Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Oakwood Meadows 3/1 - Tantillo Custom — Pool Bath — tub_surround"
+      ]
+    },
+    {
+      "cache_key": "AUTO-fc0b74",
+      "filename": "dal__auto-fc0b74.jpg",
+      "brand": "Dal",
+      "style": "Miramo Reef",
+      "color": "M4 49",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Miramo Reef. Color: M4 49. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "Oakwood Meadows 3/1 - Tantillo Custom — Powder Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-914da9",
+      "filename": "masonry-center__auto-914da9.jpg",
+      "brand": "Masonry Center",
+      "style": "Simple Stone",
+      "color": "Blanco Penny Round",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Simple Stone. Color: Blanco Penny Round. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "River District 14/2 - Unit B (Clara) — Master Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-4c7c49",
+      "filename": "dal__auto-4c7c49.jpg",
+      "brand": "Dal",
+      "style": "Color Wheel",
+      "color": "White Matte",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Dal. Style/collection: Color Wheel. Color: White Matte. matte finish, low sheen, soft micro-texture. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "River District 14/2 - Unit B (Clara) — Powder Bath — vanity_backsplash"
+      ]
+    },
+    {
+      "cache_key": "AUTO-36a006",
+      "filename": "masonry-center__auto-36a006.jpg",
+      "brand": "Masonry Center",
+      "style": "Cepac Krave",
+      "color": "KR5 SJ Cappucino",
+      "sku": null,
+      "prompt": "Single tile product photograph, top-down view, neutral studio lighting, pure white background, ecommerce listing style, photorealistic. Tile brand: Masonry Center. Style/collection: Cepac Krave. Color: KR5 SJ Cappucino. natural ceramic finish, slight surface variation. Standard rectangular tile, no overlaid pattern (pattern is for layout, not surface). Output: 1024x1024, centered, no human hands, no text or watermarks.",
+      "instances": 1,
+      "used_in": [
+        "River District 14/2 - Unit B (Clara) — Up Bath — vanity_backsplash"
+      ]
+    }
+  ]
+}

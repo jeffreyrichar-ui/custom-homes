@@ -24,7 +24,23 @@ pnpm-debug.log*
 
 # Vite
 apps/web/dist
+apps/web/.vite
 apps/server/dist
+
+# TypeScript incremental build cache
+*.tsbuildinfo
 
 # Coverage
 coverage/
+
+# Uploaded / scraped manufacturer images (Phase 3 dev storage)
+apps/server/uploads/
+
+# Generated PDFs (Phase 5 dev storage)
+apps/server/pdfs/
+
+# Puppeteer-managed Chromium download
+.cache/puppeteer/
+
+# Claude Code session metadata (worktrees etc.)
+.claude/
