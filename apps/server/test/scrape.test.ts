@@ -861,7 +861,6 @@ describe("conradBrickScraper", () => {
     expect(conradBrickScraper.matches("CONRAD BRICK")).toBe(true);
     expect(conradBrickScraper.matches(" Conrad Brick ")).toBe(true);
     expect(conradBrickScraper.matches("Conrad Brick Tile")).toBe(true);
-    // Sanity: don't bleed into the parent brand or sibling brick-format series.
     expect(conradBrickScraper.matches("American Olean")).toBe(false);
     expect(conradBrickScraper.matches("Brick")).toBe(false);
     expect(conradBrickScraper.matches("Conrad")).toBe(false);
@@ -902,17 +901,243 @@ describe("conradBrickScraper", () => {
     expect(result!.imageBuffer.length).toBeGreaterThan(0);
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const opts = fetchMock.mock.calls[0]![0];
-    // Conrad Brick has no standalone domain — PDPs live on americanolean.com.
     expect(
       opts.searchUrl.startsWith("https://www.americanolean.com/search?q="),
     ).toBe(true);
-    // Query is scoped to the collection so AO search doesn't drift.
     expect(decodeURIComponent(opts.searchUrl).toLowerCase()).toContain(
       "conrad brick",
     );
     expect(decodeURIComponent(opts.searchUrl)).toContain("Polar");
-    // Link selector must target the Conrad Brick PDP path specifically.
     expect(opts.productLinkSelector).toContain("/products/wall/conrad-brick");
     expect(opts.imageSelectors.length).toBeGreaterThan(0);
+  });
+});
+
+describe("sherwinWilliamsScraper", () => {
+  beforeEach(async () => {
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    vi.mocked(mod.fetchProductImagePlaywright).mockClear();
+  });
+
+  it("declares trade='paint' (opens the first non-tile trade)", async () => {
+    const { sherwinWilliamsScraper } = await import(
+      "../src/services/scrapers/sherwinWilliams.js"
+    );
+    expect(sherwinWilliamsScraper.trade).toBe("paint");
+  });
+
+  it("findScraper resolves SW by full name, hyphen variant, and the 'SW' token", async () => {
+    const { findScraper } = await import("../src/services/scrapers/index.js");
+    expect(findScraper("Sherwin-Williams")?.brand).toBe("Sherwin-Williams");
+    expect(findScraper("Sherwin Williams")?.brand).toBe("Sherwin-Williams");
+    expect(findScraper("SW")?.brand).toBe("Sherwin-Williams");
+  });
+
+  it("findScraper with trade='paint' returns SW, and with trade='tile' returns null", async () => {
+    const { findScraper } = await import("../src/services/scrapers/index.js");
+    expect(findScraper("Sherwin-Williams", "paint")?.brand).toBe(
+      "Sherwin-Williams",
+    );
+    // Trade gate prevents a paint brand from satisfying a tile lookup.
+    expect(findScraper("Sherwin-Williams", "tile")).toBeNull();
+  });
+
+  it("matches SW brand variants case-insensitively but not unrelated 'SW...' brands", async () => {
+    const { sherwinWilliamsScraper } = await import(
+      "../src/services/scrapers/sherwinWilliams.js"
+    );
+    // Accepted forms.
+    expect(sherwinWilliamsScraper.matches("Sherwin-Williams")).toBe(true);
+    expect(sherwinWilliamsScraper.matches("sherwin-williams")).toBe(true);
+    expect(sherwinWilliamsScraper.matches("SHERWIN-WILLIAMS")).toBe(true);
+    expect(sherwinWilliamsScraper.matches("Sherwin Williams")).toBe(true);
+    expect(sherwinWilliamsScraper.matches("sherwinwilliams")).toBe(true);
+    expect(sherwinWilliamsScraper.matches("SW")).toBe(true);
+    expect(sherwinWilliamsScraper.matches("sw")).toBe(true);
+    expect(sherwinWilliamsScraper.matches(" SW ")).toBe(true);
+    // "SW" must be a discrete token, not a prefix of another brand.
+    expect(sherwinWilliamsScraper.matches("SW Fitness")).toBe(false);
+    expect(sherwinWilliamsScraper.matches("SWAG")).toBe(false);
+    expect(sherwinWilliamsScraper.matches("Sherwood")).toBe(false);
+    // Sanity: don't bleed into tile brands.
+    expect(sherwinWilliamsScraper.matches("Daltile")).toBe(false);
+    expect(sherwinWilliamsScraper.matches("Benjamin Moore")).toBe(false);
+  });
+
+  it("scrape() returns null when there is nothing to query on", async () => {
+    const { sherwinWilliamsScraper } = await import(
+      "../src/services/scrapers/sherwinWilliams.js"
+    );
+    const result = await sherwinWilliamsScraper.scrape({
+      brand: "Sherwin-Williams",
+      sku: null,
+      style: null,
+      color: null,
+      size: null,
+      notes: null,
+    });
+    expect(result).toBeNull();
+  });
+
+  it("scrape() builds a sherwin-williams.com search URL keyed off sku+color (not shape)", async () => {
+    const { sherwinWilliamsScraper } = await import(
+      "../src/services/scrapers/sherwinWilliams.js"
+    );
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    const fetchMock = vi.mocked(mod.fetchProductImagePlaywright);
+
+    const result = await sherwinWilliamsScraper.scrape({
+      brand: "Sherwin-Williams",
+      sku: "SW 7008",
+      style: null,
+      color: "Alabaster",
+      // Notes contains a tile-ish size; paint scrapers must ignore shape inference.
+      notes: "12x24 eggshell",
+    });
+
+    expect(result).not.toBeNull();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const opts = fetchMock.mock.calls[0]![0];
+    expect(
+      opts.searchUrl.startsWith(
+        "https://www.sherwin-williams.com/en-us/color/search?searchQuery=",
+      ),
+    ).toBe(true);
+    const decoded = decodeURIComponent(opts.searchUrl);
+    expect(decoded).toContain("SW 7008");
+    expect(decoded).toContain("Alabaster");
+    // Paint adapters MUST NOT inject shape from notes — that's tile-only logic.
+    expect(decoded).not.toContain("rectangle");
+    expect(opts.productLinkSelector).toContain("/en-us/color/color-family/");
+    expect(opts.imageSelectors.length).toBeGreaterThan(0);
+  });
+});
+
+describe("benjaminMooreScraper", () => {
+  beforeEach(async () => {
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    vi.mocked(mod.fetchProductImagePlaywright).mockClear();
+  });
+
+  it("declares trade='paint'", async () => {
+    const { benjaminMooreScraper } = await import(
+      "../src/services/scrapers/benjaminMoore.js"
+    );
+    expect(benjaminMooreScraper.trade).toBe("paint");
+  });
+
+  it("findScraper resolves Benjamin Moore by full name and the 'BM' token", async () => {
+    const { findScraper } = await import("../src/services/scrapers/index.js");
+    expect(findScraper("Benjamin Moore")?.brand).toBe("Benjamin Moore");
+    expect(findScraper("BM")?.brand).toBe("Benjamin Moore");
+  });
+
+  it("findScraper with trade='paint' returns BM, and with trade='tile' returns null", async () => {
+    const { findScraper } = await import("../src/services/scrapers/index.js");
+    expect(findScraper("Benjamin Moore", "paint")?.brand).toBe(
+      "Benjamin Moore",
+    );
+    expect(findScraper("Benjamin Moore", "tile")).toBeNull();
+  });
+
+  it("matches BM brand variants case-insensitively but not 'BMW' or 'BMC'", async () => {
+    const { benjaminMooreScraper } = await import(
+      "../src/services/scrapers/benjaminMoore.js"
+    );
+    expect(benjaminMooreScraper.matches("Benjamin Moore")).toBe(true);
+    expect(benjaminMooreScraper.matches("benjamin moore")).toBe(true);
+    expect(benjaminMooreScraper.matches("BENJAMIN MOORE")).toBe(true);
+    expect(benjaminMooreScraper.matches("benjaminmoore")).toBe(true);
+    expect(benjaminMooreScraper.matches("BM")).toBe(true);
+    expect(benjaminMooreScraper.matches("bm")).toBe(true);
+    expect(benjaminMooreScraper.matches(" BM ")).toBe(true);
+    // "BM" must be a discrete token — never a prefix of unrelated brands.
+    expect(benjaminMooreScraper.matches("BMW")).toBe(false);
+    expect(benjaminMooreScraper.matches("BMC")).toBe(false);
+    expect(benjaminMooreScraper.matches("Benji")).toBe(false);
+    // Sanity: don't bleed into the other paint brand or any tile brand.
+    expect(benjaminMooreScraper.matches("Sherwin-Williams")).toBe(false);
+    expect(benjaminMooreScraper.matches("Daltile")).toBe(false);
+  });
+
+  it("scrape() returns null when there is nothing to query on", async () => {
+    const { benjaminMooreScraper } = await import(
+      "../src/services/scrapers/benjaminMoore.js"
+    );
+    const result = await benjaminMooreScraper.scrape({
+      brand: "Benjamin Moore",
+      sku: null,
+      style: null,
+      color: null,
+      size: null,
+      notes: null,
+    });
+    expect(result).toBeNull();
+  });
+
+  it("scrape() builds a benjaminmoore.com search URL keyed off sku+color", async () => {
+    const { benjaminMooreScraper } = await import(
+      "../src/services/scrapers/benjaminMoore.js"
+    );
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    const fetchMock = vi.mocked(mod.fetchProductImagePlaywright);
+
+    const result = await benjaminMooreScraper.scrape({
+      brand: "Benjamin Moore",
+      sku: "HC-145",
+      style: null,
+      color: "Van Courtland Blue",
+      notes: "satin trim — ignore shape tokens like subway",
+    });
+
+    expect(result).not.toBeNull();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const opts = fetchMock.mock.calls[0]![0];
+    expect(
+      opts.searchUrl.startsWith(
+        "https://www.benjaminmoore.com/en-us/paint-colors/search?query=",
+      ),
+    ).toBe(true);
+    const decoded = decodeURIComponent(opts.searchUrl);
+    expect(decoded).toContain("HC-145");
+    expect(decoded).toContain("Van Courtland Blue");
+    // Paint adapters MUST NOT inject shape from notes — that's tile-only logic.
+    expect(decoded).not.toContain("subway");
+    expect(opts.productLinkSelector).toContain("/paint-colors/color/");
+    expect(opts.imageSelectors.length).toBeGreaterThan(0);
+  });
+});
+
+describe("registeredBrands() — trade filtering", () => {
+  it("with no argument, lists every adapter (tile + paint)", async () => {
+    const { registeredBrands } = await import(
+      "../src/services/scrapers/index.js"
+    );
+    const all = registeredBrands();
+    expect(all).toContain("Daltile");
+    expect(all).toContain("Sherwin-Williams");
+    expect(all).toContain("Benjamin Moore");
+  });
+
+  it("with trade='tile', omits paint adapters", async () => {
+    const { registeredBrands } = await import(
+      "../src/services/scrapers/index.js"
+    );
+    const tile = registeredBrands("tile");
+    expect(tile).toContain("Daltile");
+    expect(tile).not.toContain("Sherwin-Williams");
+    expect(tile).not.toContain("Benjamin Moore");
+  });
+
+  it("with trade='paint', returns only paint adapters", async () => {
+    const { registeredBrands } = await import(
+      "../src/services/scrapers/index.js"
+    );
+    const paint = registeredBrands("paint");
+    expect(paint).toEqual(
+      expect.arrayContaining(["Sherwin-Williams", "Benjamin Moore"]),
+    );
+    expect(paint).not.toContain("Daltile");
+    expect(paint).not.toContain("Marazzi");
   });
 });

@@ -15,8 +15,17 @@ export type ScrapeResult = {
   sourceUrl: string;
 };
 
+/**
+ * Trade discriminator. Scrapers were tile-only through Phase 5; paint
+ * adapters land here as part of the first non-tile expansion. Default
+ * is "tile" so the 16 existing adapters keep working without churn.
+ */
+export type TradeKind = "tile" | "paint";
+
 export type Scraper = {
   brand: string; // canonical brand/manufacturer name
+  /** Trade this adapter covers. Optional for back-compat; treated as "tile". */
+  trade?: TradeKind;
   matches(brand: string): boolean;
   scrape(input: ScrapeInput): Promise<ScrapeResult | null>;
 };
