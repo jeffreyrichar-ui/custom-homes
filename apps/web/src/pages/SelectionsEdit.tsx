@@ -369,15 +369,40 @@ export function SelectionsEdit() {
               <ShowerView room={room} />
             )}
 
-            {mode === "cards" && totalEntries === 0 && !tradePicker[room.id] && (
-              <div className="empty-state-soft">
-                <div className="empty-state-card-icon" aria-hidden="true">
-                  <Icon name="plus" size={20} />
+            {mode === "cards" && totalEntries === 0 && !tradePicker[room.id] && !editing && (
+              <div className="room-empty-state">
+                <h3>No selections yet for {room.room_name}</h3>
+                <p>Start with tile — paint and trim follow.</p>
+                <div className="room-empty-state-actions">
+                  <button
+                    type="button"
+                    className="icon-button"
+                    onClick={() =>
+                      setTradePicker((s) => ({ ...s, [room.id]: "tile" }))
+                    }
+                  >
+                    <Icon name="plus" />
+                    <span>Add tile</span>
+                  </button>
+                  <select
+                    className="ac-input"
+                    style={{ width: "auto" }}
+                    onChange={(e) => {
+                      const v = e.target.value as TradeKind | "";
+                      if (v) setTradePicker((s) => ({ ...s, [room.id]: v }));
+                      e.currentTarget.value = "";
+                    }}
+                    defaultValue=""
+                    aria-label="Add another trade"
+                  >
+                    <option value="">+ Add trade…</option>
+                    {TRADE_KINDS.map((t) => (
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <p>No selections in this room yet.</p>
-                <p className="empty-hint">
-                  Press the <strong>+ Add trade</strong> button above to start with tile.
-                </p>
               </div>
             )}
 

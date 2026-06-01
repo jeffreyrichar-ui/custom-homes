@@ -830,6 +830,38 @@ button.link.experimental {
   color: var(--text-3);
 }
 
+/* Per-room empty state — subtle callout inside .room-block */
+.room-empty-state {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-4) var(--sp-5);
+  margin: var(--sp-3) 0;
+  text-align: center;
+}
+.room-empty-state h3 {
+  font-family: var(--font-serif);
+  font-size: var(--fs-md, 1rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--sp-1);
+  color: var(--text);
+}
+.room-empty-state p {
+  color: var(--text-2);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  margin: 0 auto var(--sp-3);
+  max-width: 360px;
+}
+.room-empty-state-actions {
+  display: inline-flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
 /* -------- Project card meta + serif name (polish) -------- */
 
 .project-card-name {
