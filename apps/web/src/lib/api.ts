@@ -130,6 +130,14 @@ export const api = {
     request<{ sku: string | null }>(
       `/api/suggest/sku-for-color?trade=${encodeURIComponent(trade)}&brand=${encodeURIComponent(brand)}&color=${encodeURIComponent(color)}`,
     ),
+  suggestComplete: (trade: string, partial: Record<string, string | null | undefined>) =>
+    request<{
+      suggestions: Record<string, { value: string | null; confidence: number }>;
+      candidate_count: number;
+    }>("/api/suggest/complete", {
+      method: "POST",
+      body: { trade, partial },
+    }),
 
   // Phase 2 — selections writes
   createProject: (name: string, address?: string) =>

@@ -154,6 +154,76 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
   const style = values[styleKey] ?? "";
   const color = values[colorKey] ?? "";
 
+  // Cross-field completion suggestions. Logical field name (matches the
+  // server's contract: brand/style/color/sku/pattern/edge_profile) → most
+  // likely value + confidence over the candidate set. We map style/color
+  // back to the trade's physical form key (species/material/color_name)
+  // when rendering and applying.
+  const [completions, setCompletions] = useState<Record<string, { value: string; confidence: number }>>({});
+  const COMPLETION_THRESHOLD = 0.5;
+  const logicalToFormKey: Record<string, string> = {
+    brand: "brand",
+    style: styleKey,
+    color: colorKey,
+    sku: "sku",
+    pattern: "pattern",
+    edge_profile: "edge_profile",
+  };
+
+  // Debounced call: whenever the user fills in at least one of the lookup
+  // fields, ask the server what the empty fields most likely should be.
+  useEffect(() => {
+    const partial: Record<string, string> = {
+      brand: values.brand?.trim() ?? "",
+      style: values[styleKey]?.trim() ?? "",
+      color: values[colorKey]?.trim() ?? "",
+      sku: values.sku?.trim() ?? "",
+      pattern: values.pattern?.trim() ?? "",
+      edge_profile: values.edge_profile?.trim() ?? "",
+    };
+    const anyFilled = Object.values(partial).some((v) => v !== "");
+    if (!anyFilled) {
+      setCompletions({});
+      return;
+    }
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      api
+        .suggestComplete(trade, partial)
+        .then((res) => {
+          if (cancelled) return;
+          const next: Record<string, { value: string; confidence: number }> = {};
+          for (const [field, s] of Object.entries(res.suggestions ?? {})) {
+            if (!s?.value) continue;
+            if (s.confidence < COMPLETION_THRESHOLD) continue;
+            const formKey = logicalToFormKey[field];
+            if (!formKey) continue;
+            // Don't suggest something the user already typed.
+            const current = values[formKey]?.trim() ?? "";
+            if (current && current.toLowerCase() === s.value.toLowerCase()) continue;
+            next[formKey] = { value: s.value, confidence: s.confidence };
+          }
+          setCompletions(next);
+        })
+        .catch(() => {
+          /* ignore network/404 errors — completion hints are best-effort */
+        });
+    }, 400);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    trade,
+    values.brand,
+    values[styleKey],
+    values[colorKey],
+    values.sku,
+    values.pattern,
+    values.edge_profile,
+  ]);
+
   // Fetch the cached manufacturer image whenever brand+sku change (tile only).
   useEffect(() => {
     if (trade !== "tile") {
@@ -277,6 +347,26 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
     [trade, brand, color],
   );
 
+  const renderCompletionHint = (key: string) => {
+    const c = completions[key];
+    const current = values[key]?.trim() ?? "";
+    if (!c || current) return null;
+    const pct = Math.round(c.confidence * 100);
+    return (
+      <div className="suggest-hint">
+        Suggest: <strong>{c.value}</strong>{" "}
+        <button
+          type="button"
+          className="link"
+          onClick={() => setValues((vv) => ({ ...vv, [key]: c.value }))}
+        >
+          Apply
+        </button>
+        <span className="suggest-hint__conf"> ({pct}% match)</span>
+      </div>
+    );
+  };
+
   const renderField = (f: FieldDef) => {
     const set = (v: string) => setValues((vv) => ({ ...vv, [f.key]: v }));
     const v = values[f.key] ?? "";
@@ -299,55 +389,63 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
     }
     if (f.kind === "ac-vendor") {
       return (
-        <AutoComplete
-          key={f.key}
-          label={f.label}
-          required={f.required}
-          value={v}
-          onChange={set}
-          fetchSuggestions={fetchVendors}
-          fetchKey={fetchVendorsKey}
-        />
+        <div key={f.key}>
+          <AutoComplete
+            label={f.label}
+            required={f.required}
+            value={v}
+            onChange={set}
+            fetchSuggestions={fetchVendors}
+            fetchKey={fetchVendorsKey}
+          />
+          {renderCompletionHint(f.key)}
+        </div>
       );
     }
     if (f.kind === "ac-brand") {
       return (
-        <AutoComplete
-          key={f.key}
-          label={f.label}
-          required={f.required}
-          value={v}
-          onChange={set}
-          fetchSuggestions={fetchBrands}
-          fetchKey={fetchBrandsKey}
-        />
+        <div key={f.key}>
+          <AutoComplete
+            label={f.label}
+            required={f.required}
+            value={v}
+            onChange={set}
+            fetchSuggestions={fetchBrands}
+            fetchKey={fetchBrandsKey}
+          />
+          {renderCompletionHint(f.key)}
+        </div>
       );
     }
     if (f.kind === "ac-style") {
       return (
-        <AutoComplete
-          key={f.key}
-          label={f.label}
-          required={f.required}
-          value={v}
-          onChange={set}
-          fetchSuggestions={fetchStyles}
-          fetchKey={fetchStylesKey}
-        />
+        <div key={f.key}>
+          <AutoComplete
+            label={f.label}
+            required={f.required}
+            value={v}
+            onChange={set}
+            fetchSuggestions={fetchStyles}
+            fetchKey={fetchStylesKey}
+          />
+          {renderCompletionHint(f.key)}
+        </div>
       );
     }
     if (f.kind === "ac-color") {
       return (
-        <AutoComplete
-          key={f.key}
-          label={f.label}
-          required={f.required}
-          value={v}
-          onChange={set}
-          fetchSuggestions={fetchColors}
-          fetchKey={fetchColorsKey}
-          showImage
-        />
+        <div key={f.key}>
+          <AutoComplete
+            label={f.label}
+            required={f.required}
+            value={v}
+            onChange={set}
+            fetchSuggestions={fetchColors}
+            fetchKey={fetchColorsKey}
+            showImage
+          />
+          {renderCompletionHint(f.key)}
+        </div>
       );
     }
     if (f.kind === "ac-sku") {
@@ -377,6 +475,7 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
               </button>
             </div>
           )}
+          {renderCompletionHint(f.key)}
         </div>
       );
     }
@@ -387,6 +486,7 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
           {f.required && <span className="ac-required">*</span>}
         </label>
         <input className="ac-input" value={v} onChange={(e) => set(e.target.value)} />
+        {renderCompletionHint(f.key)}
       </div>
     );
   };

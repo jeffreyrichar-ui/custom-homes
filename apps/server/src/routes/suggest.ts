@@ -13,6 +13,37 @@ function parseTrade(req: import("express").Request): TradeKind | null {
   return isTradeKind(raw) ? raw : null;
 }
 
+// Logical field name → physical column for a given trade.
+// Returns null when the trade table does not have that column at all
+// (e.g. `pattern` does not exist on paint/carpet/cabinet/countertop).
+function columnFor(trade: TradeKind, field: string): string | null {
+  switch (field) {
+    case "brand":
+      return "brand";
+    case "sku":
+      // Cabinet/countertop have no sku column today.
+      return trade === "cabinet" || trade === "countertop" ? null : "sku";
+    case "style":
+      if (trade === "hardwood") return "species";
+      if (trade === "countertop") return "material";
+      // Paint has no style-like column.
+      if (trade === "paint") return null;
+      return "style";
+    case "color":
+      return trade === "paint" ? "color_name" : "color";
+    case "pattern":
+      return trade === "tile" || trade === "hardwood" ? "pattern" : null;
+    case "edge_profile":
+      return trade === "tile" || trade === "countertop" ? "edge_profile" : null;
+    default:
+      return null;
+  }
+}
+
+// Fields the "complete this entry" endpoint can fill in.
+const COMPLETABLE_FIELDS = ["brand", "style", "color", "sku", "pattern", "edge_profile"] as const;
+type CompletableField = (typeof COMPLETABLE_FIELDS)[number];
+
 export function makeSuggestRouter(getDbi: () => Dbi): Router {
   const router = Router();
 
@@ -161,6 +192,113 @@ export function makeSuggestRouter(getDbi: () => Dbi): Router {
         [brand, color],
       );
       res.json({ sku: rows[0]?.sku ?? null });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  // POST /complete — given a partial entry, infer the most likely value
+  // for each empty field by finding historical entries that match the
+  // non-empty fields and taking the modal value of each empty column.
+  // Confidence is simply mode_count / candidate_count, capped to [0, 1].
+  router.post("/complete", async (req, res, next) => {
+    try {
+      const body = (req.body ?? {}) as {
+        trade?: unknown;
+        partial?: Record<string, unknown>;
+      };
+      if (!isTradeKind(body.trade)) {
+        res.status(400).json({ error: "trade is required" });
+        return;
+      }
+      const trade = body.trade;
+      const partial = (body.partial && typeof body.partial === "object" ? body.partial : {}) as Record<string, unknown>;
+      const table = ENTRY_TABLE_BY_TRADE[trade];
+
+      // Build WHERE clause from any non-empty completable field that has a column on this trade.
+      const filters: { col: string; value: string }[] = [];
+      for (const field of COMPLETABLE_FIELDS) {
+        const raw = partial[field];
+        const v = typeof raw === "string" ? raw.trim() : "";
+        if (!v) continue;
+        const col = columnFor(trade, field);
+        if (!col) continue;
+        filters.push({ col, value: v });
+      }
+
+      // Empty partial → no candidates, return null suggestions for every applicable empty field.
+      if (filters.length === 0) {
+        const empty: Record<string, { value: string | null; confidence: number }> = {};
+        for (const field of COMPLETABLE_FIELDS) {
+          if (columnFor(trade, field)) {
+            empty[field] = { value: null, confidence: 0 };
+          }
+        }
+        res.json({ suggestions: empty, candidate_count: 0 });
+        return;
+      }
+
+      // Pull a capped sample of historical rows matching all provided fields (case-insensitive).
+      const params: unknown[] = [];
+      const whereParts = filters.map((f) => {
+        params.push(f.value);
+        return `LOWER(${f.col}) = LOWER($${params.length})`;
+      });
+
+      // SELECT every column we may want to infer. We only project the columns
+      // that actually exist on this trade's table so the SQL stays valid.
+      const inferable: { field: CompletableField; col: string }[] = [];
+      for (const field of COMPLETABLE_FIELDS) {
+        const col = columnFor(trade, field);
+        if (col) inferable.push({ field, col });
+      }
+      const selectCols = inferable.map((i) => i.col).join(", ");
+
+      const rows = await getDbi().query<Record<string, string | null>>(
+        `SELECT ${selectCols} FROM ${table}
+         WHERE ${whereParts.join(" AND ")}
+         LIMIT 200`,
+        params,
+      );
+
+      const candidateCount = rows.length;
+      const suggestions: Record<string, { value: string | null; confidence: number }> = {};
+
+      for (const { field, col } of inferable) {
+        // Only suggest for fields the user left empty.
+        const raw = partial[field];
+        const userProvided = typeof raw === "string" && raw.trim() !== "";
+        if (userProvided) continue;
+        if (candidateCount === 0) {
+          suggestions[field] = { value: null, confidence: 0 };
+          continue;
+        }
+        // Tally non-empty values for this column.
+        const counts = new Map<string, number>();
+        for (const row of rows) {
+          const v = row[col];
+          if (v == null || v === "") continue;
+          counts.set(v, (counts.get(v) ?? 0) + 1);
+        }
+        if (counts.size === 0) {
+          suggestions[field] = { value: null, confidence: 0 };
+          continue;
+        }
+        let bestValue = "";
+        let bestCount = 0;
+        for (const [value, n] of counts) {
+          if (n > bestCount) {
+            bestCount = n;
+            bestValue = value;
+          }
+        }
+        suggestions[field] = {
+          value: bestValue,
+          confidence: Math.min(1, bestCount / candidateCount),
+        };
+      }
+
+      res.json({ suggestions, candidate_count: candidateCount });
     } catch (err) {
       next(err);
     }

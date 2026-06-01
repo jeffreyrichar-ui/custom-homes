@@ -1143,6 +1143,24 @@ button.link.experimental {
   color: var(--warning);
 }
 
+/* -------- Cross-field completion hint -------- */
+/* Subtle "Suggest: X (Apply)" line under autocomplete inputs when the
+   server has a high-confidence guess for an empty field. Pure hint —
+   never autofills until clicked. */
+
+.suggest-hint {
+  margin-top: var(--sp-1);
+  padding: 4px 8px;
+  background: var(--bg-soft, rgba(0, 0, 0, 0.04));
+  border-left: 3px solid var(--accent, #4a90e2);
+  border-radius: var(--r-sm);
+  font-size: var(--fs-xs);
+  color: var(--text-2);
+}
+.suggest-hint strong { color: var(--text-1, inherit); font-weight: 500; }
+.suggest-hint .link { margin-left: 4px; }
+.suggest-hint__conf { margin-left: 6px; opacity: 0.7; }
+
 /* -------- Add room form -------- */
 
 .add-room-form {
