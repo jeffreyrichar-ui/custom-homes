@@ -256,6 +256,20 @@ export function SelectionsEdit() {
 
       <PdfActions projectId={project.id} />
 
+      {rooms.length > 1 && (
+        <nav className="room-jump-nav" aria-label="Jump to room">
+          <ul>
+            {rooms.map((room) => (
+              <li key={room.id}>
+                <a href={`#room-${room.id}`} className="room-jump-pill">
+                  {room.room_name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+
       {rooms.length === 0 && !showAddRoom && (
         <div className="empty-state-card">
           <div className="empty-state-card-icon" aria-hidden="true">
@@ -283,7 +297,7 @@ export function SelectionsEdit() {
           0,
         );
         return (
-          <div key={room.id} className="room-block">
+          <div key={room.id} id={`room-${room.id}`} className="room-block">
             <div className="room-header">
               <h2>{room.room_name}</h2>
               <div className="room-actions">
