@@ -1215,6 +1215,77 @@ button.link.experimental {
   margin-top: var(--sp-2);
 }
 
+/* -------- Recent activity panel -------- */
+
+.recent-activity-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: var(--sp-4) var(--sp-5);
+  margin-bottom: var(--sp-5);
+}
+.recent-activity-title {
+  font-family: var(--font-serif);
+  font-size: var(--fs-lg);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin: 0 0 var(--sp-3);
+}
+.recent-activity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.recent-activity-item {
+  border-top: 1px solid var(--border);
+}
+.recent-activity-item:first-child {
+  border-top: none;
+}
+.recent-activity-link {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) 0;
+  color: inherit;
+  text-decoration: none;
+}
+.recent-activity-link:hover {
+  text-decoration: none;
+}
+a.recent-activity-link:hover .recent-activity-label {
+  color: var(--text);
+}
+.recent-activity-link-static {
+  cursor: default;
+}
+.recent-activity-dot {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border-strong);
+  display: inline-block;
+}
+.recent-activity-dot.dot-project { background: var(--accent, #4a6b8a); }
+.recent-activity-dot.dot-room { background: var(--accent-2, #8a6a4a); }
+.recent-activity-dot.dot-entry { background: var(--text-3); }
+.recent-activity-label {
+  flex: 1 1 auto;
+  font-size: var(--fs-sm);
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.recent-activity-time {
+  flex: 0 0 auto;
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
 /* -------- Loading skeletons -------- */
 
 .skeleton {

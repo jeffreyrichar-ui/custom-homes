@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, type ProjectSummary } from "../lib/api.js";
 import { StatsStrip } from "../components/StatsStrip.js";
+import { RecentActivity } from "../components/RecentActivity.js";
 import { Icon } from "../components/Icon.js";
 
 type Sort = "recent" | "name" | "rooms";
@@ -138,6 +139,8 @@ export function ProjectsList() {
       )}
 
       <StatsStrip />
+
+      {projects.length > 0 && <RecentActivity />}
 
       {projects.length === 0 ? (
         <div className="empty-state-card">

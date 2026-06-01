@@ -46,6 +46,14 @@ async function request<T>(
   return data as T;
 }
 
+export type RecentActivityItem = {
+  when: string;
+  kind: "project" | "room" | "entry";
+  label: string;
+  project_id: string;
+  project_name: string;
+};
+
 export type ProjectSummary = {
   id: string;
   name: string;
@@ -83,6 +91,7 @@ export const api = {
       top_brands: { brand: string; count: number }[];
       top_vendors: { vendor: string; count: number }[];
       novel_entries: number;
+      recent_activity: RecentActivityItem[];
     }>("/api/stats"),
   getProject: (id: string) =>
     request<ProjectDetailResponse>(`/api/projects/${id}`),
