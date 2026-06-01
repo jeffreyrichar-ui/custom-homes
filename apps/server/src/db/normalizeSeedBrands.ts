@@ -6,9 +6,16 @@
  *     from the style prefix.
  *   - Rename Dal → Daltile, Marrazzi → Marazzi, Dal Spirit → Daltile +
  *     prepend "Spirit " to style.
+ *   - When brand is "Unknown" (legacy from the 2026-05-18 hand-edit pass),
+ *     try to recover the canonical manufacturer via:
+ *       * STYLE_BRAND_HINTS — exact style-name match
+ *       * COLOR_BRAND_HINTS — color-only match for style-less entries
+ *       * vendor-restore — entries with `MANUFACTURER UNKNOWN` in notes get
+ *         brand reset to vendor=Masonry Center so the distribution
+ *         reflects what we actually know
  *
  * Rewrites every JSON file in place. Idempotent — re-running on already-
- * normalized data is a no-op because the vendor field is already set.
+ * normalized data is a no-op.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -17,7 +24,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SEED_DIR = path.resolve(__dirname, "../../../../seed/bath-tile");
 
-type TileEntry = {
+export type TileEntry = {
   trade: "tile";
   vendor?: string | null;
   brand: string;
@@ -34,7 +41,7 @@ type TileEntry = {
 type Room = { room_name: string; entries: TileEntry[] };
 type Project = { rooms: Room[]; [k: string]: unknown };
 
-const VENDORS = new Set([
+export const VENDORS = new Set([
   "Masonry Center",
   "Tile Shop",
   "Great Floors",
@@ -45,7 +52,7 @@ const VENDORS = new Set([
  * Manufacturer prefixes found in style strings (when brand is a vendor).
  * Order matters — longer/multi-word matches come first.
  */
-const MANUFACTURER_PREFIXES: Array<{ re: RegExp; canonical: string }> = [
+export const MANUFACTURER_PREFIXES: Array<{ re: RegExp; canonical: string }> = [
   { re: /^Conrad Brick\b/i, canonical: "Conrad Brick" },
   { re: /^Highland Lake\b/i, canonical: "Highland Lake" },
   { re: /^Sand and Stone\b/i, canonical: "Daltile" },
@@ -77,22 +84,154 @@ const MANUFACTURER_PREFIXES: Array<{ re: RegExp; canonical: string }> = [
   { re: /^Cassero\b/i, canonical: "Emser" },
 ];
 
-function normalizeEntry(entry: TileEntry): TileEntry {
-  // Already normalized with a real manufacturer — skip
+/**
+ * Style-name → canonical brand mapping used when an entry was previously
+ * stuck at brand="Unknown" because the original raw brand was a vendor
+ * (Masonry Center) and the style didn't match a MANUFACTURER_PREFIXES
+ * regex. Each entry here is a high-confidence resolution backed by
+ * either in-corpus evidence or WebSearch.
+ *
+ * Rewrites the entry to: brand=canonical, style=rewriteStyle (if set),
+ * color/sku adjusted per `apply`, and clears the MANUFACTURER UNKNOWN
+ * note flag.
+ */
+export type UnknownStyleResolution = {
+  /** Match the exact style string (case-insensitive). */
+  style: string;
+  /** Canonical manufacturer brand. */
+  brand: string;
+  /** Replace style with this if set (else keep original). */
+  rewriteStyle?: string;
+  /** Move original style into this field (color/sku) if set. */
+  preserveStyleAs?: "color" | "sku";
+  /** Optional source label appended to notes. */
+  source?: string;
+};
+export const STYLE_BRAND_HINTS: UnknownStyleResolution[] = [
+  // Lana ZL 07: the sibling shower-wall entry in the same room is
+  // Marazzi Zellige Neo with note "lower 7 ft ZL07 Lana, top 3 ft ZL11
+  // Gesso". "ZL" is the Zellige Neo collection prefix. (See
+  // centerra-8-2-adamson Media Room Bath.)
+  {
+    style: "Lana ZL 07",
+    brand: "Marazzi",
+    rewriteStyle: "Zellige Neo",
+    preserveStyleAs: "color",
+    source: "Marazzi Zellige Neo (ZL series); resolved from sibling shower-wall entry",
+  },
+];
+
+/**
+ * Color-only → canonical brand mapping. Used when both brand and style
+ * are null/empty and only the color identifies the product. Each entry
+ * must be high-confidence (backed by in-corpus SKU evidence).
+ */
+export type UnknownColorResolution = {
+  color: string;
+  brand: string;
+  /** Style to set on the entry (must be the collection name). */
+  style: string;
+  /** Set sku to the original color value as well. */
+  copyColorToSku?: boolean;
+  source?: string;
+};
+export const COLOR_BRAND_HINTS: UnknownColorResolution[] = [
+  // Rolling Fog: kingswood-4-2-savannah-rv has an Emser Visconde tub
+  // entry with `sku: "Rolling Fog"`. The audit explicitly says "Rolling
+  // Fog appears elsewhere with Emser/Visconde as the source." Both
+  // null-style/color=Rolling Fog tub-surround entries (12x24) match.
+  {
+    color: "Rolling Fog",
+    brand: "Emser",
+    style: "Visconde",
+    copyColorToSku: true,
+    source: "Emser Visconde (Rolling Fog SKU); resolved from kingswood-4-2 sibling",
+  },
+];
+
+function stripUnknownMarker(notes: string | null | undefined): string | null {
+  if (!notes) return null;
+  return (
+    notes
+      .replace(/\s*\|?\s*MANUFACTURER UNKNOWN: confirm with Tamara\s*/g, "")
+      .replace(/^\s*\|\s*/, "")
+      .replace(/AMBIGUOUS: portal listed [^.]*\.\s*/g, "")
+      .replace(/Confirm brand with Tamara\.?\s*/g, "")
+      .trim() || null
+  );
+}
+
+function appendSource(notes: string | null | undefined, source: string | undefined): string | null {
+  const base = (notes ?? "").trim();
+  if (!source) return base || null;
+  const tag = `RESOLVED: ${source}`;
+  if (base.includes(tag)) return base;
+  return base ? `${base} | ${tag}` : tag;
+}
+
+export function normalizeEntry(entry: TileEntry): TileEntry {
+  // Already normalized with a real manufacturer — skip.
   if (
     entry.vendor !== undefined &&
     entry.vendor !== null &&
-    entry.brand !== entry.vendor
+    entry.brand !== entry.vendor &&
+    entry.brand !== "Unknown"
   ) {
     return entry;
   }
 
-  // Otherwise re-process: either fresh (no vendor) or stuck-at-vendor
-  // (brand==vendor, manufacturer was previously unknown and may now be
-  // identifiable via newly-added manufacturer prefixes).
   const out: TileEntry = { ...entry };
 
-  // Case 1: brand is a vendor — promote and try to extract manufacturer
+  // Case 0: brand="Unknown" — recover via style/color hints, else restore
+  // brand to the recorded vendor (if any) or leave as Unknown.
+  if (out.brand === "Unknown") {
+    const styleKey = (out.style ?? "").trim();
+    if (styleKey) {
+      for (const hint of STYLE_BRAND_HINTS) {
+        if (hint.style.toLowerCase() === styleKey.toLowerCase()) {
+          out.brand = hint.brand;
+          const originalStyle = out.style;
+          if (hint.rewriteStyle) out.style = hint.rewriteStyle;
+          if (hint.preserveStyleAs === "color" && !out.color && originalStyle) {
+            out.color = originalStyle;
+          } else if (hint.preserveStyleAs === "sku" && !out.sku && originalStyle) {
+            out.sku = originalStyle;
+          }
+          out.notes = appendSource(stripUnknownMarker(out.notes), hint.source);
+          return out;
+        }
+      }
+    }
+    const colorKey = (out.color ?? "").trim();
+    if (!styleKey && colorKey) {
+      for (const hint of COLOR_BRAND_HINTS) {
+        if (hint.color.toLowerCase() === colorKey.toLowerCase()) {
+          out.brand = hint.brand;
+          out.style = hint.style;
+          if (hint.copyColorToSku && !out.sku) out.sku = colorKey;
+          out.notes = appendSource(stripUnknownMarker(out.notes), hint.source);
+          return out;
+        }
+      }
+    }
+    // No hint matched. If we know the vendor, surface that by setting
+    // brand=vendor so the distribution reflects "we know the supplier,
+    // not the manufacturer" rather than the opaque "Unknown".
+    if (out.vendor) {
+      out.brand = out.vendor;
+      const note = out.notes ?? "";
+      if (!note.includes("MANUFACTURER UNKNOWN")) {
+        out.notes = note
+          ? `${note} | MANUFACTURER UNKNOWN: confirm with Tamara`
+          : "MANUFACTURER UNKNOWN: confirm with Tamara";
+      }
+      return out;
+    }
+    // Truly nothing known — leave as Unknown.
+    return out;
+  }
+
+  // Case 1: brand is a vendor — promote and try to extract manufacturer.
   if (VENDORS.has(out.brand)) {
     const vendor = out.brand;
     out.vendor = vendor;
@@ -104,10 +243,7 @@ function normalizeEntry(entry: TileEntry): TileEntry {
           out.style = stripped || null;
           // Clean up the MANUFACTURER UNKNOWN flag if it's now identified.
           if (out.notes) {
-            out.notes = out.notes
-              .replace(/\s*\|?\s*MANUFACTURER UNKNOWN: confirm with Tamara\s*/g, "")
-              .replace(/^\s*\|\s*/, "")
-              .trim() || null;
+            out.notes = stripUnknownMarker(out.notes);
           }
           return out;
         }
@@ -123,7 +259,7 @@ function normalizeEntry(entry: TileEntry): TileEntry {
     return out;
   }
 
-  // Case 2: Dal Spirit → Daltile, prepend "Spirit" to style
+  // Case 2: Dal Spirit → Daltile, prepend "Spirit" to style.
   if (out.brand === "Dal Spirit") {
     out.brand = "Daltile";
     out.style = out.style ? `Spirit ${out.style}` : "Spirit";
@@ -131,7 +267,7 @@ function normalizeEntry(entry: TileEntry): TileEntry {
     return out;
   }
 
-  // Case 3: brand renames
+  // Case 3: brand renames.
   const BRAND_RENAMES: Record<string, string> = {
     "Dal": "Daltile",
     "Marrazzi": "Marazzi",
@@ -199,4 +335,8 @@ function main() {
   console.log(`manufacturer unknown (vendor only, needs human review): ${manufacturersUnknown}`);
 }
 
-main();
+// Only run main() when executed directly (not when imported in tests).
+const isMain = import.meta.url === `file://${process.argv[1]}`;
+if (isMain) {
+  main();
+}
