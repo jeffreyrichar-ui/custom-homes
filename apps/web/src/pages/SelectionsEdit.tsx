@@ -330,6 +330,19 @@ export function SelectionsEdit() {
                 <span className="room-count">
                   {totalEntries} {totalEntries === 1 ? "entry" : "entries"}
                 </span>
+                {totalEntries > 0 && (
+                  <a
+                    href={api.roomPdfUrl(project.id, room.id)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="icon-link"
+                    aria-label={`Download PDF for ${room.room_name}`}
+                    title={`Download PDF for ${room.room_name}`}
+                  >
+                    <Icon name="download" />
+                    <span>PDF</span>
+                  </a>
+                )}
                 {allTileEntries.length > 1 && (
                   <button
                     type="button"

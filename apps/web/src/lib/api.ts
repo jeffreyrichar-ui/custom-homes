@@ -219,6 +219,10 @@ export const api = {
       `/api/pdfs/projects/${projectId}/trade/${trade}`,
       { method: "POST", admin: true },
     ),
+  // Per-room PDF: the endpoint streams the PDF directly, so the UI opens this
+  // URL in a new tab rather than going through fetch().
+  roomPdfUrl: (projectId: string, roomId: string) =>
+    `/api/pdfs/projects/${projectId}/rooms/${roomId}`,
 
   // Phase 6 — auth
   authMe: () =>
