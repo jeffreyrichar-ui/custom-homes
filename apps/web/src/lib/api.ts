@@ -52,6 +52,8 @@ export type ProjectSummary = {
   address: string | null;
   created_at: string;
   room_count: number;
+  entry_count: number;
+  top_brand: string | null;
 };
 
 export type ProjectDetailResponse = {

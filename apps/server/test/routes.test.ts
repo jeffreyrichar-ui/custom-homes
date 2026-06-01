@@ -87,6 +87,8 @@ describe("routes", () => {
     expect(list.status).toBe(200);
     expect(list.body.projects).toHaveLength(1);
     expect(list.body.projects[0].room_count).toBe(2);
+    expect(list.body.projects[0].entry_count).toBeGreaterThan(0);
+    expect(list.body.projects[0].top_brand).toBeTruthy();
 
     const id = list.body.projects[0].id;
     const detail = await supertest(ctx.app).get(`/api/projects/${id}`);

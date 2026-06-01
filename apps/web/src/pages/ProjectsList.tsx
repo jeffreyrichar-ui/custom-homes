@@ -183,6 +183,18 @@ export function ProjectsList() {
                     <span>
                       {p.room_count} {p.room_count === 1 ? "room" : "rooms"}
                     </span>
+                    {p.entry_count > 0 && (
+                      <>
+                        <span className="dot">·</span>
+                        <span>{p.entry_count} selections</span>
+                      </>
+                    )}
+                    {p.top_brand && (
+                      <>
+                        <span className="dot">·</span>
+                        <span>Top {p.top_brand}</span>
+                      </>
+                    )}
                     <span className="dot">·</span>
                     <span>
                       Added {new Date(p.created_at).toLocaleDateString()}
