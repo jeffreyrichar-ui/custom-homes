@@ -142,6 +142,14 @@ export const api = {
       `/api/selections/projects/${projectId}/rooms`,
       { method: "POST", body: { room_name }, admin: true },
     ),
+  duplicateRoom: (projectId: string, roomId: string, new_room_name: string) =>
+    request<{
+      room: { id: string; room_name: string; project_id: string };
+      copied: Record<string, number>;
+    }>(
+      `/api/selections/projects/${projectId}/rooms/${roomId}/duplicate`,
+      { method: "POST", body: { new_room_name }, admin: true },
+    ),
   saveEntry: (roomId: string, entry: Record<string, unknown>) =>
     request<{ id: string; trade: string; is_new_entry: boolean }>(
       `/api/selections/rooms/${roomId}/entries`,

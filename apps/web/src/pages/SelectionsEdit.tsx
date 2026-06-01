@@ -24,6 +24,8 @@ export function SelectionsEdit() {
   const [tradePicker, setTradePicker] = useState<Record<string, TradeKind | null>>({});
   const [showAddRoom, setShowAddRoom] = useState(false);
   const [pendingRoomName, setPendingRoomName] = useState("");
+  const [duplicatingRoomId, setDuplicatingRoomId] = useState<string | null>(null);
+  const [pendingDuplicateName, setPendingDuplicateName] = useState("");
   const [editing, setEditing] = useState<EditingState>(null);
   const [viewMode, setViewMode] = useState<Record<string, "cards" | "shower">>({});
   const [renamingProject, setRenamingProject] = useState(false);
@@ -134,6 +136,30 @@ export function SelectionsEdit() {
       refresh();
       const targetRoom = rooms.find((r) => r.id === targetRoomId);
       notify("success", `Duplicated to ${targetRoom?.room_name ?? "room"}`);
+    } catch (err) {
+      notify("error", err instanceof Error ? err.message : String(err));
+    }
+  };
+
+  const handleDuplicateRoom = async (
+    e: React.FormEvent,
+    sourceRoomId: string,
+  ) => {
+    e.preventDefault();
+    const name = pendingDuplicateName.trim();
+    if (!name) return;
+    try {
+      const res = await api.duplicateRoom(id, sourceRoomId, name);
+      setDuplicatingRoomId(null);
+      setPendingDuplicateName("");
+      refresh();
+      const total = Object.values(res.copied).reduce((a, b) => a + b, 0);
+      notify(
+        "success",
+        total > 0
+          ? `Duplicated to "${name}" with ${total} ${total === 1 ? "entry" : "entries"}`
+          : `Duplicated to "${name}"`,
+      );
     } catch (err) {
       notify("error", err instanceof Error ? err.message : String(err));
     }
@@ -337,8 +363,52 @@ export function SelectionsEdit() {
                     ))}
                   </select>
                 )}
+                {duplicatingRoomId !== room.id && (
+                  <button
+                    type="button"
+                    className="link icon-link"
+                    onClick={() => {
+                      setPendingDuplicateName(`${room.room_name} copy`);
+                      setDuplicatingRoomId(room.id);
+                    }}
+                    aria-label={`Duplicate ${room.room_name}`}
+                    title="Duplicate room (copies all entries to a new room)"
+                  >
+                    <Icon name="duplicate" />
+                  </button>
+                )}
               </div>
             </div>
+
+            {duplicatingRoomId === room.id && (
+              <form
+                onSubmit={(e) => handleDuplicateRoom(e, room.id)}
+                className="add-room-form"
+              >
+                <input
+                  className="ac-input"
+                  placeholder="New room name (e.g. Powder Bath)"
+                  value={pendingDuplicateName}
+                  onChange={(e) => setPendingDuplicateName(e.target.value)}
+                  autoFocus
+                />
+                <button type="submit" className="icon-button">
+                  <Icon name="duplicate" />
+                  <span>Duplicate</span>
+                </button>
+                <button
+                  type="button"
+                  className="secondary icon-button"
+                  onClick={() => {
+                    setDuplicatingRoomId(null);
+                    setPendingDuplicateName("");
+                  }}
+                >
+                  <Icon name="x" />
+                  <span>Cancel</span>
+                </button>
+              </form>
+            )}
 
             {tradePicker[room.id] && !editing && (
               <div className="trade-form-block" ref={formScrollRef}>

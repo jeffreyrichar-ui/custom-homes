@@ -320,4 +320,139 @@ describe("/api/selections", () => {
       expect(empty.status).toBe(400);
     });
   });
+
+  describe("room duplication", () => {
+    it("POST duplicate clones a room and all its tile entries", async () => {
+      const p = await supertest(ctx.app)
+        .post("/api/selections/projects")
+        .send({ name: "House" });
+      const source = await supertest(ctx.app)
+        .post(`/api/selections/projects/${p.body.id}/rooms`)
+        .send({ room_name: "Master Bath" });
+      await supertest(ctx.app)
+        .post(`/api/selections/rooms/${source.body.id}/entries`)
+        .send({
+          trade: "tile",
+          brand: "Daltile",
+          style: "Miramo",
+          color: "Pearl",
+          sku: "DM-PEARL",
+          grout_color: "Light Gray",
+          location_in_room: "shower_walls",
+          notes: "matte finish",
+          allowance: 12.5,
+          status: "selected",
+        });
+      await supertest(ctx.app)
+        .post(`/api/selections/rooms/${source.body.id}/entries`)
+        .send({
+          trade: "tile",
+          brand: "Bedrosians",
+          style: "Cloe",
+          color: "White",
+          location_in_room: "shower_floor",
+        });
+
+      const dup = await supertest(ctx.app)
+        .post(
+          `/api/selections/projects/${p.body.id}/rooms/${source.body.id}/duplicate`,
+        )
+        .send({ new_room_name: "Powder Bath" });
+      expect(dup.status).toBe(201);
+      expect(dup.body.room?.id).toBeTruthy();
+      expect(dup.body.room.id).not.toBe(source.body.id);
+      expect(dup.body.room.room_name).toBe("Powder Bath");
+      expect(dup.body.room.project_id).toBe(p.body.id);
+      expect(dup.body.copied).toEqual({
+        tile: 2,
+        paint: 0,
+        carpet: 0,
+        hardwood: 0,
+        cabinet: 0,
+        countertop: 0,
+      });
+
+      const newRooms = await ctx.dbi.query<{ id: string; room_name: string }>(
+        "SELECT id, room_name FROM rooms WHERE project_id = $1 ORDER BY room_name",
+        [p.body.id],
+      );
+      expect(newRooms).toHaveLength(2);
+      expect(newRooms.map((r) => r.room_name)).toContain("Powder Bath");
+
+      const newTile = await ctx.dbi.query<{
+        room_id: string;
+        brand: string;
+        style: string | null;
+        color: string | null;
+        sku: string | null;
+        grout_color: string | null;
+        location_in_room: string;
+        notes: string | null;
+        allowance: number | null;
+        external_id: string | null;
+        external_source: string | null;
+      }>(
+        "SELECT room_id, brand, style, color, sku, grout_color, location_in_room, notes, allowance, external_id, external_source FROM tile_entries WHERE room_id = $1 ORDER BY brand",
+        [dup.body.room.id],
+      );
+      expect(newTile).toHaveLength(2);
+      expect(newTile[0]!.brand).toBe("Bedrosians");
+      expect(newTile[0]!.location_in_room).toBe("shower_floor");
+      expect(newTile[1]!.brand).toBe("Daltile");
+      expect(newTile[1]!.sku).toBe("DM-PEARL");
+      expect(newTile[1]!.grout_color).toBe("Light Gray");
+      expect(newTile[1]!.allowance).toBe(12.5);
+      // Sync columns must be cleared on the clone.
+      for (const row of newTile) {
+        expect(row.external_id).toBeNull();
+        expect(row.external_source).toBeNull();
+      }
+
+      // Source room is untouched.
+      const sourceTile = await ctx.dbi.query(
+        "SELECT id FROM tile_entries WHERE room_id = $1",
+        [source.body.id],
+      );
+      expect(sourceTile).toHaveLength(2);
+    });
+
+    it("POST duplicate requires new_room_name", async () => {
+      const p = await supertest(ctx.app)
+        .post("/api/selections/projects")
+        .send({ name: "House" });
+      const room = await supertest(ctx.app)
+        .post(`/api/selections/projects/${p.body.id}/rooms`)
+        .send({ room_name: "Master Bath" });
+      const noBody = await supertest(ctx.app)
+        .post(
+          `/api/selections/projects/${p.body.id}/rooms/${room.body.id}/duplicate`,
+        )
+        .send({});
+      expect(noBody.status).toBe(400);
+      const empty = await supertest(ctx.app)
+        .post(
+          `/api/selections/projects/${p.body.id}/rooms/${room.body.id}/duplicate`,
+        )
+        .send({ new_room_name: "   " });
+      expect(empty.status).toBe(400);
+    });
+
+    it("POST duplicate 404s when the room does not belong to the project", async () => {
+      const p1 = await supertest(ctx.app)
+        .post("/api/selections/projects")
+        .send({ name: "House A" });
+      const p2 = await supertest(ctx.app)
+        .post("/api/selections/projects")
+        .send({ name: "House B" });
+      const roomInA = await supertest(ctx.app)
+        .post(`/api/selections/projects/${p1.body.id}/rooms`)
+        .send({ room_name: "Master Bath" });
+      const res = await supertest(ctx.app)
+        .post(
+          `/api/selections/projects/${p2.body.id}/rooms/${roomInA.body.id}/duplicate`,
+        )
+        .send({ new_room_name: "Powder Bath" });
+      expect(res.status).toBe(404);
+    });
+  });
 });

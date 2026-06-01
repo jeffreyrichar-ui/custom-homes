@@ -15,6 +15,10 @@ import type { ScrapeQueue } from "../services/scrapeQueue.js";
 // timestamp (let the DB default re-stamp it for the new row).
 const ENTRY_COPY_SKIP = new Set(["id", "room_id", "created_at"]);
 
+// Sync columns get cleared on copy: the clone is a brand-new local row, not a
+// sync of the source's BuilderTrend record.
+const ENTRY_SYNC_NULLS = new Set(["external_id", "external_source", "synced_at"]);
+
 async function detectNovel(
   dbi: Dbi,
   trade: TradeKind,
@@ -269,6 +273,88 @@ export function makeSelectionsRouter(
       next(err);
     }
   });
+
+  // Duplicate a single room within the same project: copy room + all trade
+  // entries to a new room. Common workflow: Tamara finishes "Master Bath" tile
+  // spec and wants the same spread as a starting point for "Powder Bath".
+  router.post(
+    "/projects/:projectId/rooms/:roomId/duplicate",
+    async (req, res, next) => {
+      try {
+        const dbi = getDbi();
+        const new_room_name =
+          typeof req.body?.new_room_name === "string"
+            ? req.body.new_room_name.trim()
+            : "";
+        if (!new_room_name) {
+          res.status(400).json({ error: "new_room_name is required" });
+          return;
+        }
+
+        // Verify source room belongs to this project.
+        const source = await dbi.query<{ id: string; room_name: string }>(
+          `SELECT id, room_name FROM rooms WHERE id = $1 AND project_id = $2`,
+          [req.params.roomId, req.params.projectId],
+        );
+        if (source.length === 0) {
+          res.status(404).json({ error: "room not found" });
+          return;
+        }
+
+        const result = await dbi.withTransaction(async (tx) => {
+          const newRoomId = randomUUID();
+          await tx.exec(
+            `INSERT INTO rooms (id, project_id, room_name) VALUES ($1, $2, $3)`,
+            [newRoomId, req.params.projectId, new_room_name],
+          );
+
+          const copied: Record<TradeKind, number> = {
+            tile: 0,
+            paint: 0,
+            carpet: 0,
+            hardwood: 0,
+            cabinet: 0,
+            countertop: 0,
+          };
+          for (const trade of TRADE_KINDS) {
+            const table = ENTRY_TABLE_BY_TRADE[trade];
+            const sourceEntries = await tx.query<Record<string, unknown>>(
+              `SELECT * FROM ${table} WHERE room_id = $1`,
+              [req.params.roomId],
+            );
+            for (const src of sourceEntries) {
+              const cols: string[] = ["id", "room_id"];
+              const vals: unknown[] = [randomUUID(), newRoomId];
+              for (const key of Object.keys(src)) {
+                if (ENTRY_COPY_SKIP.has(key)) continue;
+                cols.push(key);
+                vals.push(ENTRY_SYNC_NULLS.has(key) ? null : src[key]);
+              }
+              const placeholders = cols.map((_, i) => `$${i + 1}`).join(", ");
+              await tx.exec(
+                `INSERT INTO ${table} (${cols.join(", ")}) VALUES (${placeholders})`,
+                vals,
+              );
+            }
+            copied[trade] = sourceEntries.length;
+          }
+
+          return { newRoomId, copied };
+        });
+
+        res.status(201).json({
+          room: {
+            id: result.newRoomId,
+            room_name: new_room_name,
+            project_id: req.params.projectId,
+          },
+          copied: result.copied,
+        });
+      } catch (err) {
+        next(err);
+      }
+    },
+  );
 
   // Save a single entry into a room. Detects novel combinations and tags is_new_entry.
   router.post("/rooms/:roomId/entries", async (req, res, next) => {
