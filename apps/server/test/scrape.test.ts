@@ -838,3 +838,81 @@ describe("cepacScraper", () => {
     expect(opts.imageSelectors.length).toBeGreaterThan(0);
   });
 });
+
+describe("conradBrickScraper", () => {
+  beforeEach(async () => {
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    vi.mocked(mod.fetchProductImagePlaywright).mockClear();
+  });
+
+  it("findScraper resolves the Conrad Brick adapter by exact brand", async () => {
+    const { findScraper } = await import("../src/services/scrapers/index.js");
+    const s = findScraper("Conrad Brick");
+    expect(s).not.toBeNull();
+    expect(s!.brand).toBe("Conrad Brick");
+  });
+
+  it("matches 'Conrad Brick' on word boundary, case-insensitively", async () => {
+    const { conradBrickScraper } = await import(
+      "../src/services/scrapers/conradBrick.js"
+    );
+    expect(conradBrickScraper.matches("Conrad Brick")).toBe(true);
+    expect(conradBrickScraper.matches("conrad brick")).toBe(true);
+    expect(conradBrickScraper.matches("CONRAD BRICK")).toBe(true);
+    expect(conradBrickScraper.matches(" Conrad Brick ")).toBe(true);
+    expect(conradBrickScraper.matches("Conrad Brick Tile")).toBe(true);
+    // Sanity: don't bleed into the parent brand or sibling brick-format series.
+    expect(conradBrickScraper.matches("American Olean")).toBe(false);
+    expect(conradBrickScraper.matches("Brick")).toBe(false);
+    expect(conradBrickScraper.matches("Conrad")).toBe(false);
+    expect(conradBrickScraper.matches("Daltile")).toBe(false);
+  });
+
+  it("scrape() returns null when there is nothing to query on", async () => {
+    const { conradBrickScraper } = await import(
+      "../src/services/scrapers/conradBrick.js"
+    );
+    const result = await conradBrickScraper.scrape({
+      brand: "Conrad Brick",
+      sku: null,
+      style: null,
+      color: null,
+      size: null,
+      notes: null,
+    });
+    expect(result).toBeNull();
+  });
+
+  it("scrape() builds an americanolean.com /search URL scoped to the collection with a Conrad Brick PDP link selector", async () => {
+    const { conradBrickScraper } = await import(
+      "../src/services/scrapers/conradBrick.js"
+    );
+    const mod = await import("../src/services/scrapers/playwrightFetch.js");
+    const fetchMock = vi.mocked(mod.fetchProductImagePlaywright);
+
+    const result = await conradBrickScraper.scrape({
+      brand: "Conrad Brick",
+      sku: null,
+      style: "Conrad Brick",
+      color: "Polar",
+      notes: "2.25x8 glossy",
+    });
+
+    expect(result).not.toBeNull();
+    expect(result!.imageBuffer.length).toBeGreaterThan(0);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const opts = fetchMock.mock.calls[0]![0];
+    // Conrad Brick has no standalone domain — PDPs live on americanolean.com.
+    expect(
+      opts.searchUrl.startsWith("https://www.americanolean.com/search?q="),
+    ).toBe(true);
+    // Query is scoped to the collection so AO search doesn't drift.
+    expect(decodeURIComponent(opts.searchUrl).toLowerCase()).toContain(
+      "conrad brick",
+    );
+    expect(decodeURIComponent(opts.searchUrl)).toContain("Polar");
+    // Link selector must target the Conrad Brick PDP path specifically.
+    expect(opts.productLinkSelector).toContain("/products/wall/conrad-brick");
+    expect(opts.imageSelectors.length).toBeGreaterThan(0);
+  });
+});
