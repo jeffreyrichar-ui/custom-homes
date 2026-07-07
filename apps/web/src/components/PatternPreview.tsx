@@ -337,57 +337,65 @@ function renderHerringbone(opts: {
   tileWidth: number;
   aspect: number;
 }) {
-  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect } = opts;
-  // Each grid cell holds one rotated rectangle. Alternating ±45° per cell
-  // forms the classic single-weave herringbone — adjacent tiles meet at L-joints.
-  const tileW = tileWidth;
-  const tileH = tileWidth / aspect;
-  const cellSize = Math.max(tileW, tileH) * 0.75;
-  // Half-cell padding around the grid so corners of rotated tiles don't clip.
-  const pad = cellSize / 2;
-  const totalW = cols * cellSize + 2 * pad;
-  const totalH = rows * cellSize + 2 * pad;
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth } = opts;
+  void tileWidth;
+  void opts.aspect;
+  // True 2:1 domino herringbone, mirroring renderHerringboneSvg in the
+  // server PDF renderer. The plane is tiled by an H tile [0,2S]x[0,S] and
+  // its V partner [2S,3S]x[-S,S] repeated at every lattice translation
+  // (p+3q, p-q)·S — each tile's end abuts the side of its perpendicular
+  // neighbor, forming the interlocking L-joints. The whole field is rotated
+  // 45° for the classic point-up look Tamara's "1/2 x 1 herringbone"
+  // describes. The 2:1 ratio is inherent to the pattern, so the detected
+  // tile aspect is deliberately ignored.
+  const S = 26;
+  const inset = 1;
+  const totalW = cols * S * 1.6;
+  const totalH = rows * S * 1.6;
+  const cx = totalW / 2;
+  const cy = totalH / 2;
+  const reach = Math.ceil((totalW + totalH) / (2 * S)) + 2;
+  const radius = Math.sqrt(totalW * totalW + totalH * totalH) / 2 + 3 * S;
 
   const tiles: React.ReactElement[] = [];
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const cx = pad + c * cellSize + cellSize / 2;
-      const cy = pad + r * cellSize + cellSize / 2;
-      const angle = (r + c) % 2 === 0 ? 45 : -45;
-      const x = cx - tileW / 2;
-      const y = cy - tileH / 2;
-      const id = `hb-${r}-${c}`;
-      if (imageUrl) {
-        tiles.push(
-          <g key={`${r}-${c}`} transform={`rotate(${angle} ${cx} ${cy})`}>
-            <defs>
-              <clipPath id={id}>
-                <rect x={x} y={y} width={tileW} height={tileH} />
-              </clipPath>
-            </defs>
-            <image
-              href={imageUrl}
-              x={x}
-              y={y}
-              width={tileW}
-              height={tileH}
-              clipPath={`url(#${id})`}
-              preserveAspectRatio="xMidYMid slice"
-            />
-          </g>,
-        );
-      } else {
-        tiles.push(
-          <rect
-            key={`${r}-${c}`}
-            x={x}
-            y={y}
-            width={tileW}
-            height={tileH}
-            fill={placeholderFill}
-            transform={`rotate(${angle} ${cx} ${cy})`}
-          />,
-        );
+  let n = 0;
+  for (let p = -reach; p <= reach; p++) {
+    for (let q = -reach; q <= reach; q++) {
+      const ox = cx + (p + 3 * q) * S;
+      const oy = cy + (p - q) * S;
+      const dx = ox - cx;
+      const dy = oy - cy;
+      if (dx * dx + dy * dy > radius * radius) continue;
+      const rects = [
+        { x: ox + inset, y: oy + inset, w: 2 * S - 2 * inset, h: S - 2 * inset },
+        { x: ox + 2 * S + inset, y: oy - S + inset, w: S - 2 * inset, h: 2 * S - 2 * inset },
+      ];
+      for (const rct of rects) {
+        const id = `hb-${n++}`;
+        if (imageUrl) {
+          tiles.push(
+            <g key={id}>
+              <defs>
+                <clipPath id={id}>
+                  <rect x={rct.x} y={rct.y} width={rct.w} height={rct.h} />
+                </clipPath>
+              </defs>
+              <image
+                href={imageUrl}
+                x={rct.x}
+                y={rct.y}
+                width={rct.w}
+                height={rct.h}
+                clipPath={`url(#${id})`}
+                preserveAspectRatio="xMidYMid slice"
+              />
+            </g>,
+          );
+        } else {
+          tiles.push(
+            <rect key={id} x={rct.x} y={rct.y} width={rct.w} height={rct.h} fill={placeholderFill} />,
+          );
+        }
       }
     }
   }
@@ -398,7 +406,7 @@ function renderHerringbone(opts: {
       preserveAspectRatio="xMidYMid meet"
     >
       <rect x={0} y={0} width={totalW} height={totalH} fill={groutFill} />
-      {tiles}
+      <g transform={`rotate(45 ${cx} ${cy})`}>{tiles}</g>
     </svg>
   );
 }
@@ -412,40 +420,49 @@ function renderCheckerboardOnPoint(opts: {
   tileWidth: number;
 }) {
   const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth } = opts;
-  // "On point" = squares rotated 45° (diamonds). Alternate cells get a
-  // translucent grout-color tint to fake the classic two-tone contrast.
+  // A chessboard rotated 45°. Diamond centers within a row sit one full
+  // diagonal apart (touching at left/right points); each successive row
+  // drops half a diagonal and shifts half a diagonal, filling the gaps.
+  // Rotating a chessboard 45° makes its diagonals horizontal, and diagonals
+  // are monochrome — so the dim tint alternates BY ROW, giving every
+  // diamond four opposite-color edge neighbors. Mirrors
+  // renderCheckerboardOnPointSvg in the server PDF renderer.
   const side = tileWidth;
   const diag = side * Math.SQRT2;
-  const step = diag / 2;
-  const pad = step;
-  const totalW = cols * step + 2 * pad;
-  const totalH = rows * step + 2 * pad;
+  const half = diag / 2;
+  const pad = half;
+  const dcols = Math.max(2, Math.ceil(cols / 2));
+  const drows = rows * 2;
+  const totalW = dcols * diag + 2 * pad;
+  const totalH = drows * half + 2 * pad;
+  // Inset each drawn square slightly so a grout seam shows between diamonds.
+  const inset = 1.5;
+  const drawSide = side - 2 * inset;
 
   const tiles: React.ReactElement[] = [];
-  for (let r = 0; r < rows + 1; r++) {
-    for (let c = 0; c < cols + 1; c++) {
-      const cx = pad + c * step;
-      const cy = pad + r * step;
-      // Offset every other row by half-step → diamond tessellation.
-      const ox = r % 2 === 1 ? step : 0;
-      const x = cx + ox - side / 2;
-      const y = cy - side / 2;
-      const dimmed = (r + c) % 2 === 1;
+  for (let r = 0; r <= drows; r++) {
+    const rowShift = r % 2 === 1 ? half : 0;
+    const dimmed = r % 2 === 1;
+    for (let c = 0; c <= dcols; c++) {
+      const ccx = pad + c * diag + rowShift;
+      const ccy = pad + r * half;
+      const x = ccx - drawSide / 2;
+      const y = ccy - drawSide / 2;
       const id = `cob-${r}-${c}`;
       if (imageUrl) {
         tiles.push(
-          <g key={`img-${r}-${c}`} transform={`rotate(45 ${x + side / 2} ${y + side / 2})`}>
+          <g key={`img-${r}-${c}`} transform={`rotate(45 ${ccx} ${ccy})`}>
             <defs>
               <clipPath id={id}>
-                <rect x={x} y={y} width={side} height={side} />
+                <rect x={x} y={y} width={drawSide} height={drawSide} />
               </clipPath>
             </defs>
             <image
               href={imageUrl}
               x={x}
               y={y}
-              width={side}
-              height={side}
+              width={drawSide}
+              height={drawSide}
               clipPath={`url(#${id})`}
               preserveAspectRatio="xMidYMid slice"
             />
@@ -453,8 +470,8 @@ function renderCheckerboardOnPoint(opts: {
               <rect
                 x={x}
                 y={y}
-                width={side}
-                height={side}
+                width={drawSide}
+                height={drawSide}
                 fill={groutFill}
                 opacity={0.45}
               />
@@ -467,10 +484,10 @@ function renderCheckerboardOnPoint(opts: {
             key={`bg-${r}-${c}`}
             x={x}
             y={y}
-            width={side}
-            height={side}
+            width={drawSide}
+            height={drawSide}
             fill={dimmed ? groutFill : placeholderFill}
-            transform={`rotate(45 ${x + side / 2} ${y + side / 2})`}
+            transform={`rotate(45 ${ccx} ${ccy})`}
           />,
         );
       }
@@ -498,11 +515,13 @@ function renderParquet(opts: {
 }) {
   const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth } = opts;
   // Tamara's "4 vertical + 4 horizontal" — square parquet blocks of 4 tiles,
-  // alternating block orientation in a checkerboard arrangement.
+  // alternating block orientation in a checkerboard arrangement. Grout seams
+  // between the four strips of a block; flush strips render as one solid
+  // square. Mirrors renderParquetSvg in the server PDF renderer.
   const tileLong = tileWidth;
-  const tileShort = tileWidth / 4;
   const block = tileLong; // square block side = 4 short × 1 long
   const groutWidth = 2;
+  const stripShort = (tileLong - 3 * groutWidth) / 4;
   const bcols = Math.max(2, Math.ceil(cols / 2));
   const brows = Math.max(2, Math.ceil(rows / 2));
   const totalW = bcols * block + groutWidth * (bcols + 1);
@@ -515,10 +534,11 @@ function renderParquet(opts: {
       const y0 = br * block + groutWidth * (br + 1);
       const vertical = (br + bc) % 2 === 0; // alternate block orientation
       for (let i = 0; i < 4; i++) {
-        const x = vertical ? x0 + i * tileShort : x0;
-        const y = vertical ? y0 : y0 + i * tileShort;
-        const w = vertical ? tileShort : tileLong;
-        const h = vertical ? tileLong : tileShort;
+        const step = i * (stripShort + groutWidth);
+        const x = vertical ? x0 + step : x0;
+        const y = vertical ? y0 : y0 + step;
+        const w = vertical ? stripShort : tileLong;
+        const h = vertical ? tileLong : stripShort;
         if (imageUrl) {
           tiles.push(
             <image
@@ -560,12 +580,15 @@ function renderLattice(opts: {
   tileWidth: number;
 }) {
   const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth } = opts;
-  // Basket weave — pairs of vertical strips interlocking with pairs of
-  // horizontal strips. Repeat unit is a 2x2 super-cell.
+  // Basket weave — super-cells alternate between a stacked horizontal pair
+  // and a side-by-side vertical pair, separated by an internal grout seam.
+  // Drawing both pairs in one cell just paints the later pair over the
+  // earlier one, so each cell draws only its winning pair. Mirrors
+  // renderLatticeSvg in the server PDF renderer.
   const long = tileWidth;
-  const short = tileWidth / 2;
   const cell = long; // super-cell side (one weave unit)
   const groutWidth = 2;
+  const stripShort = (long - groutWidth) / 2;
   const ucols = Math.max(2, Math.ceil(cols / 2));
   const urows = Math.max(2, Math.ceil(rows / 2));
   const totalW = ucols * cell + groutWidth * (ucols + 1);
@@ -576,26 +599,18 @@ function renderLattice(opts: {
     for (let uc = 0; uc < ucols; uc++) {
       const x0 = uc * cell + groutWidth * (uc + 1);
       const y0 = ur * cell + groutWidth * (ur + 1);
-      // Alternate per super-cell: even cells = vertical pair on left,
-      // horizontal pair on right; odd cells flip.
       const flip = (ur + uc) % 2 === 1;
-      const pieces = flip
+      const pair = flip
         ? [
-            { x: x0, y: y0, w: long, h: short },
-            { x: x0, y: y0 + short, w: long, h: short },
-            { x: x0, y: y0, w: short, h: long }, // overlap not visible, but kept for structure
-            { x: x0 + short, y: y0, w: short, h: long },
+            { x: x0, y: y0, w: long, h: stripShort },
+            { x: x0, y: y0 + stripShort + groutWidth, w: long, h: stripShort },
           ]
         : [
-            { x: x0, y: y0, w: short, h: long },
-            { x: x0 + short, y: y0, w: short, h: long },
-            { x: x0, y: y0, w: long, h: short },
-            { x: x0, y: y0 + short, w: long, h: short },
+            { x: x0, y: y0, w: stripShort, h: long },
+            { x: x0 + stripShort + groutWidth, y: y0, w: stripShort, h: long },
           ];
-      // First two pieces are the "under" strips; last two are the "over" pair.
-      const visible = flip ? pieces.slice(0, 2).concat(pieces.slice(2)) : pieces.slice(2).concat(pieces.slice(0, 2));
-      for (let i = 0; i < 4; i++) {
-        const p = visible[i]!;
+      for (let i = 0; i < pair.length; i++) {
+        const p = pair[i]!;
         if (imageUrl) {
           tiles.push(
             <image
@@ -803,37 +818,46 @@ function renderRectangleGrid(opts: {
   const totalH = rows * tileH + groutWidth * (rows + 1);
 
   const tiles: React.ReactElement[] = [];
+  const pushTile = (key: string, x: number, y: number, w: number, h: number) => {
+    if (w < 1 || h < 1) return;
+    tiles.push(
+      imageUrl ? (
+        <image
+          key={key}
+          href={imageUrl}
+          x={x}
+          y={y}
+          width={w}
+          height={h}
+          preserveAspectRatio="xMidYMid slice"
+        />
+      ) : (
+        <rect key={key} x={x} y={y} width={w} height={h} fill={placeholderFill} />
+      ),
+    );
+  };
   for (let r = 0; r < rows; r++) {
     const rowOffsetX = (mode === "staggered-horizontal" || mode === "30-70") ? (r % 2) * offsetX : 0;
+    // Offset rows start with a cut tile filling the leading gap, the way a
+    // real running-bond course starts against a wall. Mirrors the server
+    // renderer.
+    if (rowOffsetX > 0) {
+      const y = r * tileH + groutWidth * (r + 1);
+      pushTile(`cut-r${r}`, groutWidth, y, rowOffsetX - groutWidth, Math.min(tileH, totalH - y - groutWidth));
+    }
     for (let c = 0; c < cols; c++) {
       const colOffsetY = mode === "staggered-vertical" ? (c % 2) * offsetY : 0;
+      // Offset columns likewise get a leading cut tile at the top.
+      if (r === 0 && colOffsetY > 0) {
+        const cx = c * tileW + groutWidth * (c + 1);
+        pushTile(`cut-c${c}`, cx, groutWidth, Math.min(tileW, totalW - cx - groutWidth), colOffsetY - groutWidth);
+      }
       const x = c * tileW + groutWidth * (c + 1) + rowOffsetX;
       const y = r * tileH + groutWidth * (r + 1) + colOffsetY;
       if (x >= totalW || y >= totalH) continue;
       const clippedW = Math.min(tileW, totalW - x - groutWidth);
       const clippedH = Math.min(tileH, totalH - y - groutWidth);
-      tiles.push(
-        imageUrl ? (
-          <image
-            key={`${r}-${c}`}
-            href={imageUrl}
-            x={x}
-            y={y}
-            width={clippedW}
-            height={clippedH}
-            preserveAspectRatio="xMidYMid slice"
-          />
-        ) : (
-          <rect
-            key={`${r}-${c}`}
-            x={x}
-            y={y}
-            width={clippedW}
-            height={clippedH}
-            fill={placeholderFill}
-          />
-        ),
-      );
+      pushTile(`${r}-${c}`, x, y, clippedW, clippedH);
     }
   }
   return (

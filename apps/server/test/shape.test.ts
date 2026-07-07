@@ -17,6 +17,13 @@ describe("detectShape", () => {
     expect(detectShape({ notes: "4x4 ring pattern" })).toBe("square");
   });
 
+  it("matches literal shape words in product-line names", () => {
+    expect(detectShape({ style: "Remedy Zen Rectangle Fluted" })).toBe("rectangle");
+    expect(detectShape({ style: "Studio Square Gloss" })).toBe("square");
+    // Specialty shapes still win over the literal words.
+    expect(detectShape({ style: "Hexagon Square Set" })).toBe("hexagon");
+  });
+
   it("returns unknown when no signal", () => {
     expect(detectShape({})).toBe("unknown");
     expect(detectShape({ notes: "nothing useful" })).toBe("unknown");
@@ -28,9 +35,13 @@ describe("detectShape", () => {
 });
 
 describe("detectAspect", () => {
-  it("derives w/h from notes", () => {
-    expect(detectAspect({ notes: "12x24" })).toBeCloseTo(0.5);
+  it("derives the long/short ratio regardless of written order", () => {
+    // "12x24" and "24x12" are the same tile — written order must not flip
+    // the rendered orientation (that's the pattern's job).
+    expect(detectAspect({ notes: "12x24" })).toBeCloseTo(2);
     expect(detectAspect({ notes: "24x12" })).toBeCloseTo(2);
+    expect(detectAspect({ notes: "3x6 subway" })).toBeCloseTo(2);
+    expect(detectAspect({ notes: "3x12" })).toBeCloseTo(4);
     expect(detectAspect({ notes: "4x4" })).toBeCloseTo(1);
   });
   it("defaults to 2 when no dim found", () => {
