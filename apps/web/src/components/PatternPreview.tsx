@@ -68,7 +68,16 @@ export function PatternPreview({
   const groutFill = resolveGroutFill(groutColor);
   const placeholderFill = "#d8d2c4";
 
-  if (detectedShape === "penny round" || detectedShape === "mosaic" || detectedShape === "palladiana mosaic") {
+  if (detectedShape === "palladiana mosaic") {
+    return renderPalladiana({
+      imageUrl,
+      groutFill,
+      placeholderFill,
+      cols: cols + 1,
+      rows: rows + 1,
+    });
+  }
+  if (detectedShape === "penny round" || detectedShape === "mosaic") {
     return renderCircles({
       imageUrl,
       groutFill,
@@ -133,6 +142,114 @@ export function PatternPreview({
 
 // ----- shape renderers -----
 
+/**
+ * Deterministic integer hash for palladiana jitter — web preview and PDF
+ * must produce the identical layout, so no Math.random. Mirrors shardHash
+ * in the server PDF renderer.
+ */
+function shardHash(i: number, j: number): number {
+  let h = (i * 374761393 + j * 668265263) | 0;
+  h = ((h ^ (h >>> 13)) * 1274126177) | 0;
+  return (h ^ (h >>> 16)) >>> 0;
+}
+
+function renderPalladiana(opts: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+}) {
+  const { imageUrl, groutFill, placeholderFill, cols, rows } = opts;
+  // Palladiana / crazy paving — irregular broken-marble shards. A lattice of
+  // deterministically jittered points; each cell becomes a shard (about a
+  // third split into triangle pairs for variety), shrunk toward its centroid
+  // so the grout shows between shards. Mirrors renderPalladianaSvg in the
+  // server PDF renderer.
+  const cell = 56;
+  const jitter = 0.55;
+  const shrink = 0.9;
+  const totalW = cols * cell;
+  const totalH = rows * cell;
+  const pt = (i: number, j: number): [number, number] => {
+    const h = shardHash(i, j);
+    const dx = ((h & 0xff) / 255 - 0.5) * cell * jitter;
+    const dy = (((h >>> 8) & 0xff) / 255 - 0.5) * cell * jitter;
+    return [i * cell + dx, j * cell + dy];
+  };
+  const tiles: React.ReactElement[] = [];
+  let n = 0;
+  const pushShard = (poly: Array<[number, number]>) => {
+    const cx = poly.reduce((s, p) => s + p[0], 0) / poly.length;
+    const cy = poly.reduce((s, p) => s + p[1], 0) / poly.length;
+    const pts = poly
+      .map(([x, y]) => `${(cx + (x - cx) * shrink).toFixed(1)},${(cy + (y - cy) * shrink).toFixed(1)}`)
+      .join(" ");
+    const id = `pl-${n++}`;
+    if (imageUrl) {
+      const xs = poly.map((p) => p[0]);
+      const ys = poly.map((p) => p[1]);
+      const bx = Math.min(...xs);
+      const by = Math.min(...ys);
+      const bw = Math.max(...xs) - bx;
+      const bh = Math.max(...ys) - by;
+      tiles.push(
+        <g key={id}>
+          {/* Placeholder underlay so a failed image load still shows a shard. */}
+          <polygon points={pts} fill={placeholderFill} />
+          <defs>
+            <clipPath id={id}>
+              <polygon points={pts} />
+            </clipPath>
+          </defs>
+          <image
+            href={imageUrl}
+            x={bx}
+            y={by}
+            width={bw}
+            height={bh}
+            clipPath={`url(#${id})`}
+            preserveAspectRatio="xMidYMid slice"
+          />
+        </g>,
+      );
+    } else {
+      tiles.push(<polygon key={id} points={pts} fill={placeholderFill} />);
+    }
+  };
+  // One ring of shards beyond the frame so the crop never shows ragged edges.
+  for (let j = -1; j <= rows; j++) {
+    for (let i = -1; i <= cols; i++) {
+      const a = pt(i, j);
+      const b = pt(i + 1, j);
+      const c = pt(i + 1, j + 1);
+      const d = pt(i, j + 1);
+      const h = shardHash(i * 3 + 1, j * 7 + 2);
+      if (h % 3 === 0) {
+        if ((h >>> 2) & 1) {
+          pushShard([a, b, c]);
+          pushShard([a, c, d]);
+        } else {
+          pushShard([a, b, d]);
+          pushShard([b, c, d]);
+        }
+      } else {
+        pushShard([a, b, c, d]);
+      }
+    }
+  }
+  return (
+    <svg
+      viewBox={`0 0 ${totalW} ${totalH}`}
+      className="pattern-preview"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <rect x={-cell} y={-cell} width={totalW + 2 * cell} height={totalH + 2 * cell} fill={groutFill} />
+      {tiles}
+    </svg>
+  );
+}
+
 function renderCircles(opts: {
   imageUrl?: string | null;
   groutFill: string;
@@ -159,6 +276,8 @@ function renderCircles(opts: {
         const id = `clip-${row}-${c}`;
         circles.push(
           <g key={`${row}-${c}`}>
+            {/* Placeholder underlay so a failed image load still shows the tile. */}
+            <circle cx={cx} cy={cy} r={r} fill={placeholderFill} />
             <defs>
               <clipPath id={id}>
                 <circle cx={cx} cy={cy} r={r} />
@@ -212,6 +331,9 @@ function renderHexagons(opts: {
   const totalH = rows * dy + h;
 
   const hexes: React.ReactElement[] = [];
+  // Hexagons tessellate flush at exact packing — draw each slightly smaller
+  // so a grout seam shows between neighbors. Mirrors the server renderer.
+  const drawSize = size - 1.5;
   for (let row = 0; row < rows; row++) {
     for (let c = 0; c < cols; c++) {
       const cx = c * dx + size;
@@ -219,13 +341,15 @@ function renderHexagons(opts: {
       const points = [0, 1, 2, 3, 4, 5]
         .map((i) => {
           const angle = (Math.PI / 3) * i;
-          return `${cx + size * Math.cos(angle)},${cy + size * Math.sin(angle)}`;
+          return `${cx + drawSize * Math.cos(angle)},${cy + drawSize * Math.sin(angle)}`;
         })
         .join(" ");
       const id = `hex-${row}-${c}`;
       if (imageUrl) {
         hexes.push(
           <g key={`${row}-${c}`}>
+            {/* Placeholder underlay so a failed image load still shows the tile. */}
+            <polygon points={points} fill={placeholderFill} />
             <defs>
               <clipPath id={id}>
                 <polygon points={points} />
@@ -295,6 +419,8 @@ function renderPicket(opts: {
       if (imageUrl) {
         tiles.push(
           <g key={`${row}-${c}`}>
+            {/* Placeholder underlay so a failed image load still shows the tile. */}
+            <polygon points={points} fill={placeholderFill} />
             <defs>
               <clipPath id={id}>
                 <polygon points={points} />
@@ -375,6 +501,8 @@ function renderHerringbone(opts: {
         if (imageUrl) {
           tiles.push(
             <g key={id}>
+              {/* Placeholder underlay so a failed image load still shows the tile. */}
+              <rect x={rct.x} y={rct.y} width={rct.w} height={rct.h} fill={placeholderFill} />
               <defs>
                 <clipPath id={id}>
                   <rect x={rct.x} y={rct.y} width={rct.w} height={rct.h} />
@@ -452,6 +580,8 @@ function renderCheckerboardOnPoint(opts: {
       if (imageUrl) {
         tiles.push(
           <g key={`img-${r}-${c}`} transform={`rotate(45 ${ccx} ${ccy})`}>
+            {/* Placeholder underlay so a failed image load still shows the tile. */}
+            <rect x={x} y={y} width={drawSide} height={drawSide} fill={placeholderFill} />
             <defs>
               <clipPath id={id}>
                 <rect x={x} y={y} width={drawSide} height={drawSide} />
@@ -541,15 +671,18 @@ function renderParquet(opts: {
         const h = vertical ? tileLong : stripShort;
         if (imageUrl) {
           tiles.push(
-            <image
-              key={`p-${br}-${bc}-${i}`}
-              href={imageUrl}
-              x={x}
-              y={y}
-              width={w}
-              height={h}
-              preserveAspectRatio="xMidYMid slice"
-            />,
+            <g key={`p-${br}-${bc}-${i}`}>
+              {/* Placeholder underlay so a failed image load still shows the tile. */}
+              <rect x={x} y={y} width={w} height={h} fill={placeholderFill} />
+              <image
+                href={imageUrl}
+                x={x}
+                y={y}
+                width={w}
+                height={h}
+                preserveAspectRatio="xMidYMid slice"
+              />
+            </g>,
           );
         } else {
           tiles.push(
@@ -613,15 +746,18 @@ function renderLattice(opts: {
         const p = pair[i]!;
         if (imageUrl) {
           tiles.push(
-            <image
-              key={`l-${ur}-${uc}-${i}`}
-              href={imageUrl}
-              x={p.x}
-              y={p.y}
-              width={p.w}
-              height={p.h}
-              preserveAspectRatio="xMidYMid slice"
-            />,
+            <g key={`l-${ur}-${uc}-${i}`}>
+              {/* Placeholder underlay so a failed image load still shows the tile. */}
+              <rect x={p.x} y={p.y} width={p.w} height={p.h} fill={placeholderFill} />
+              <image
+                href={imageUrl}
+                x={p.x}
+                y={p.y}
+                width={p.w}
+                height={p.h}
+                preserveAspectRatio="xMidYMid slice"
+              />
+            </g>,
           );
         } else {
           tiles.push(
@@ -676,15 +812,18 @@ function renderStripesVertical(opts: {
       const darker = c % 2 === 1;
       if (imageUrl) {
         tiles.push(
-          <image
-            key={`img-${r}-${c}`}
-            href={imageUrl}
-            x={x}
-            y={y}
-            width={tileW}
-            height={tileH}
-            preserveAspectRatio="xMidYMid slice"
-          />,
+          <g key={`img-${r}-${c}`}>
+            {/* Placeholder underlay so a failed image load still shows the tile. */}
+            <rect x={x} y={y} width={tileW} height={tileH} fill={placeholderFill} />
+            <image
+              href={imageUrl}
+              x={x}
+              y={y}
+              width={tileW}
+              height={tileH}
+              preserveAspectRatio="xMidYMid slice"
+            />
+          </g>,
         );
         if (darker) {
           tiles.push(
@@ -737,8 +876,9 @@ function renderRandomRotation(opts: {
   const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect } = opts;
   // "6x6 set random, all vertical" — same square-ish tile per cell, but each
   // cell is rotated by one of {0, 90, 180, 270}° based on a deterministic
-  // pseudo-random seed so layouts are reproducible.
-  const side = Math.min(tileWidth, tileWidth / aspect) * 1.1;
+  // pseudo-random seed so layouts are reproducible. Tiles sit exactly on the
+  // cell pitch — oversizing them erases the grout between neighbors.
+  const side = Math.min(tileWidth, tileWidth / aspect);
   const groutWidth = 2;
   const totalW = cols * side + groutWidth * (cols + 1);
   const totalH = rows * side + groutWidth * (rows + 1);
@@ -756,16 +896,19 @@ function renderRandomRotation(opts: {
       const cy = y + side / 2;
       if (imageUrl) {
         tiles.push(
-          <image
-            key={`r-${r}-${c}`}
-            href={imageUrl}
-            x={x}
-            y={y}
-            width={side}
-            height={side}
-            transform={`rotate(${rot} ${cx} ${cy})`}
-            preserveAspectRatio="xMidYMid slice"
-          />,
+          <g key={`r-${r}-${c}`}>
+            {/* Placeholder underlay so a failed image load still shows the tile. */}
+            <rect x={x} y={y} width={side} height={side} fill={placeholderFill} />
+            <image
+              href={imageUrl}
+              x={x}
+              y={y}
+              width={side}
+              height={side}
+              transform={`rotate(${rot} ${cx} ${cy})`}
+              preserveAspectRatio="xMidYMid slice"
+            />
+          </g>,
         );
       } else {
         tiles.push(
@@ -822,15 +965,18 @@ function renderRectangleGrid(opts: {
     if (w < 1 || h < 1) return;
     tiles.push(
       imageUrl ? (
-        <image
-          key={key}
-          href={imageUrl}
-          x={x}
-          y={y}
-          width={w}
-          height={h}
-          preserveAspectRatio="xMidYMid slice"
-        />
+        <g key={key}>
+          {/* Placeholder underlay so a failed image load still shows the tile. */}
+          <rect x={x} y={y} width={w} height={h} fill={placeholderFill} />
+          <image
+            href={imageUrl}
+            x={x}
+            y={y}
+            width={w}
+            height={h}
+            preserveAspectRatio="xMidYMid slice"
+          />
+        </g>
       ) : (
         <rect key={key} x={x} y={y} width={w} height={h} fill={placeholderFill} />
       ),

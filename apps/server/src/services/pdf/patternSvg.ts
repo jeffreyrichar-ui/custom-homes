@@ -57,7 +57,10 @@ export function renderPatternSvg(opts: {
   const groutFill = resolveGrout(opts.groutColor);
   const placeholderFill = "#d8d2c4";
 
-  if (shape === "penny round" || shape === "mosaic" || shape === "palladiana mosaic") {
+  if (shape === "palladiana mosaic") {
+    return renderPalladianaSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols: cols + 1, rows: rows + 1 });
+  }
+  if (shape === "penny round" || shape === "mosaic") {
     return renderCirclesSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols: cols + 2, rows: rows + 2 });
   }
   if (shape === "hexagon") {
@@ -95,6 +98,86 @@ export function renderPatternSvg(opts: {
   }
 }
 
+/**
+ * Deterministic integer hash for palladiana jitter — web preview and PDF
+ * must produce the identical layout, so no Math.random.
+ */
+function shardHash(i: number, j: number): number {
+  let h = (i * 374761393 + j * 668265263) | 0;
+  h = ((h ^ (h >>> 13)) * 1274126177) | 0;
+  return (h ^ (h >>> 16)) >>> 0;
+}
+
+function renderPalladianaSvg(o: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+}) {
+  // Palladiana / crazy paving — irregular broken-marble shards. A lattice of
+  // deterministically jittered points; each cell becomes a shard (about a
+  // third split into triangle pairs for variety), shrunk toward its centroid
+  // so the grout shows between shards.
+  const cell = 56;
+  const jitter = 0.55;
+  const shrink = 0.9;
+  const totalW = o.cols * cell;
+  const totalH = o.rows * cell;
+  const pt = (i: number, j: number): [number, number] => {
+    const h = shardHash(i, j);
+    const dx = ((h & 0xff) / 255 - 0.5) * cell * jitter;
+    const dy = (((h >>> 8) & 0xff) / 255 - 0.5) * cell * jitter;
+    return [i * cell + dx, j * cell + dy];
+  };
+  const parts: string[] = [];
+  let n = 0;
+  const pushShard = (poly: Array<[number, number]>) => {
+    const cx = poly.reduce((s, p) => s + p[0], 0) / poly.length;
+    const cy = poly.reduce((s, p) => s + p[1], 0) / poly.length;
+    const pts = poly
+      .map(([x, y]) => `${(cx + (x - cx) * shrink).toFixed(1)},${(cy + (y - cy) * shrink).toFixed(1)}`)
+      .join(" ");
+    if (o.imageUrl) {
+      const xs = poly.map((p) => p[0]);
+      const ys = poly.map((p) => p[1]);
+      const bx = Math.min(...xs);
+      const by = Math.min(...ys);
+      const bw = Math.max(...xs) - bx;
+      const bh = Math.max(...ys) - by;
+      const id = `pl-${n++}`;
+      // Placeholder underlay so a failed image load still shows a shard.
+      parts.push(`<polygon points="${pts}" fill="${o.placeholderFill}"/>`);
+      parts.push(`<defs><clipPath id="${id}"><polygon points="${pts}"/></clipPath></defs>`);
+      parts.push(`<image href="${esc(o.imageUrl)}" x="${bx}" y="${by}" width="${bw}" height="${bh}" clip-path="url(#${id})" preserveAspectRatio="xMidYMid slice"/>`);
+    } else {
+      parts.push(`<polygon points="${pts}" fill="${o.placeholderFill}"/>`);
+    }
+  };
+  // One ring of shards beyond the frame so the crop never shows ragged edges.
+  for (let j = -1; j <= o.rows; j++) {
+    for (let i = -1; i <= o.cols; i++) {
+      const a = pt(i, j);
+      const b = pt(i + 1, j);
+      const c = pt(i + 1, j + 1);
+      const d = pt(i, j + 1);
+      const h = shardHash(i * 3 + 1, j * 7 + 2);
+      if (h % 3 === 0) {
+        if ((h >>> 2) & 1) {
+          pushShard([a, b, c]);
+          pushShard([a, c, d]);
+        } else {
+          pushShard([a, b, d]);
+          pushShard([b, c, d]);
+        }
+      } else {
+        pushShard([a, b, c, d]);
+      }
+    }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} ${totalH}" preserveAspectRatio="xMidYMid meet" class="pattern-svg"><rect x="-${cell}" y="-${cell}" width="${totalW + 2 * cell}" height="${totalH + 2 * cell}" fill="${o.groutFill}"/>${parts.join("")}</svg>`;
+}
+
 function renderCirclesSvg(o: { imageUrl?: string | null; groutFill: string; placeholderFill: string; cols: number; rows: number }) {
   const r = 20;
   const gap = 2;
@@ -110,6 +193,8 @@ function renderCirclesSvg(o: { imageUrl?: string | null; groutFill: string; plac
       const cy = row * dy + r;
       if (o.imageUrl) {
         const id = `c-${row}-${c}`;
+        // Placeholder underlay so a failed image load still shows the tile.
+        parts.push(`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${o.placeholderFill}"/>`);
         parts.push(`<defs><clipPath id="${id}"><circle cx="${cx}" cy="${cy}" r="${r}"/></clipPath></defs>`);
         parts.push(`<image href="${esc(o.imageUrl)}" x="${cx - r}" y="${cy - r}" width="${2 * r}" height="${2 * r}" clip-path="url(#${id})" preserveAspectRatio="xMidYMid slice"/>`);
       } else {
@@ -129,15 +214,20 @@ function renderHexSvg(o: { imageUrl?: string | null; groutFill: string; placehol
   const totalW = o.cols * dx + size / 2;
   const totalH = o.rows * dy + h;
   const parts: string[] = [];
+  // Hexagons tessellate flush at exact packing — draw each slightly smaller
+  // so a grout seam shows between neighbors.
+  const drawSize = size - 1.5;
   for (let row = 0; row < o.rows; row++) {
     for (let c = 0; c < o.cols; c++) {
       const cx = c * dx + size;
       const cy = row * dy + (c % 2 === 1 ? dy / 2 : 0) + h / 2;
       const points = [0, 1, 2, 3, 4, 5]
-        .map((i) => `${cx + size * Math.cos((Math.PI / 3) * i)},${cy + size * Math.sin((Math.PI / 3) * i)}`)
+        .map((i) => `${cx + drawSize * Math.cos((Math.PI / 3) * i)},${cy + drawSize * Math.sin((Math.PI / 3) * i)}`)
         .join(" ");
       if (o.imageUrl) {
         const id = `h-${row}-${c}`;
+        // Placeholder underlay so a failed image load still shows the tile.
+        parts.push(`<polygon points="${points}" fill="${o.placeholderFill}"/>`);
         parts.push(`<defs><clipPath id="${id}"><polygon points="${points}"/></clipPath></defs>`);
         parts.push(`<image href="${esc(o.imageUrl)}" x="${cx - size}" y="${cy - size}" width="${2 * size}" height="${2 * size}" clip-path="url(#${id})" preserveAspectRatio="xMidYMid slice"/>`);
       } else {
@@ -172,6 +262,8 @@ function renderPicketSvg(o: { imageUrl?: string | null; groutFill: string; place
       ].join(" ");
       if (o.imageUrl) {
         const id = `p-${row}-${c}`;
+        // Placeholder underlay so a failed image load still shows the tile.
+        parts.push(`<polygon points="${points}" fill="${o.placeholderFill}"/>`);
         parts.push(`<defs><clipPath id="${id}"><polygon points="${points}"/></clipPath></defs>`);
         parts.push(`<image href="${esc(o.imageUrl)}" x="${x}" y="${y}" width="${w}" height="${h}" clip-path="url(#${id})" preserveAspectRatio="xMidYMid slice"/>`);
       } else {
@@ -226,6 +318,8 @@ function renderHerringboneSvg(o: {
       for (const rct of rects) {
         if (o.imageUrl) {
           const id = `hb-${n++}`;
+          // Placeholder underlay so a failed image load still shows the tile.
+          parts.push(`<rect x="${rct.x}" y="${rct.y}" width="${rct.w}" height="${rct.h}" fill="${o.placeholderFill}"/>`);
           parts.push(`<defs><clipPath id="${id}"><rect x="${rct.x}" y="${rct.y}" width="${rct.w}" height="${rct.h}"/></clipPath></defs>`);
           parts.push(`<image href="${esc(o.imageUrl)}" x="${rct.x}" y="${rct.y}" width="${rct.w}" height="${rct.h}" clip-path="url(#${id})" preserveAspectRatio="xMidYMid slice"/>`);
         } else {
@@ -275,6 +369,8 @@ function renderCheckerboardOnPointSvg(o: {
       if (o.imageUrl) {
         const id = `cob-${r}-${c}`;
         parts.push(`<g transform="rotate(45 ${ccx} ${ccy})">`);
+        // Placeholder underlay so a failed image load still shows the tile.
+        parts.push(`<rect x="${x}" y="${y}" width="${drawSide}" height="${drawSide}" fill="${o.placeholderFill}"/>`);
         parts.push(`<defs><clipPath id="${id}"><rect x="${x}" y="${y}" width="${drawSide}" height="${drawSide}"/></clipPath></defs>`);
         parts.push(`<image href="${esc(o.imageUrl)}" x="${x}" y="${y}" width="${drawSide}" height="${drawSide}" clip-path="url(#${id})" preserveAspectRatio="xMidYMid slice"/>`);
         if (dimmed) {
@@ -320,6 +416,8 @@ function renderParquetSvg(o: {
         const w = vertical ? stripShort : tileLong;
         const h = vertical ? tileLong : stripShort;
         if (o.imageUrl) {
+          // Placeholder underlay so a failed image load still shows the tile.
+          parts.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${o.placeholderFill}"/>`);
           parts.push(`<image href="${esc(o.imageUrl)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice"/>`);
         } else {
           parts.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${o.placeholderFill}"/>`);
@@ -369,6 +467,8 @@ function renderLatticeSvg(o: {
           ];
       for (const p of pair) {
         if (o.imageUrl) {
+          // Placeholder underlay so a failed image load still shows the tile.
+          parts.push(`<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" fill="${o.placeholderFill}"/>`);
           parts.push(`<image href="${esc(o.imageUrl)}" x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" preserveAspectRatio="xMidYMid slice"/>`);
         } else {
           parts.push(`<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" fill="${o.placeholderFill}"/>`);
@@ -402,6 +502,8 @@ function renderStripesVerticalSvg(o: {
       const y = r * tileH + groutWidth * (r + 1);
       const darker = c % 2 === 1;
       if (o.imageUrl) {
+        // Placeholder underlay so a failed image load still shows the tile.
+        parts.push(`<rect x="${x}" y="${y}" width="${tileW}" height="${tileH}" fill="${o.placeholderFill}"/>`);
         parts.push(`<image href="${esc(o.imageUrl)}" x="${x}" y="${y}" width="${tileW}" height="${tileH}" preserveAspectRatio="xMidYMid slice"/>`);
         if (darker) {
           parts.push(`<rect x="${x}" y="${y}" width="${tileW}" height="${tileH}" fill="#000" opacity="0.18"/>`);
@@ -423,9 +525,10 @@ function renderRandomRotationSvg(o: {
   aspect: number;
 }) {
   // Each cell rotated 0/90/180/270° based on a deterministic seed so the
-  // PDF matches the live preview exactly.
+  // PDF matches the live preview exactly. Tiles sit exactly on the cell
+  // pitch — oversizing them erases the grout between neighbors.
   const tileBase = 80;
-  const side = Math.min(tileBase, tileBase / o.aspect) * 1.1;
+  const side = Math.min(tileBase, tileBase / o.aspect);
   const groutWidth = 2;
   const totalW = o.cols * side + groutWidth * (o.cols + 1);
   const totalH = o.rows * side + groutWidth * (o.rows + 1);
@@ -439,6 +542,8 @@ function renderRandomRotationSvg(o: {
       const cx = x + side / 2;
       const cy = y + side / 2;
       if (o.imageUrl) {
+        // Placeholder underlay so a failed image load still shows the tile.
+        parts.push(`<rect x="${x}" y="${y}" width="${side}" height="${side}" fill="${o.placeholderFill}"/>`);
         parts.push(`<image href="${esc(o.imageUrl)}" x="${x}" y="${y}" width="${side}" height="${side}" transform="rotate(${rot} ${cx} ${cy})" preserveAspectRatio="xMidYMid slice"/>`);
       } else {
         parts.push(`<rect x="${x}" y="${y}" width="${side}" height="${side}" fill="${o.placeholderFill}" transform="rotate(${rot} ${cx} ${cy})"/>`);
@@ -470,6 +575,8 @@ function renderRectSvg(o: {
   const pushTile = (x: number, y: number, w: number, h: number) => {
     if (w < 1 || h < 1) return;
     if (o.imageUrl) {
+      // Placeholder underlay so a failed image load still shows the tile.
+      parts.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${o.placeholderFill}"/>`);
       parts.push(`<image href="${esc(o.imageUrl)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice"/>`);
     } else {
       parts.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${o.placeholderFill}"/>`);
