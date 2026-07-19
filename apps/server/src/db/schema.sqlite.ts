@@ -232,3 +232,15 @@ export const manufacturer_images = sqliteTable(
     brandSkuKey: uniqueIndex("manufacturer_images_brand_sku_key").on(t.brand, t.sku),
   }),
 );
+
+export const sync_runs = sqliteTable("sync_runs", {
+  id: uuidPk(),
+  source: text("source").notNull(),
+  status: text("status").notNull().default("running"),
+  summary: text("summary"),
+  error: text("error"),
+  started_at: text("started_at")
+    .notNull()
+    .default(sql`CURRENT_TIMESTAMP`),
+  finished_at: text("finished_at"),
+});

@@ -227,3 +227,15 @@ export const manufacturer_images = pgTable(
     brandSkuKey: uniqueIndex("manufacturer_images_brand_sku_key").on(t.brand, t.sku),
   }),
 );
+
+export const sync_runs = pgTable("sync_runs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  source: text("source").notNull(),
+  status: text("status").notNull().default("running"),
+  summary: text("summary"),
+  error: text("error"),
+  started_at: timestamp("started_at", { withTimezone: true, mode: "string" })
+    .notNull()
+    .defaultNow(),
+  finished_at: timestamp("finished_at", { withTimezone: true, mode: "string" }),
+});

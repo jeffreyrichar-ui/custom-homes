@@ -11,6 +11,11 @@ const envSchema = z.object({
     .string()
     .min(16, "JWT_SECRET must be at least 16 chars")
     .default("dev-jwt-secret-please-change-me"),
+  // BuilderTrend sync transport: checked-in fixtures until partner
+  // credentials arrive, then flip to http.
+  BT_SYNC_SOURCE: z.enum(["fixtures", "http"]).default("fixtures"),
+  BT_API_BASE_URL: z.string().optional(),
+  BT_API_KEY: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

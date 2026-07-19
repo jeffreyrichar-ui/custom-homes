@@ -1693,3 +1693,22 @@ a.recent-activity-link:hover .recent-activity-label {
 .import-error-item { font-size: var(--fs-xs); padding: 3px 0; color: var(--text-2); line-height: 1.55; }
 .import-error-item code { background: transparent; padding: 0; color: var(--text); }
 .import-result-cta { padding-top: var(--sp-1); }
+
+/* -------- BuilderTrend sync -------- */
+
+.projects-header-actions {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: center;
+}
+.bt-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
