@@ -181,6 +181,60 @@ describe("renderProjectHtml", () => {
     expect(html).toContain("Guest Bath");
   });
 
+  it("renders a TOC on the full-project book listing every room with total counts", () => {
+    const rooms: FixtureRoom[] = [
+      {
+        id: "r1",
+        room_name: "Primary Bath",
+        entries_by_trade: {
+          tile: [
+            { brand: "Daltile", sku: "T-1", location_in_room: "floor" },
+            { brand: "Daltile", sku: "T-2", location_in_room: "shower_walls" },
+          ],
+          paint: [{ brand: "Sherwin-Williams", color_name: "Alabaster", sku: "SW-7008" }],
+        },
+      },
+      {
+        id: "r2",
+        room_name: "Guest Bath",
+        entries_by_trade: {
+          hardwood: [{ brand: "Shaw", species: "White Oak", sku: "H-1" }],
+        },
+      },
+      {
+        id: "r3",
+        room_name: "Powder Room",
+        entries_by_trade: {},
+      },
+    ];
+    const html = renderProjectHtml({
+      project,
+      rooms,
+      imageByBrandSku,
+      generatedAt,
+    });
+    const toc = html.match(/<section class="toc-page">[\s\S]*?<\/section>/);
+    expect(toc).not.toBeNull();
+    // Every room is listed, linked to its room section anchor.
+    expect(toc![0]).toContain("Primary Bath");
+    expect(toc![0]).toContain("Guest Bath");
+    expect(toc![0]).toContain("Powder Room");
+    expect(toc![0]).toContain('href="#room-r1"');
+    expect(toc![0]).toContain('href="#room-r2"');
+    expect(toc![0]).toContain('href="#room-r3"');
+    // Counts are totals across all trades: 2 tile + 1 paint, 1 hardwood, none.
+    expect(toc![0]).toContain("3 entries");
+    expect(toc![0]).toContain("1 entry");
+    expect(toc![0]).toContain("0 entries");
+    // Only the zero-entry room is muted.
+    const mutedRows = toc![0].match(/<li class="toc-row muted">[\s\S]*?<\/li>/g);
+    expect(mutedRows).toHaveLength(1);
+    expect(mutedRows![0]).toContain("Powder Room");
+    expect(mutedRows![0]).toContain("0 entries");
+    // Room sections still render for populated rooms only.
+    expect(html.match(/<section class="room">/g)!.length).toBe(2);
+  });
+
   it("uses per-room paging layout and subtitle for tradeFilter='tile'", () => {
     const rooms: FixtureRoom[] = [
       {

@@ -247,6 +247,35 @@ function tocHtml(rooms: Room[], trade: TradeKind): string {
   </section>`;
 }
 
+// Full-project sibling of tocHtml — same markup/classes, but counts span all
+// trades and zero-entry rooms stay listed (muted) so the book shows the
+// whole house.
+function fullTocHtml(rooms: Room[]): string {
+  if (rooms.length < 2) return ""; // Only show TOC for multi-room PDFs.
+
+  const rows = rooms
+    .map((r) => {
+      const count = TRADE_KINDS.reduce(
+        (acc, trade) => acc + (r.entries_by_trade[trade] ?? []).length,
+        0,
+      );
+      return `<li class="toc-row${count === 0 ? " muted" : ""}">
+        <a class="toc-link" href="#room-${esc(r.id)}">
+          <span class="toc-room">${esc(r.room_name)}</span>
+          <span class="toc-dots"></span>
+          <span class="toc-count">${count} ${count === 1 ? "entry" : "entries"}</span>
+        </a>
+      </li>`;
+    })
+    .join("");
+
+  return `<section class="toc-page">
+    <div class="toc-eyebrow">Contents</div>
+    <h2 class="toc-title">Rooms in this document</h2>
+    <ol class="toc-list">${rows}</ol>
+  </section>`;
+}
+
 export function renderProjectHtml(opts: {
   project: Project;
   rooms: Room[];
@@ -329,7 +358,7 @@ export function renderProjectHtml(opts: {
   return wrap({
     title: project.name,
     cover,
-    toc: "",
+    toc: fullTocHtml(rooms),
     body: sections || "<p><em>No entries.</em></p>",
     perRoomPaging: false,
   });
@@ -569,6 +598,14 @@ function wrap(opts: {
     color: var(--text-3);
     letter-spacing: 0.04em;
     text-transform: uppercase;
+  }
+  /* Zero-entry rooms in the full-project TOC: listed but muted. */
+  .toc-row.muted .toc-room,
+  .toc-row.muted .toc-count {
+    color: var(--text-3);
+  }
+  .toc-row.muted .toc-room {
+    font-style: italic;
   }
 
   /* ----- Full-project layout ----- */

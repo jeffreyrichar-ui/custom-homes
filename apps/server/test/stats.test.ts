@@ -127,6 +127,22 @@ describe("/api/stats", () => {
       expect(typeof item.project_name).toBe("string");
     }
   });
+
+  it("recent_activity timestamps are ISO with a zone, not raw SQLite strings", async () => {
+    const res = await supertest(ctx.app).get("/api/stats");
+    expect(res.status).toBe(200);
+    // Seeded rows get SQLite CURRENT_TIMESTAMP ("YYYY-MM-DD HH:MM:SS", UTC,
+    // no zone marker) — the route must normalize to ISO so new Date(when)
+    // can't misread the value as local time.
+    expect(res.body.recent_activity.length).toBeGreaterThan(0);
+    for (const item of res.body.recent_activity as Array<{ when: string }>) {
+      const parsed = new Date(item.when);
+      expect(Number.isFinite(parsed.getTime())).toBe(true);
+      expect(item.when).toContain("T");
+      expect(item.when).toMatch(/(Z|[+-]\d{2}:\d{2})$/);
+      expect(parsed.toISOString()).toContain("T");
+    }
+  });
 });
 
 describe("/api/stats — recent_activity ordering", () => {
