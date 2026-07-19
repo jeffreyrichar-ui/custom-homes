@@ -23,6 +23,7 @@ export const RENDER_MODES = [
   "staggered-horizontal",
   "staggered-vertical",
   "30-70",
+  "alternating-rows",
   "herringbone",
   "checkerboard-on-point",
   "parquet",
@@ -46,6 +47,7 @@ export const TAMARA_PATTERN_OPTIONS = [
   "set straight parallel with vanity",
   "set horizontal staggered",
   "set 30/70",
+  "one row straight + one row horizontal repeat",
   "1/2 x 1 herringbone",
   "set checkerboard on point",
   "4 vertical + 4 horizontal parquet design",
@@ -70,20 +72,25 @@ export function normalizePattern(input?: string | null): RenderMode {
   if (n.includes("stripes") || n.includes("striped")) return "stripes-vertical";
   if (n.includes("random")) return "random";
 
-  // 2. Offset variants.
+  // 2. Alternating courses — "one row straight + one row horizontal
+  // repeat" and variants. Checked before plain orientation so the
+  // "horizontal"/"vertical" inside these strings doesn't win first.
+  if (/\bone row\b[\s\S]*\brepeat\b/.test(n)) return "alternating-rows";
+
+  // 3. Offset variants.
   if (n.includes("30/70") || n.includes("30-70")) return "30-70";
   if (n.includes("staggered")) {
     if (n.includes("vertical")) return "staggered-vertical";
     return "staggered-horizontal";
   }
 
-  // 3. Plain orientation — vertical / horizontal anywhere in the string.
+  // 4. Plain orientation — vertical / horizontal anywhere in the string.
   // "set parallel with vanity / horizontal in shower" → horizontal wins
   // because it's more specific than the bare anchoring phrase.
   if (/\bvertical\b/.test(n)) return "straight-vertical";
   if (/\bhorizontal\b/.test(n)) return "straight-horizontal";
 
-  // 4. Everything else — anchoring ("parallel with vanity"), coverage
+  // 5. Everything else — anchoring ("parallel with vanity"), coverage
   // ("cut to fit", "full size tile", "to ceiling"), backsplash heights
   // ("6 inch splash", "1/2 sheet splash"), bare "set", "see attached",
   // dimensions like "4x4" — all render as plain set-straight.
