@@ -65,6 +65,39 @@ describe("runImport", () => {
     expect(tilesAfter).toEqual(tilesBefore);
   });
 
+  it("re-import stays idempotent when fallback-key fields are null", async () => {
+    // `col = NULL` is never true in SQL — entries with a null color/sku
+    // used to miss their existing row on re-import and duplicate.
+    const payload = {
+      project: { name: "Null Key House", address: "2 Null Way" },
+      rooms: [
+        {
+          room_name: "Guest Bath",
+          entries: [
+            {
+              trade: "tile",
+              brand: "Portobello",
+              style: "Charlestone",
+              color: null,
+              sku: null,
+              location_in_room: "floor",
+            },
+          ],
+        },
+      ],
+    };
+    const first = await runImport(ctx.dbi, payload, { dryRun: false });
+    expect(first.errors).toEqual([]);
+    expect(first.summary.tile_entries).toMatchObject({ created: 1, updated: 0 });
+
+    const second = await runImport(ctx.dbi, payload, { dryRun: false });
+    expect(second.errors).toEqual([]);
+    expect(second.summary.tile_entries).toMatchObject({ created: 0, updated: 1 });
+
+    const tiles = await ctx.dbi.query("SELECT * FROM tile_entries");
+    expect(tiles).toHaveLength(1);
+  });
+
   it("dry-run rolls back — no rows persist", async () => {
     const result = await runImport(ctx.dbi, exampleProject, { dryRun: true });
     expect(result.errors).toEqual([]);
