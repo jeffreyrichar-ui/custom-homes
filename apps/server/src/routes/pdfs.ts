@@ -201,6 +201,7 @@ export function makePdfsRouter(getDbi: () => Dbi): Router {
         rooms: [data.room],
         imageByBrandSku: imageMap,
         generatedAt: new Date(),
+        badgeLabel: data.room.room_name,
       });
       const buf = await htmlToPdf(html, {
         projectName: data.project.name,

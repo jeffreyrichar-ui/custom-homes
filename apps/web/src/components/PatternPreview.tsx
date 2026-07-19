@@ -33,10 +33,15 @@ const NAMED_GROUT_COLORS: Record<string, string> = {
   "urban putty": "#a8a298",
   "bright white": "#ffffff",
   "tobacco brown": "#5a4a36",
-  "rolling fog": "#b0b3b0",
+  "rolling fog": "#b3b1aa",
   "natural gray": "#9a9a9a",
   "oyster gray": "#a39e92",
   "sable brown": "#6b5240",
+  "new taupe": "#ab9d8c",
+  shadow: "#77736b",
+  linen: "#ded5c2",
+  // Seed-data spelling of "Linen" — kept verbatim so those entries resolve.
+  linene: "#ded5c2",
   "ash": "#9a958a",
   "bone": "#d6cbb8",
   charcoal: "#4a4a4a",
@@ -332,8 +337,10 @@ function renderHexagons(opts: {
 
   const hexes: React.ReactElement[] = [];
   // Hexagons tessellate flush at exact packing — draw each slightly smaller
-  // so a grout seam shows between neighbors. Mirrors the server renderer.
-  const drawSize = size - 1.5;
+  // so a grout seam shows between neighbors. Proportional inset (not an
+  // absolute pixel amount) so the PDF renderer's smaller hexes get the same
+  // relative seam. Mirrors the server renderer.
+  const drawSize = size * 0.9625;
   for (let row = 0; row < rows; row++) {
     for (let c = 0; c < cols; c++) {
       const cx = c * dx + size;

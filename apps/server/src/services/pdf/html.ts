@@ -174,7 +174,7 @@ function tradeRoomPageHtml(
       <div class="room-eyebrow">${esc(prettyTrade(trade))} selections</div>
       <h2>${esc(room.room_name)}</h2>
       <div class="chips">${chips}</div>
-      <div class="surfaces">${entries.length} ${trade} ${entries.length === 1 ? "entry" : "entries"} &middot; surfaces: ${Array.from(surfaces).join(", ")}</div>
+      <div class="surfaces">${entries.length} ${trade} ${entries.length === 1 ? "entry" : "entries"} &middot; surfaces: ${esc(Array.from(surfaces).join(", "))}</div>
     </header>
     <div class="entries">${entries.map((e) => entryCardHtml(trade, e, imageByBrandSku)).join("")}</div>
   </section>`;
@@ -188,11 +188,12 @@ function coverPageHtml(opts: {
   entryCount: number;
   generatedAt: Date;
   subtitle: string | null;
+  badgeLabel?: string;
 }): string {
   const { project, tradeFilter, roomCount, entryCount, generatedAt, subtitle } = opts;
-  const badge = tradeFilter
-    ? `${prettyTrade(tradeFilter)} schedule`
-    : "Full Selections";
+  const badge =
+    opts.badgeLabel ??
+    (tradeFilter ? `${prettyTrade(tradeFilter)} schedule` : "Full Selections");
   const summary = tradeFilter
     ? `${roomCount} ${roomCount === 1 ? "room" : "rooms"} &middot; ${entryCount} ${tradeFilter} ${entryCount === 1 ? "selection" : "selections"}`
     : `${roomCount} ${roomCount === 1 ? "room" : "rooms"} &middot; ${entryCount} ${entryCount === 1 ? "selection" : "selections"}`;
@@ -252,6 +253,8 @@ export function renderProjectHtml(opts: {
   tradeFilter?: TradeKind;
   imageByBrandSku: Map<string, string>;
   generatedAt: Date;
+  /** Cover badge override — the per-room PDF shows the room name. */
+  badgeLabel?: string;
 }): string {
   const { project, rooms, tradeFilter, imageByBrandSku, generatedAt } = opts;
   const trades: TradeKind[] = tradeFilter ? [tradeFilter] : [...TRADE_KINDS];
@@ -320,6 +323,7 @@ export function renderProjectHtml(opts: {
     entryCount: totalEntries,
     generatedAt,
     subtitle: null,
+    badgeLabel: opts.badgeLabel,
   });
 
   return wrap({

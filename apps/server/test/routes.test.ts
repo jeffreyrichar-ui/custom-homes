@@ -67,6 +67,16 @@ describe("routes", () => {
     expect(res.status).toBe(401);
   });
 
+  it("POST /api/admin/import with malformed top-level payload returns 400 with the error list", async () => {
+    const res = await supertest(ctx.app)
+      .post("/api/admin/import")
+      .set("x-admin-token", "test-token")
+      .send({});
+    expect(res.status).toBe(400);
+    expect(res.body.project_id).toBeNull();
+    expect(res.body.errors.length).toBeGreaterThan(0);
+  });
+
   it("POST /api/admin/import with correct token imports the project", async () => {
     const res = await supertest(ctx.app)
       .post("/api/admin/import")

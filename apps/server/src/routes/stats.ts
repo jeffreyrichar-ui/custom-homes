@@ -179,7 +179,15 @@ export function makeStatsRouter(getDbi: () => Dbi): Router {
 
       const recent_activity = recentRows.map((r) => {
         const row: RecentActivityRow = {
-          when: r.when_ts instanceof Date ? r.when_ts.toISOString() : String(r.when_ts),
+          // SQLite serializes timestamps as "YYYY-MM-DD HH:MM:SS" in UTC with
+          // no zone marker; Date.parse would read that as LOCAL time in the
+          // browser and show fresh events hours off. Normalize to ISO + Z.
+          when:
+            r.when_ts instanceof Date
+              ? r.when_ts.toISOString()
+              : String(r.when_ts).includes("T")
+                ? String(r.when_ts)
+                : `${String(r.when_ts).replace(" ", "T")}Z`,
           kind: r.kind,
           trade: r.trade,
           project_id: r.project_id,

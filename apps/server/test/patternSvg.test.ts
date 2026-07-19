@@ -14,9 +14,13 @@ describe("renderPatternSvg dispatch", () => {
   });
 
   it("palladiana layout is deterministic (web preview must match PDF)", () => {
+    // clipPath ids are intentionally unique per render — strip them before
+    // comparing; the geometry itself must be identical run to run.
+    const stripIds = (svg: string) =>
+      svg.replace(/id="[^"]*"/g, "").replace(/url\(#[^)]*\)/g, "");
     const a = renderPatternSvg({ style: "Palladiana", pattern: "" });
     const b = renderPatternSvg({ style: "Palladiana", pattern: "" });
-    expect(a).toBe(b);
+    expect(stripIds(a)).toBe(stripIds(b));
   });
 
   it("orients by pattern mode, not written dimension order", () => {

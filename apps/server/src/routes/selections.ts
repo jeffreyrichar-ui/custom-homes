@@ -216,7 +216,11 @@ export function makeSelectionsRouter(
               for (const key of Object.keys(src)) {
                 if (ENTRY_COPY_SKIP.has(key)) continue;
                 cols.push(key);
-                vals.push(src[key]);
+                // A duplicate is a NEW record: carrying external_id/
+                // external_source over would violate the partial unique
+                // (external_source, external_id) index and mislead the
+                // future BuilderTrend sync.
+                vals.push(ENTRY_SYNC_NULLS.has(key) ? null : src[key]);
               }
               const placeholders = cols.map((_, i) => `$${i + 1}`).join(", ");
               await tx.exec(
@@ -301,11 +305,24 @@ export function makeSelectionsRouter(
           return;
         }
 
+        // Room names are unique per project. Rather than bounce a duplicate
+        // name back as an error (the UI prefills "X copy", so duplicating
+        // twice would hit it every time), auto-suffix until the name is free.
+        const existing = await dbi.query<{ room_name: string }>(
+          `SELECT room_name FROM rooms WHERE project_id = $1`,
+          [req.params.projectId],
+        );
+        const taken = new Set(existing.map((r) => r.room_name.toLowerCase()));
+        let finalName = new_room_name;
+        for (let i = 2; taken.has(finalName.toLowerCase()); i++) {
+          finalName = `${new_room_name} ${i}`;
+        }
+
         const result = await dbi.withTransaction(async (tx) => {
           const newRoomId = randomUUID();
           await tx.exec(
             `INSERT INTO rooms (id, project_id, room_name) VALUES ($1, $2, $3)`,
-            [newRoomId, req.params.projectId, new_room_name],
+            [newRoomId, req.params.projectId, finalName],
           );
 
           const copied: Record<TradeKind, number> = {
@@ -345,7 +362,7 @@ export function makeSelectionsRouter(
         res.status(201).json({
           room: {
             id: result.newRoomId,
-            room_name: new_room_name,
+            room_name: finalName,
             project_id: req.params.projectId,
           },
           copied: result.copied,
@@ -404,14 +421,16 @@ export function makeSelectionsRouter(
         insertVals,
       );
 
-      // Trigger background scrape on tile entries that have enough context
-      // to look up a real product photo. cacheKey matches the synthetic
-      // (brand, style, color) hash used by the GET endpoint when sku is null.
-      if (trade === "tile" && scrapeQueue) {
+      // Trigger background scrape on tile and paint entries that have
+      // enough context to look up a real product photo. cacheKey matches
+      // the synthetic (brand, style, color) hash used by the GET endpoint
+      // when sku is null. Paint stores its color in color_name.
+      if ((trade === "tile" || trade === "paint") && scrapeQueue) {
         const brand = typeof entry.brand === "string" ? entry.brand : "";
         const sku = typeof entry.sku === "string" ? entry.sku : "";
         const style = typeof entry.style === "string" ? entry.style : "";
-        const color = typeof entry.color === "string" ? entry.color : "";
+        const rawColor = trade === "paint" ? entry.color_name : entry.color;
+        const color = typeof rawColor === "string" ? rawColor : "";
         const notes = typeof entry.notes === "string" ? entry.notes : "";
         if (brand && (sku || style || color)) {
           const cacheKey =
@@ -429,6 +448,7 @@ export function makeSelectionsRouter(
             color: color || null,
             notes: notes || null,
             cacheKey,
+            trade,
           });
         }
       }

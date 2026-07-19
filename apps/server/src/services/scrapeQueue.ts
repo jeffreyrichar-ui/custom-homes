@@ -2,15 +2,15 @@ import { randomUUID } from "node:crypto";
 import type { Dbi } from "../db/dbi.js";
 import type { ImageStorage } from "./imageStorage.js";
 import { imageKey } from "./imageStorage.js";
-import { findScraper, type ScrapeInput } from "./scrapers/index.js";
+import { findScraper, type ScrapeInput, type TradeKind } from "./scrapers/index.js";
 
-type Job = ScrapeInput & { cacheKey: string };
+type Job = ScrapeInput & { cacheKey: string; trade?: TradeKind };
 
 export type ScrapeQueue = {
   /** Enqueue a scrape. cacheKey is the manufacturer_images.sku column value. */
-  enqueue(input: ScrapeInput & { cacheKey: string }): void;
+  enqueue(input: ScrapeInput & { cacheKey: string; trade?: TradeKind }): void;
   /** Run a single scrape synchronously — used by manual retry and tests. */
-  runOnce(input: ScrapeInput & { cacheKey: string }): Promise<ScrapeOutcome>;
+  runOnce(input: ScrapeInput & { cacheKey: string; trade?: TradeKind }): Promise<ScrapeOutcome>;
 };
 
 export type ScrapeOutcome =
@@ -45,7 +45,7 @@ export function makeScrapeQueue(getDbi: () => Dbi, storage: ImageStorage): Scrap
     const cached = await lookupCached(job.brand, job.cacheKey);
     if (cached) return { kind: "cached", imageUrl: cached };
 
-    const scraper = findScraper(job.brand);
+    const scraper = findScraper(job.brand, job.trade);
     if (!scraper) return { kind: "no-scraper", brand: job.brand };
 
     try {

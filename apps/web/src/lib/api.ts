@@ -39,8 +39,16 @@ async function request<T>(
     /* leave as null */
   }
   if (!res.ok) {
-    const message =
-      (data as { error?: string } | null)?.error ?? `HTTP ${res.status}`;
+    const body = data as
+      | { error?: string; errors?: unknown[]; summary?: unknown }
+      | null;
+    // Import endpoints return a structured ImportResult with a 4xx status
+    // when the payload is malformed — hand it to the caller so the errors
+    // panel renders, instead of collapsing to an opaque "HTTP 400".
+    if (body && Array.isArray(body.errors) && body.summary) {
+      return data as T;
+    }
+    const message = body?.error ?? `HTTP ${res.status}`;
     throw new Error(message);
   }
   return data as T;

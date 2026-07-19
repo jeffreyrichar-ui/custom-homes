@@ -15,10 +15,15 @@ const NAMED_GROUT_COLORS: Record<string, string> = {
   "urban putty": "#a8a298",
   "bright white": "#ffffff",
   "tobacco brown": "#5a4a36",
-  "rolling fog": "#b0b3b0",
+  "rolling fog": "#b3b1aa",
   "natural gray": "#9a9a9a",
   "oyster gray": "#a39e92",
   "sable brown": "#6b5240",
+  "new taupe": "#ab9d8c",
+  shadow: "#77736b",
+  linen: "#ded5c2",
+  // Seed-data spelling of "Linen" — kept verbatim so those entries resolve.
+  linene: "#ded5c2",
   ash: "#9a958a",
   bone: "#d6cbb8",
   charcoal: "#4a4a4a",
@@ -56,27 +61,30 @@ export function renderPatternSvg(opts: {
   });
   const groutFill = resolveGrout(opts.groutColor);
   const placeholderFill = "#d8d2c4";
+  // SVG ids are document-global; a PDF page embeds many swatches inline, so
+  // clipPath ids must be unique per rendered SVG or images cross-clip.
+  const uid = `s${(renderSeq = (renderSeq + 1) % 1_000_000_000)}-`;
 
   if (shape === "palladiana mosaic") {
-    return renderPalladianaSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols: cols + 1, rows: rows + 1 });
+    return renderPalladianaSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols: cols + 1, rows: rows + 1, uid });
   }
   if (shape === "penny round" || shape === "mosaic") {
-    return renderCirclesSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols: cols + 2, rows: rows + 2 });
+    return renderCirclesSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols: cols + 2, rows: rows + 2, uid });
   }
   if (shape === "hexagon") {
-    return renderHexSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols: cols + 1, rows: rows + 1 });
+    return renderHexSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols: cols + 1, rows: rows + 1, uid });
   }
   if (shape === "picket") {
-    return renderPicketSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows: rows + 2 });
+    return renderPicketSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows: rows + 2, uid });
   }
   const aspect = shape === "square" ? 1 : detectAspect({ notes: opts.notes });
   const mode = normalizePattern(opts.pattern);
 
   switch (mode) {
     case "herringbone":
-      return renderHerringboneSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows, aspect });
+      return renderHerringboneSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows, aspect, uid });
     case "checkerboard-on-point":
-      return renderCheckerboardOnPointSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows });
+      return renderCheckerboardOnPointSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows, uid });
     case "parquet":
       return renderParquetSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows });
     case "lattice":
@@ -98,6 +106,9 @@ export function renderPatternSvg(opts: {
   }
 }
 
+/** Monotonic per-process counter feeding unique clipPath id prefixes. */
+let renderSeq = 0;
+
 /**
  * Deterministic integer hash for palladiana jitter — web preview and PDF
  * must produce the identical layout, so no Math.random.
@@ -114,6 +125,7 @@ function renderPalladianaSvg(o: {
   placeholderFill: string;
   cols: number;
   rows: number;
+  uid: string;
 }) {
   // Palladiana / crazy paving — irregular broken-marble shards. A lattice of
   // deterministically jittered points; each cell becomes a shard (about a
@@ -145,7 +157,7 @@ function renderPalladianaSvg(o: {
       const by = Math.min(...ys);
       const bw = Math.max(...xs) - bx;
       const bh = Math.max(...ys) - by;
-      const id = `pl-${n++}`;
+      const id = `${o.uid}pl-${n++}`;
       // Placeholder underlay so a failed image load still shows a shard.
       parts.push(`<polygon points="${pts}" fill="${o.placeholderFill}"/>`);
       parts.push(`<defs><clipPath id="${id}"><polygon points="${pts}"/></clipPath></defs>`);
@@ -178,7 +190,7 @@ function renderPalladianaSvg(o: {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} ${totalH}" preserveAspectRatio="xMidYMid meet" class="pattern-svg"><rect x="-${cell}" y="-${cell}" width="${totalW + 2 * cell}" height="${totalH + 2 * cell}" fill="${o.groutFill}"/>${parts.join("")}</svg>`;
 }
 
-function renderCirclesSvg(o: { imageUrl?: string | null; groutFill: string; placeholderFill: string; cols: number; rows: number }) {
+function renderCirclesSvg(o: { imageUrl?: string | null; groutFill: string; placeholderFill: string; cols: number; rows: number; uid: string }) {
   const r = 20;
   const gap = 2;
   const dx = 2 * r + gap;
@@ -192,7 +204,7 @@ function renderCirclesSvg(o: { imageUrl?: string | null; groutFill: string; plac
       const cx = c * dx + r + ox;
       const cy = row * dy + r;
       if (o.imageUrl) {
-        const id = `c-${row}-${c}`;
+        const id = `${o.uid}c-${row}-${c}`;
         // Placeholder underlay so a failed image load still shows the tile.
         parts.push(`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${o.placeholderFill}"/>`);
         parts.push(`<defs><clipPath id="${id}"><circle cx="${cx}" cy="${cy}" r="${r}"/></clipPath></defs>`);
@@ -205,7 +217,7 @@ function renderCirclesSvg(o: { imageUrl?: string | null; groutFill: string; plac
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} ${totalH}" preserveAspectRatio="xMidYMid meet" class="pattern-svg"><rect x="0" y="0" width="${totalW}" height="${totalH}" fill="${o.groutFill}"/>${parts.join("")}</svg>`;
 }
 
-function renderHexSvg(o: { imageUrl?: string | null; groutFill: string; placeholderFill: string; cols: number; rows: number }) {
+function renderHexSvg(o: { imageUrl?: string | null; groutFill: string; placeholderFill: string; cols: number; rows: number; uid: string }) {
   const size = 20;
   const w = size * 2;
   const h = size * Math.sqrt(3);
@@ -215,8 +227,10 @@ function renderHexSvg(o: { imageUrl?: string | null; groutFill: string; placehol
   const totalH = o.rows * dy + h;
   const parts: string[] = [];
   // Hexagons tessellate flush at exact packing — draw each slightly smaller
-  // so a grout seam shows between neighbors.
-  const drawSize = size - 1.5;
+  // so a grout seam shows between neighbors. Proportional inset (not an
+  // absolute pixel amount) so this renderer's smaller hexes carry the same
+  // relative seam as the web preview's larger ones.
+  const drawSize = size * 0.9625;
   for (let row = 0; row < o.rows; row++) {
     for (let c = 0; c < o.cols; c++) {
       const cx = c * dx + size;
@@ -225,7 +239,7 @@ function renderHexSvg(o: { imageUrl?: string | null; groutFill: string; placehol
         .map((i) => `${cx + drawSize * Math.cos((Math.PI / 3) * i)},${cy + drawSize * Math.sin((Math.PI / 3) * i)}`)
         .join(" ");
       if (o.imageUrl) {
-        const id = `h-${row}-${c}`;
+        const id = `${o.uid}h-${row}-${c}`;
         // Placeholder underlay so a failed image load still shows the tile.
         parts.push(`<polygon points="${points}" fill="${o.placeholderFill}"/>`);
         parts.push(`<defs><clipPath id="${id}"><polygon points="${points}"/></clipPath></defs>`);
@@ -238,7 +252,7 @@ function renderHexSvg(o: { imageUrl?: string | null; groutFill: string; placehol
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} ${totalH}" preserveAspectRatio="xMidYMid meet" class="pattern-svg"><rect x="0" y="0" width="${totalW}" height="${totalH}" fill="${o.groutFill}"/>${parts.join("")}</svg>`;
 }
 
-function renderPicketSvg(o: { imageUrl?: string | null; groutFill: string; placeholderFill: string; cols: number; rows: number }) {
+function renderPicketSvg(o: { imageUrl?: string | null; groutFill: string; placeholderFill: string; cols: number; rows: number; uid: string }) {
   const w = 50;
   const h = w * 2;
   const gap = 2;
@@ -261,7 +275,7 @@ function renderPicketSvg(o: { imageUrl?: string | null; groutFill: string; place
         `${x},${y + h / 4}`,
       ].join(" ");
       if (o.imageUrl) {
-        const id = `p-${row}-${c}`;
+        const id = `${o.uid}p-${row}-${c}`;
         // Placeholder underlay so a failed image load still shows the tile.
         parts.push(`<polygon points="${points}" fill="${o.placeholderFill}"/>`);
         parts.push(`<defs><clipPath id="${id}"><polygon points="${points}"/></clipPath></defs>`);
@@ -281,6 +295,7 @@ function renderHerringboneSvg(o: {
   cols: number;
   rows: number;
   aspect: number;
+  uid: string;
 }) {
   // True 2:1 domino herringbone, mirrored in PatternPreview.tsx. The plane
   // is tiled by an H tile [0,2S]x[0,S] and its V partner [2S,3S]x[-S,S]
@@ -317,7 +332,7 @@ function renderHerringboneSvg(o: {
       ];
       for (const rct of rects) {
         if (o.imageUrl) {
-          const id = `hb-${n++}`;
+          const id = `${o.uid}hb-${n++}`;
           // Placeholder underlay so a failed image load still shows the tile.
           parts.push(`<rect x="${rct.x}" y="${rct.y}" width="${rct.w}" height="${rct.h}" fill="${o.placeholderFill}"/>`);
           parts.push(`<defs><clipPath id="${id}"><rect x="${rct.x}" y="${rct.y}" width="${rct.w}" height="${rct.h}"/></clipPath></defs>`);
@@ -338,6 +353,7 @@ function renderCheckerboardOnPointSvg(o: {
   placeholderFill: string;
   cols: number;
   rows: number;
+  uid: string;
 }) {
   // Mirror of renderCheckerboardOnPoint — a chessboard rotated 45°.
   // Diamond centers within a row sit one full diagonal apart (touching at
@@ -367,7 +383,7 @@ function renderCheckerboardOnPointSvg(o: {
       const x = ccx - drawSide / 2;
       const y = ccy - drawSide / 2;
       if (o.imageUrl) {
-        const id = `cob-${r}-${c}`;
+        const id = `${o.uid}cob-${r}-${c}`;
         parts.push(`<g transform="rotate(45 ${ccx} ${ccy})">`);
         // Placeholder underlay so a failed image load still shows the tile.
         parts.push(`<rect x="${x}" y="${y}" width="${drawSide}" height="${drawSide}" fill="${o.placeholderFill}"/>`);

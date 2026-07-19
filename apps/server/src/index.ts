@@ -39,16 +39,20 @@ export async function buildApp() {
 
   app.use(publicPrefix, express.static(serveDir));
   const pdfCfg = pdfServeConfig();
-  app.use(pdfCfg.prefix, express.static(pdfCfg.dir));
+  // Generated spec books contain the whole product — gate downloads behind
+  // auth like the API that produces them (project ids are guessable).
+  app.use(pdfCfg.prefix, authMiddleware, express.static(pdfCfg.dir));
 
   // Public endpoints
   app.use("/api/health", healthRouter);
   app.use("/api/auth", makeAuthRouter(getDbi));
 
-  // Read-only endpoints: open (selections form + admin import call /api/projects)
-  app.use("/api/projects", makeProjectsRouter(getDbi));
-  app.use("/api/suggest", makeSuggestRouter(getDbi));
-  app.use("/api/stats", makeStatsRouter(getDbi));
+  // Read endpoints are auth-gated too: project/room/entry data is the
+  // whole product — leaving these open would let anyone on the network
+  // read every selection despite the login wall.
+  app.use("/api/projects", authMiddleware, makeProjectsRouter(getDbi));
+  app.use("/api/suggest", authMiddleware, makeSuggestRouter(getDbi));
+  app.use("/api/stats", authMiddleware, makeStatsRouter(getDbi));
 
   // Auth-gated write endpoints (replaces former x-admin-token; legacy token still accepted)
   app.use("/api/admin", authMiddleware, makeAdminImportRouter(getDbi));
