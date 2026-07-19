@@ -93,6 +93,8 @@ export function renderPatternSvg(opts: {
       return renderStripesVerticalSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows, aspect });
     case "random":
       return renderRandomRotationSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows, aspect });
+    case "alternating-rows":
+      return renderAlternatingRowsSvg({ imageUrl: opts.imageUrl, groutFill, placeholderFill, cols, rows, aspect });
     default:
       return renderRectSvg({
         imageUrl: opts.imageUrl,
@@ -565,6 +567,59 @@ function renderRandomRotationSvg(o: {
         parts.push(`<rect x="${x}" y="${y}" width="${side}" height="${side}" fill="${o.placeholderFill}" transform="rotate(${rot} ${cx} ${cy})"/>`);
       }
     }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} ${totalH}" preserveAspectRatio="xMidYMid meet" class="pattern-svg"><rect x="0" y="0" width="${totalW}" height="${totalH}" fill="${o.groutFill}"/>${parts.join("")}</svg>`;
+}
+
+function renderAlternatingRowsSvg(o: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+  aspect: number;
+}) {
+  // Tamara's "one row X + one row Y repeat" — courses alternate orientation:
+  // even courses are landscape tiles, odd courses portrait. Portrait courses
+  // are taller (tile long side vertical), so course heights differ and y is
+  // accumulated per course rather than derived from a fixed row pitch.
+  const tileBase = 80;
+  const landW = tileBase;
+  const landH = tileBase / o.aspect;
+  const portW = tileBase / o.aspect;
+  const portH = tileBase;
+  const groutWidth = 2;
+  const totalW = o.cols * landW + groutWidth * (o.cols + 1);
+  // Portrait courses need more (narrower) tiles across to fill totalW.
+  const portCols = Math.ceil(o.cols * o.aspect);
+  const landRows = Math.ceil(o.rows / 2);
+  const portRows = Math.floor(o.rows / 2);
+  const totalH = landRows * landH + portRows * portH + groutWidth * (o.rows + 1);
+  const parts: string[] = [];
+  const pushTile = (x: number, y: number, w: number, h: number) => {
+    if (w < 1 || h < 1) return;
+    if (o.imageUrl) {
+      // Placeholder underlay so a failed image load still shows the tile.
+      parts.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${o.placeholderFill}"/>`);
+      parts.push(`<image href="${esc(o.imageUrl)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice"/>`);
+    } else {
+      parts.push(`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${o.placeholderFill}"/>`);
+    }
+  };
+  let y = groutWidth;
+  for (let r = 0; r < o.rows; r++) {
+    const portrait = r % 2 === 1;
+    const tileW = portrait ? portW : landW;
+    const tileH = portrait ? portH : landH;
+    const rowCols = portrait ? portCols : o.cols;
+    for (let c = 0; c < rowCols; c++) {
+      const x = c * tileW + groutWidth * (c + 1);
+      if (x >= totalW) continue;
+      // Portrait courses overshoot totalW — clip the last tile like renderRectSvg.
+      const cw = Math.min(tileW, totalW - x - groutWidth);
+      pushTile(x, y, cw, tileH);
+    }
+    y += tileH + groutWidth;
   }
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${totalW} ${totalH}" preserveAspectRatio="xMidYMid meet" class="pattern-svg"><rect x="0" y="0" width="${totalW}" height="${totalH}" fill="${o.groutFill}"/>${parts.join("")}</svg>`;
 }

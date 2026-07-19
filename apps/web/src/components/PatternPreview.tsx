@@ -1,3 +1,4 @@
+import { useId } from "react";
 import {
   detectShape,
   detectAspect,
@@ -72,6 +73,10 @@ export function PatternPreview({
     forcedShape ?? detectShape({ style, color, notes, pattern });
   const groutFill = resolveGroutFill(groutColor);
   const placeholderFill = "#d8d2c4";
+  // SVG ids are document-global; a selections page mounts many previews at
+  // once, so clipPath ids must be unique per instance or images cross-clip.
+  // Mirrors the uid prefix in the server PDF renderer.
+  const uid = `${useId().replace(/:/g, "")}-`;
 
   if (detectedShape === "palladiana mosaic") {
     return renderPalladiana({
@@ -80,6 +85,7 @@ export function PatternPreview({
       placeholderFill,
       cols: cols + 1,
       rows: rows + 1,
+      uid,
     });
   }
   if (detectedShape === "penny round" || detectedShape === "mosaic") {
@@ -90,6 +96,7 @@ export function PatternPreview({
       cols: cols + 2,
       rows: rows + 2,
       tileWidth: tileWidth / 2,
+      uid,
     });
   }
   if (detectedShape === "hexagon") {
@@ -100,6 +107,7 @@ export function PatternPreview({
       cols: cols + 1,
       rows: rows + 1,
       size: tileWidth / 2,
+      uid,
     });
   }
   if (detectedShape === "picket") {
@@ -110,6 +118,7 @@ export function PatternPreview({
       cols,
       rows: rows + 2,
       tileWidth,
+      uid,
     });
   }
 
@@ -119,9 +128,9 @@ export function PatternPreview({
 
   switch (mode) {
     case "herringbone":
-      return renderHerringbone({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect });
+      return renderHerringbone({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect, uid });
     case "checkerboard-on-point":
-      return renderCheckerboardOnPoint({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth });
+      return renderCheckerboardOnPoint({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, uid });
     case "parquet":
       return renderParquet({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth });
     case "lattice":
@@ -130,6 +139,8 @@ export function PatternPreview({
       return renderStripesVertical({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect });
     case "random":
       return renderRandomRotation({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect });
+    case "alternating-rows":
+      return renderAlternatingRows({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect });
     default:
       return renderRectangleGrid({
         imageUrl,
@@ -164,8 +175,9 @@ function renderPalladiana(opts: {
   placeholderFill: string;
   cols: number;
   rows: number;
+  uid: string;
 }) {
-  const { imageUrl, groutFill, placeholderFill, cols, rows } = opts;
+  const { imageUrl, groutFill, placeholderFill, cols, rows, uid } = opts;
   // Palladiana / crazy paving — irregular broken-marble shards. A lattice of
   // deterministically jittered points; each cell becomes a shard (about a
   // third split into triangle pairs for variety), shrunk toward its centroid
@@ -190,7 +202,7 @@ function renderPalladiana(opts: {
     const pts = poly
       .map(([x, y]) => `${(cx + (x - cx) * shrink).toFixed(1)},${(cy + (y - cy) * shrink).toFixed(1)}`)
       .join(" ");
-    const id = `pl-${n++}`;
+    const id = `${uid}pl-${n++}`;
     if (imageUrl) {
       const xs = poly.map((p) => p[0]);
       const ys = poly.map((p) => p[1]);
@@ -262,8 +274,9 @@ function renderCircles(opts: {
   cols: number;
   rows: number;
   tileWidth: number;
+  uid: string;
 }) {
-  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth } = opts;
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, uid } = opts;
   const r = tileWidth / 2;
   const gap = 2;
   const dx = 2 * r + gap;
@@ -278,7 +291,7 @@ function renderCircles(opts: {
       const cx = c * dx + r + offsetX;
       const cy = row * dy + r;
       if (imageUrl) {
-        const id = `clip-${row}-${c}`;
+        const id = `${uid}clip-${row}-${c}`;
         circles.push(
           <g key={`${row}-${c}`}>
             {/* Placeholder underlay so a failed image load still shows the tile. */}
@@ -325,8 +338,9 @@ function renderHexagons(opts: {
   cols: number;
   rows: number;
   size: number;
+  uid: string;
 }) {
-  const { imageUrl, groutFill, placeholderFill, cols, rows, size } = opts;
+  const { imageUrl, groutFill, placeholderFill, cols, rows, size, uid } = opts;
   // Flat-top hex packing
   const w = size * 2;
   const h = size * Math.sqrt(3);
@@ -351,7 +365,7 @@ function renderHexagons(opts: {
           return `${cx + drawSize * Math.cos(angle)},${cy + drawSize * Math.sin(angle)}`;
         })
         .join(" ");
-      const id = `hex-${row}-${c}`;
+      const id = `${uid}hex-${row}-${c}`;
       if (imageUrl) {
         hexes.push(
           <g key={`${row}-${c}`}>
@@ -397,8 +411,9 @@ function renderPicket(opts: {
   cols: number;
   rows: number;
   tileWidth: number;
+  uid: string;
 }) {
-  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth } = opts;
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, uid } = opts;
   const w = tileWidth;
   const h = tileWidth * 2;
   const gap = 2;
@@ -422,7 +437,7 @@ function renderPicket(opts: {
         `${x},${y + (h * 3) / 4}`,
         `${x},${y + h / 4}`,
       ].join(" ");
-      const id = `pick-${row}-${c}`;
+      const id = `${uid}pick-${row}-${c}`;
       if (imageUrl) {
         tiles.push(
           <g key={`${row}-${c}`}>
@@ -469,8 +484,9 @@ function renderHerringbone(opts: {
   rows: number;
   tileWidth: number;
   aspect: number;
+  uid: string;
 }) {
-  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth } = opts;
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, uid } = opts;
   void tileWidth;
   void opts.aspect;
   // True 2:1 domino herringbone, mirroring renderHerringboneSvg in the
@@ -504,7 +520,7 @@ function renderHerringbone(opts: {
         { x: ox + 2 * S + inset, y: oy - S + inset, w: S - 2 * inset, h: 2 * S - 2 * inset },
       ];
       for (const rct of rects) {
-        const id = `hb-${n++}`;
+        const id = `${uid}hb-${n++}`;
         if (imageUrl) {
           tiles.push(
             <g key={id}>
@@ -553,8 +569,9 @@ function renderCheckerboardOnPoint(opts: {
   cols: number;
   rows: number;
   tileWidth: number;
+  uid: string;
 }) {
-  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth } = opts;
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, uid } = opts;
   // A chessboard rotated 45°. Diamond centers within a row sit one full
   // diagonal apart (touching at left/right points); each successive row
   // drops half a diagonal and shifts half a diagonal, filling the gaps.
@@ -583,7 +600,7 @@ function renderCheckerboardOnPoint(opts: {
       const ccy = pad + r * half;
       const x = ccx - drawSide / 2;
       const y = ccy - drawSide / 2;
-      const id = `cob-${r}-${c}`;
+      const id = `${uid}cob-${r}-${c}`;
       if (imageUrl) {
         tiles.push(
           <g key={`img-${r}-${c}`} transform={`rotate(45 ${ccx} ${ccy})`}>
@@ -931,6 +948,83 @@ function renderRandomRotation(opts: {
         );
       }
     }
+  }
+  return (
+    <svg
+      viewBox={`0 0 ${totalW} ${totalH}`}
+      className="pattern-preview"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <rect x={0} y={0} width={totalW} height={totalH} fill={groutFill} />
+      {tiles}
+    </svg>
+  );
+}
+
+function renderAlternatingRows(opts: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+  tileWidth: number;
+  aspect: number;
+}) {
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect } = opts;
+  // Tamara's "one row X + one row Y repeat" — courses alternate orientation:
+  // even courses are landscape tiles, odd courses portrait. Portrait courses
+  // are taller (tile long side vertical), so course heights differ and y is
+  // accumulated per course rather than derived from a fixed row pitch.
+  // Mirrors renderAlternatingRowsSvg in the server PDF renderer.
+  const landW = tileWidth;
+  const landH = tileWidth / aspect;
+  const portW = tileWidth / aspect;
+  const portH = tileWidth;
+  const groutWidth = 2;
+  const totalW = cols * landW + groutWidth * (cols + 1);
+  // Portrait courses need more (narrower) tiles across to fill totalW.
+  const portCols = Math.ceil(cols * aspect);
+  const landRows = Math.ceil(rows / 2);
+  const portRows = Math.floor(rows / 2);
+  const totalH = landRows * landH + portRows * portH + groutWidth * (rows + 1);
+
+  const tiles: React.ReactElement[] = [];
+  const pushTile = (key: string, x: number, y: number, w: number, h: number) => {
+    if (w < 1 || h < 1) return;
+    tiles.push(
+      imageUrl ? (
+        <g key={key}>
+          {/* Placeholder underlay so a failed image load still shows the tile. */}
+          <rect x={x} y={y} width={w} height={h} fill={placeholderFill} />
+          <image
+            href={imageUrl}
+            x={x}
+            y={y}
+            width={w}
+            height={h}
+            preserveAspectRatio="xMidYMid slice"
+          />
+        </g>
+      ) : (
+        <rect key={key} x={x} y={y} width={w} height={h} fill={placeholderFill} />
+      ),
+    );
+  };
+  let y = groutWidth;
+  for (let r = 0; r < rows; r++) {
+    const portrait = r % 2 === 1;
+    const tileW = portrait ? portW : landW;
+    const tileH = portrait ? portH : landH;
+    const rowCols = portrait ? portCols : cols;
+    for (let c = 0; c < rowCols; c++) {
+      const x = c * tileW + groutWidth * (c + 1);
+      if (x >= totalW) continue;
+      // Portrait courses overshoot totalW — clip the last tile like
+      // renderRectangleGrid.
+      const cw = Math.min(tileW, totalW - x - groutWidth);
+      pushTile(`${r}-${c}`, x, y, cw, tileH);
+    }
+    y += tileH + groutWidth;
   }
   return (
     <svg

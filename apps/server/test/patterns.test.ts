@@ -44,6 +44,7 @@ describe("normalizePattern — explicit anchors", () => {
     expect(normalizePattern("set straight parallel with vanity")).toBe("straight");
     expect(normalizePattern("set horizontal staggered")).toBe("staggered-horizontal");
     expect(normalizePattern("set 30/70")).toBe("30-70");
+    expect(normalizePattern("one row straight + one row horizontal repeat")).toBe("alternating-rows");
     expect(normalizePattern("1/2 x 1 herringbone")).toBe("herringbone");
     expect(normalizePattern("set checkerboard on point")).toBe("checkerboard-on-point");
     expect(normalizePattern("4 vertical + 4 horizontal parquet design")).toBe("parquet");
@@ -108,10 +109,10 @@ describe("normalizePattern — explicit anchors", () => {
     expect(normalizePattern("set vertical, all walls")).toBe("straight-vertical");
   });
 
-  it("compound mixed-row strings resolve to alternating-rows", () => {
-    // "one row X + one row Y repeat" — alternating-course layouts now have
-    // their own render mode; the orientation words inside the string must
-    // not win first.
+  it("compound mixed-row strings map to alternating-rows", () => {
+    // "one row X + one row Y repeat" — the second clause's orientation word
+    // must not hijack the string into a single-orientation grid. Every "one
+    // row" spelling in the seed corpus lands here.
     expect(normalizePattern("one row straight + one row horizontal repeat")).toBe("alternating-rows");
     expect(normalizePattern("one row set straight + one row horizontal repeat")).toBe("alternating-rows");
     expect(normalizePattern("one row straight + one row vertical repeat")).toBe("alternating-rows");

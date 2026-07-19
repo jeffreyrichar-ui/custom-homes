@@ -28,6 +28,22 @@ describe("renderPatternSvg dispatch", () => {
     const flipped = renderPatternSvg({ pattern: "set horizontal straight", notes: "24x12" });
     expect(horizontal).toBe(flipped);
   });
+
+  it("alternating-rows mixes landscape and portrait courses", () => {
+    const svg = renderPatternSvg({
+      pattern: "one row straight + one row horizontal repeat",
+      notes: "12x24",
+    });
+    expect(svg).toContain("<rect");
+    // Courses alternate orientation — the placeholder rects must include at
+    // least one landscape (w > h) and one portrait (h > w) tile.
+    const tiles = Array.from(
+      svg.matchAll(/<rect x="[^"]+" y="[^"]+" width="([\d.]+)" height="([\d.]+)" fill="#d8d2c4"\/>/g),
+    ).map((m) => ({ w: Number(m[1]), h: Number(m[2]) }));
+    expect(tiles.length).toBeGreaterThan(0);
+    expect(tiles.some((t) => t.w > t.h)).toBe(true);
+    expect(tiles.some((t) => t.h > t.w)).toBe(true);
+  });
 });
 
 describe("renderPatternSvg image underlay", () => {
@@ -46,6 +62,7 @@ describe("renderPatternSvg image underlay", () => {
     ["lattice", { pattern: "Lattice" }],
     ["stripes", { pattern: "set vertical stripes" }],
     ["random", { pattern: "6x6 set random, all vertical" }],
+    ["alternating rows", { pattern: "one row straight + one row horizontal repeat", notes: "12x24" }],
   ] as const)(
     "%s draws a placeholder underlay beneath every image tile",
     (_name, opts) => {

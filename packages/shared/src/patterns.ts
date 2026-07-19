@@ -7,11 +7,14 @@
  * Mapping rules (highest specificity wins):
  *   1. Named layouts: herringbone, parquet, lattice, checkerboard, stripes,
  *      random — these always trump orientation hints.
- *   2. Offset: 30/70 (asymmetric horizontal stagger), staggered (50% stagger,
+ *   2. Alternating-row compounds: "one row X + one row Y repeat" — must beat
+ *      the orientation rules or the second clause's orientation word hijacks
+ *      the whole string.
+ *   3. Offset: 30/70 (asymmetric horizontal stagger), staggered (50% stagger,
  *      orientation-aware).
- *   3. Orientation only: vertical → straight-vertical, horizontal →
+ *   4. Orientation only: vertical → straight-vertical, horizontal →
  *      straight-horizontal.
- *   4. Anchoring ("parallel with vanity"), coverage ("cut to fit", "full size
+ *   5. Anchoring ("parallel with vanity"), coverage ("cut to fit", "full size
  *      tile", "to ceiling", "see attached"), and backsplash height strings
  *      ("6 inch splash", "1/2 sheet splash") all fall through to "straight".
  */
@@ -72,10 +75,17 @@ export function normalizePattern(input?: string | null): RenderMode {
   if (n.includes("stripes") || n.includes("striped")) return "stripes-vertical";
   if (n.includes("random")) return "random";
 
-  // 2. Alternating courses — "one row straight + one row horizontal
-  // repeat" and variants. Checked before plain orientation so the
-  // "horizontal"/"vertical" inside these strings doesn't win first.
-  if (/\bone row\b[\s\S]*\brepeat\b/.test(n)) return "alternating-rows";
+  // 2. Alternating-row compounds — "one row X + one row Y repeat" (with or
+  // without the trailing "repeat" when both clauses name an orientation).
+  // Must beat the orientation rules below or the second clause's orientation
+  // word hijacks the whole string into a single-orientation grid.
+  if (
+    /\bone row\b.*\brepeat\b/.test(n) ||
+    (/^one row\b/.test(n) &&
+      /\b(?:straight|vertical|horizontal)\b.*\+.*\b(?:straight|vertical|horizontal)\b/.test(n))
+  ) {
+    return "alternating-rows";
+  }
 
   // 3. Offset variants.
   if (n.includes("30/70") || n.includes("30-70")) return "30-70";
