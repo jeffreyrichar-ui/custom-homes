@@ -259,11 +259,16 @@ function fullTocHtml(rooms: Room[]): string {
         (acc, trade) => acc + (r.entries_by_trade[trade] ?? []).length,
         0,
       );
-      return `<li class="toc-row${count === 0 ? " muted" : ""}">
-        <a class="toc-link" href="#room-${esc(r.id)}">
-          <span class="toc-room">${esc(r.room_name)}</span>
+      const inner = `<span class="toc-room">${esc(r.room_name)}</span>
           <span class="toc-dots"></span>
-          <span class="toc-count">${count} ${count === 1 ? "entry" : "entries"}</span>
+          <span class="toc-count">${count} ${count === 1 ? "entry" : "entries"}</span>`;
+      // Zero-entry rooms render no body section, so there is no anchor to
+      // link to — show them muted and unlinked rather than as a dead link.
+      return count === 0
+        ? `<li class="toc-row muted"><span class="toc-link">${inner}</span></li>`
+        : `<li class="toc-row">
+        <a class="toc-link" href="#room-${esc(r.id)}">
+          ${inner}
         </a>
       </li>`;
     })

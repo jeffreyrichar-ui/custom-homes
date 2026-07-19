@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useId } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../lib/api.js";
 import { Icon } from "../components/Icon.js";
@@ -7,6 +7,9 @@ export function NewProject() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
+  const uid = useId();
+  const nameId = `${uid}-name`;
+  const addressId = `${uid}-address`;
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -38,10 +41,11 @@ export function NewProject() {
       <form onSubmit={handleSubmit} className="trade-form">
         <div className="trade-form-grid">
           <div className="ac-wrapper">
-            <label className="ac-label">
+            <label className="ac-label" htmlFor={nameId}>
               Name<span className="ac-required">*</span>
             </label>
             <input
+              id={nameId}
               className="ac-input"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -50,8 +54,9 @@ export function NewProject() {
             />
           </div>
           <div className="ac-wrapper">
-            <label className="ac-label">Address</label>
+            <label className="ac-label" htmlFor={addressId}>Address</label>
             <input
+              id={addressId}
               className="ac-input"
               value={address}
               onChange={(e) => setAddress(e.target.value)}

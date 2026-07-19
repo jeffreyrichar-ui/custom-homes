@@ -215,13 +215,15 @@ describe("renderProjectHtml", () => {
     });
     const toc = html.match(/<section class="toc-page">[\s\S]*?<\/section>/);
     expect(toc).not.toBeNull();
-    // Every room is listed, linked to its room section anchor.
+    // Every room is listed; populated rooms link to their section anchor.
+    // Zero-entry rooms render no body section, so their TOC row is muted
+    // and unlinked rather than a dead in-document link.
     expect(toc![0]).toContain("Primary Bath");
     expect(toc![0]).toContain("Guest Bath");
     expect(toc![0]).toContain("Powder Room");
     expect(toc![0]).toContain('href="#room-r1"');
     expect(toc![0]).toContain('href="#room-r2"');
-    expect(toc![0]).toContain('href="#room-r3"');
+    expect(toc![0]).not.toContain('href="#room-r3"');
     // Counts are totals across all trades: 2 tile + 1 paint, 1 hardwood, none.
     expect(toc![0]).toContain("3 entries");
     expect(toc![0]).toContain("1 entry");
