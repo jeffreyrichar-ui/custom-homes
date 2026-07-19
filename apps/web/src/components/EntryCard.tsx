@@ -1,3 +1,4 @@
+import { humanizeToken } from "@custom-homes/shared";
 import { useState } from "react";
 import type { TradeKind } from "@custom-homes/shared";
 import { EntryImage } from "./EntryImage.js";
@@ -139,7 +140,9 @@ export function EntryCard({
           return (
             <div key={k} className="entry-primary-row">
               <span className="entry-key">{k.replace(/_/g, " ")}</span>
-              <span className="entry-val">{v}</span>
+              <span className="entry-val">
+                {k === "location_in_room" ? humanizeToken(String(v)) : v}
+              </span>
             </div>
           );
         })}

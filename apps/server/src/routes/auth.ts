@@ -23,7 +23,7 @@ export function makeAuthRouter(getDbi: () => Dbi): Router {
       }
       const user = await findUserByEmail(getDbi(), email);
       if (!user || !(await verifyPassword(password, user.password_hash))) {
-        res.status(401).json({ error: "invalid credentials" });
+        res.status(401).json({ error: "Email or password doesn\u2019t match \u2014 please try again" });
         return;
       }
       const token = signSessionToken(user.id);

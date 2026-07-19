@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { TAMARA_PATTERN_OPTIONS, type TradeKind } from "@custom-homes/shared";
+import { TAMARA_PATTERN_OPTIONS, type TradeKind, humanizeToken } from "@custom-homes/shared";
 import { api } from "../lib/api.js";
 import { AutoComplete, type Suggestion } from "./AutoComplete.js";
 import { PatternPreview } from "./PatternPreview.js";
@@ -380,7 +380,11 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
           <select className="ac-input" value={v} onChange={(e) => set(e.target.value)}>
             {(f.options ?? []).map((opt) => (
               <option key={opt} value={opt}>
-                {opt || "(none)"}
+                {opt
+                  ? f.key === "pattern"
+                    ? opt
+                    : humanizeToken(opt)
+                  : "Not selected"}
               </option>
             ))}
           </select>
@@ -514,7 +518,7 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
           {!previewImage && (
             <small className="hint">
               No cached image for {values.brand} {values.sku} yet — preview shows pattern
-              + grout only. Save the entry to trigger a scrape, or upload the product
+              + grout only. Save the entry to look up the product photo, or upload the product
               image from the entry card.
             </small>
           )}

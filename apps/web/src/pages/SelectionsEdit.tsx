@@ -360,6 +360,7 @@ export function SelectionsEdit() {
                 {!tradePicker[room.id] && !editing && (
                   <select
                     className="ac-input"
+                    aria-label="Add trade"
                     style={{ width: "auto" }}
                     onChange={(e) => {
                       const v = e.target.value as TradeKind | "";
@@ -469,6 +470,7 @@ export function SelectionsEdit() {
                   </button>
                   <select
                     className="ac-input"
+                    aria-label="Add trade"
                     style={{ width: "auto" }}
                     onChange={(e) => {
                       const v = e.target.value as TradeKind | "";
@@ -476,7 +478,6 @@ export function SelectionsEdit() {
                       e.currentTarget.value = "";
                     }}
                     defaultValue=""
-                    aria-label="Add another trade"
                   >
                     <option value="">+ Add trade…</option>
                     {TRADE_KINDS.map((t) => (

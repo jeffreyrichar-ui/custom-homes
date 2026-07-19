@@ -13,7 +13,7 @@
   --border-strong: #c9c0b1;
   --text: #1a1917;
   --text-2: #5c574e;
-  --text-3: #8f897e;
+  --text-3: #6d675c; /* ≥4.5:1 on bg/surface/surface-2 — labels stay readable for older eyes */
   --accent: #1a1917;
   --accent-hover: #383530;
   --accent-soft: #e8e2d6;
@@ -21,7 +21,7 @@
   --primary-hover: #594635;
   --primary-soft: #efe6da;
   --success: #4f6a3a;
-  --warning: #a87f3e;
+  --warning: #84632c; /* ≥4.5:1 on warning-soft and white */
   --warning-soft: #fbf4e3;
   --danger: #9a3a3a;
   --danger-soft: #f9eaea;
@@ -500,6 +500,8 @@ html { scroll-behavior: smooth; }
 }
 .entry-card-actions button.link {
   font-size: var(--fs-xs);
+  padding: 6px 4px;
+  margin: -6px -4px;
   color: var(--text-3);
   font-weight: 500;
   text-transform: uppercase;
@@ -511,6 +513,11 @@ html { scroll-behavior: smooth; }
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  /* Grow the hit area without shifting layout — small icon buttons are
+     hard targets for less-dexterous hands. */
+  padding: 8px;
+  margin: -8px;
+  border-radius: 8px;
 }
 .icon-link svg { color: currentColor; }
 .icon-button {
@@ -533,7 +540,7 @@ html { scroll-behavior: smooth; }
   min-width: 0;
 }
 .entry-key {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   color: var(--text-3);
   text-transform: uppercase;
@@ -571,7 +578,7 @@ html { scroll-behavior: smooth; }
   display: inline-block;
   padding: 2px 7px;
   border-radius: 12px;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;

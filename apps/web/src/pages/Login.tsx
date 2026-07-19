@@ -83,7 +83,7 @@ export function Login({ onLoggedIn }: Props) {
         <span className="auth-brand-mark" />
         <span className="auth-brand-name">Custom Homes</span>
       </div>
-      <h1>{mode === "login" ? "Welcome back" : "First-time setup"}</h1>
+      <h1>{mode === "login" ? "Welcome back" : "Create an account"}</h1>
       <p className="subtle" style={{ marginTop: -8, marginBottom: 24 }}>
         {mode === "login"
           ? "Sign in to access your projects."
@@ -135,7 +135,7 @@ export function Login({ onLoggedIn }: Props) {
               setError(null);
             }}
           >
-            {mode === "login" ? "First-time setup" : "Have an account?"}
+            {mode === "login" ? "Create an account" : "Have an account? Sign in"}
           </button>
         </div>
       </form>

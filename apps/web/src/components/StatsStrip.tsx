@@ -48,7 +48,7 @@ export function StatsStrip() {
       </div>
       <div className="summary-tile">
         <div className="summary-tile-value">{stats.novel_entries}</div>
-        <div className="summary-tile-label">Novel entries</div>
+        <div className="summary-tile-label">New combinations</div>
       </div>
       <div className="summary-tile">
         <div className="summary-tile-value">{topBrandName}</div>
