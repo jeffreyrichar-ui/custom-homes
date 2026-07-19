@@ -108,20 +108,14 @@ describe("normalizePattern — explicit anchors", () => {
     expect(normalizePattern("set vertical, all walls")).toBe("straight-vertical");
   });
 
-  it("compound mixed-row strings fall back to straight (no layout we render today)", () => {
-    // "one row straight + one row horizontal repeat" etc. — these are
-    // alternating-row layouts we can't render visually yet, so we send them
-    // to the plain grid. The orientation in the second clause shouldn't
-    // hijack the first clause's intent, so we accept either-orientation.
-    const a = normalizePattern("one row straight + one row horizontal repeat");
-    expect(a === "straight" || a === "straight-horizontal").toBe(true);
-    const b = normalizePattern("one row set straight + one row horizontal repeat");
-    expect(b === "straight" || b === "straight-horizontal").toBe(true);
-    const c = normalizePattern("one row straight + one row vertical repeat");
-    expect(c === "straight" || c === "straight-vertical").toBe(true);
-    const d = normalizePattern("one row horizontal + one row vertical repeat");
-    // first occurrence wins in our normalizer (horizontal); either is fine.
-    expect(["straight-horizontal", "straight-vertical"].includes(d)).toBe(true);
+  it("compound mixed-row strings resolve to alternating-rows", () => {
+    // "one row X + one row Y repeat" — alternating-course layouts now have
+    // their own render mode; the orientation words inside the string must
+    // not win first.
+    expect(normalizePattern("one row straight + one row horizontal repeat")).toBe("alternating-rows");
+    expect(normalizePattern("one row set straight + one row horizontal repeat")).toBe("alternating-rows");
+    expect(normalizePattern("one row straight + one row vertical repeat")).toBe("alternating-rows");
+    expect(normalizePattern("one row horizontal + one row vertical repeat")).toBe("alternating-rows");
   });
 
   it("handles null / empty / whitespace inputs as straight", () => {
