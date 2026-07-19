@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, type ProjectSummary } from "../lib/api.js";
+import { useToast } from "../lib/toast.js";
 import { StatsStrip } from "../components/StatsStrip.js";
 import { RecentActivity } from "../components/RecentActivity.js";
 import { Icon } from "../components/Icon.js";
@@ -10,7 +11,9 @@ type Sort = "recent" | "name" | "rooms";
 const ONBOARDING_KEY = "cb_onboarding_dismissed";
 
 export function ProjectsList() {
+  const { notify } = useToast();
   const [projects, setProjects] = useState<ProjectSummary[] | null>(null);
+  const [syncing, setSyncing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("recent");
@@ -24,16 +27,39 @@ export function ProjectsList() {
     }
   });
 
-  useEffect(() => {
+  const loadProjects = () => {
     api
       .listProjects()
       .then((res) => setProjects(res.projects))
       .catch((err: Error) => setError(err.message));
+  };
+
+  useEffect(() => {
+    loadProjects();
     api
       .getStats()
       .then((s) => setTotalEntries(s.entries.total ?? 0))
       .catch(() => setTotalEntries(0));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleSync = async () => {
+    setSyncing(true);
+    try {
+      const report = await api.syncBuilderTrend();
+      const line = (label: string, c: { created: number; updated: number; skipped: number }) =>
+        `${label} ${c.created} new / ${c.updated} updated`;
+      notify(
+        "success",
+        `BuilderTrend sync done — ${line("projects:", report.projects)}; ${line("selections:", report.entries)}.`,
+      );
+      loadProjects();
+    } catch (err) {
+      notify("error", err instanceof Error ? err.message : String(err));
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   const brandOptions = useMemo(() => {
     if (!projects) return [] as string[];
@@ -111,11 +137,21 @@ export function ProjectsList() {
     <>
       <div className="projects-header">
         <h1>Projects</h1>
-        {projects.length > 0 && (
-          <Link to="/selections/new" className="primary-link">
-            + New project
-          </Link>
-        )}
+        <div className="projects-header-actions">
+          <button
+            type="button"
+            className="secondary"
+            onClick={handleSync}
+            disabled={syncing}
+          >
+            {syncing ? "Syncing…" : "Sync BuilderTrend"}
+          </button>
+          {projects.length > 0 && (
+            <Link to="/selections/new" className="primary-link">
+              + New project
+            </Link>
+          )}
+        </div>
       </div>
 
       {showOnboardingBanner && (
@@ -237,6 +273,21 @@ export function ProjectsList() {
                     <span>
                       Added {new Date(p.created_at).toLocaleDateString()}
                     </span>
+                    {p.external_source === "buildertrend" && (
+                      <>
+                        <span className="dot">·</span>
+                        <span
+                          className="bt-badge"
+                          title={
+                            p.synced_at
+                              ? `Synced from BuilderTrend ${new Date(p.synced_at).toLocaleString()}`
+                              : "Synced from BuilderTrend"
+                          }
+                        >
+                          BT
+                        </span>
+                      </>
+                    )}
                   </div>
                 </Link>
               ))}

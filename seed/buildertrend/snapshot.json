@@ -1,0 +1,102 @@
+{
+  "jobs": [
+    {
+      "id": "BT-job-1042",
+      "name": "Henderson Residence",
+      "address": "812 Oak Ridge Dr",
+      "status": "in_progress"
+    },
+    {
+      "id": "BT-job-2088",
+      "name": "Caldwell Farmhouse",
+      "address": "44 Quail Hollow Rd",
+      "status": "pre_construction"
+    }
+  ],
+  "selections": [
+    {
+      "id": "BT-sel-9001",
+      "job_id": "BT-job-1042",
+      "room": "Master Bath",
+      "category": "Tile & Stone",
+      "title": "Master shower wall tile",
+      "allowance": 2200,
+      "deadline": "2026-08-14T00:00:00Z",
+      "status": "approved",
+      "fields": {
+        "brand": "Daltile",
+        "style": "Marble Attache",
+        "color": "Lavish White",
+        "sku": "MA85",
+        "location_in_room": "shower_walls"
+      }
+    },
+    {
+      "id": "BT-sel-9002",
+      "job_id": "BT-job-1042",
+      "room": "Master Bath",
+      "category": "Countertops & Surfaces",
+      "title": "Vanity top",
+      "allowance": 3400,
+      "deadline": "2026-08-28T00:00:00Z",
+      "status": "pending_approval",
+      "fields": {
+        "material": "quartz",
+        "brand": "Cambria",
+        "color": "Brittanicca"
+      }
+    },
+    {
+      "id": "BT-sel-9101",
+      "job_id": "BT-job-2088",
+      "room": "Primary Bath",
+      "category": "Tile & Stone",
+      "title": "Primary bath floor tile",
+      "allowance": 1800,
+      "deadline": "2026-09-30T00:00:00Z",
+      "status": "pending_selection",
+      "fields": {
+        "brand": "Bedrosians",
+        "style": "Cloudscape",
+        "color": "Fog Matte",
+        "location_in_room": "floor"
+      }
+    },
+    {
+      "id": "BT-sel-9102",
+      "job_id": "BT-job-2088",
+      "room": "Primary Bath",
+      "category": "Paint & Wallcovering",
+      "title": "Primary bath wall paint",
+      "allowance": 450,
+      "deadline": "2026-10-15T00:00:00Z",
+      "status": "pending_selection",
+      "fields": {
+        "brand": "Sherwin-Williams",
+        "color_name": "Alabaster",
+        "sku": "SW7008",
+        "surface_application": "walls"
+      }
+    },
+    {
+      "id": "BT-sel-9103",
+      "job_id": "BT-job-2088",
+      "room": "Kitchen",
+      "category": "Cabinetry",
+      "title": "Kitchen cabinet allowance",
+      "allowance": 26000,
+      "deadline": "2026-11-01T00:00:00Z",
+      "status": "pending_selection"
+    },
+    {
+      "id": "BT-sel-9104",
+      "job_id": "BT-job-2088",
+      "room": "Mudroom",
+      "category": "Low Voltage",
+      "title": "Speaker prewire",
+      "allowance": 900,
+      "deadline": null,
+      "status": "pending_selection"
+    }
+  ]
+}

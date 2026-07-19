@@ -70,6 +70,21 @@ export type ProjectSummary = {
   room_count: number;
   entry_count: number;
   top_brand: string | null;
+  external_source: string | null;
+  synced_at: string | null;
+};
+
+export type SyncCounts = { created: number; updated: number; skipped: number };
+
+export type SyncReport = {
+  source: "buildertrend";
+  run_id: string;
+  started_at: string;
+  finished_at: string;
+  projects: SyncCounts;
+  rooms: SyncCounts;
+  entries: SyncCounts;
+  unmapped: Array<{ selection_id: string; category: string }>;
 };
 
 export type ProjectDetailResponse = {
@@ -103,6 +118,12 @@ export const api = {
     }>("/api/stats"),
   getProject: (id: string) =>
     request<ProjectDetailResponse>(`/api/projects/${id}`),
+  syncBuilderTrend: () =>
+    request<SyncReport>("/api/admin/sync/buildertrend", {
+      method: "POST",
+      body: {},
+      admin: true,
+    }),
   importDryRun: (payload: unknown) =>
     request<ImportResult>("/api/admin/import/dry-run", {
       method: "POST",

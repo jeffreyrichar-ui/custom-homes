@@ -15,6 +15,7 @@ import { makeSelectionsRouter } from "./routes/selections.js";
 import { makeManufacturerImagesRouter } from "./routes/manufacturerImages.js";
 import { makePdfsRouter, pdfServeConfig } from "./routes/pdfs.js";
 import { makeAuthRouter } from "./routes/auth.js";
+import { makeSyncRouter } from "./routes/sync.js";
 import { makeAuthMiddleware } from "./middleware/auth.js";
 import { defaultLocalStorage } from "./services/imageStorage.js";
 import { makeScrapeQueue } from "./services/scrapeQueue.js";
@@ -55,6 +56,9 @@ export async function buildApp() {
   app.use("/api/stats", authMiddleware, makeStatsRouter(getDbi));
 
   // Auth-gated write endpoints (replaces former x-admin-token; legacy token still accepted)
+  // Specific mount first so /api/admin/sync/* never falls through the
+  // import router's 404 handling.
+  app.use("/api/admin/sync", authMiddleware, makeSyncRouter(getDbi));
   app.use("/api/admin", authMiddleware, makeAdminImportRouter(getDbi));
   app.use("/api/selections", authMiddleware, makeSelectionsRouter(getDbi, scrapeQueue));
   app.use(

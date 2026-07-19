@@ -13,13 +13,16 @@ export function makeProjectsRouter(getDbi: () => Dbi): Router {
         name: string;
         address: string | null;
         created_at: string;
+        external_source: string | null;
+        synced_at: string | null;
         room_count: number | string;
       }>(
         `SELECT p.id, p.name, p.address, p.created_at,
+                p.external_source, p.synced_at,
                 COUNT(r.id) AS room_count
          FROM projects p
          LEFT JOIN rooms r ON r.project_id = p.id
-         GROUP BY p.id, p.name, p.address, p.created_at
+         GROUP BY p.id, p.name, p.address, p.created_at, p.external_source, p.synced_at
          ORDER BY p.created_at DESC`,
       );
 
@@ -77,6 +80,8 @@ export function makeProjectsRouter(getDbi: () => Dbi): Router {
           room_count: Number(r.room_count),
           entry_count: entryCountByProject.get(r.id) ?? 0,
           top_brand: topBrandByProject.get(r.id) ?? null,
+          external_source: r.external_source,
+          synced_at: r.synced_at,
         })),
       });
     } catch (err) {
