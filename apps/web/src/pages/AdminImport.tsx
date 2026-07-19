@@ -29,7 +29,7 @@ export function AdminImport() {
 
   useEffect(() => {
     if (!token) {
-      const entered = window.prompt("Enter ADMIN_TOKEN (matches your server's .env)");
+      const entered = window.prompt("Enter the admin password (ask Todd if you don't have it)");
       if (entered) { setAdminToken(entered); setToken(entered); }
     }
   }, [token]);

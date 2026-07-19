@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { TAMARA_PATTERN_OPTIONS, type TradeKind, humanizeToken } from "@custom-homes/shared";
 import { api } from "../lib/api.js";
 import { AutoComplete, type Suggestion } from "./AutoComplete.js";
@@ -20,12 +20,16 @@ type FieldDef = {
   kind: FieldKind;
   required?: boolean;
   options?: string[];
+  /** Tiny helper line under the label. */
+  hint?: string;
 };
 
 const TRADE_FIELDS: Record<TradeKind, FieldDef[]> = {
   tile: [
-    { key: "vendor", label: "Vendor", kind: "ac-vendor" },
-    { key: "brand", label: "Brand", kind: "ac-brand", required: true },
+    // Brand first — designers type "Daltile" before the vendor. Display order
+    // only; payload keys and suggest fetchers are keyed, not positional.
+    { key: "brand", label: "Brand", kind: "ac-brand", required: true, hint: "Who makes it" },
+    { key: "vendor", label: "Vendor", kind: "ac-vendor", hint: "Where you buy it" },
     { key: "style", label: "Style", kind: "ac-style" },
     { key: "color", label: "Color", kind: "ac-color" },
     { key: "sku", label: "SKU", kind: "ac-sku" },
@@ -135,6 +139,8 @@ type Props = {
 
 export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
   const fields = TRADE_FIELDS[trade];
+  // useId emits colons (":r0:"), invalid in CSS selectors — strip for DOM ids.
+  const fieldIdBase = useId().replace(/:/g, "");
   const [values, setValues] = useState<Record<string, string>>(() => {
     const v: Record<string, string> = {};
     for (const f of fields) {
@@ -370,14 +376,16 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
   const renderField = (f: FieldDef) => {
     const set = (v: string) => setValues((vv) => ({ ...vv, [f.key]: v }));
     const v = values[f.key] ?? "";
+    const fieldId = `tf-${fieldIdBase}-${f.key}`;
     if (f.kind === "select") {
       return (
         <div className="ac-wrapper" key={f.key}>
-          <label className="ac-label">
+          <label className="ac-label" htmlFor={fieldId}>
             {f.label}
             {f.required && <span className="ac-required">*</span>}
           </label>
-          <select className="ac-input" value={v} onChange={(e) => set(e.target.value)}>
+          {f.hint && <span className="muted">{f.hint}</span>}
+          <select id={fieldId} className="ac-input" value={v} onChange={(e) => set(e.target.value)}>
             {(f.options ?? []).map((opt) => (
               <option key={opt} value={opt}>
                 {opt
@@ -396,6 +404,7 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
         <div key={f.key}>
           <AutoComplete
             label={f.label}
+            hint={f.hint}
             required={f.required}
             value={v}
             onChange={set}
@@ -411,6 +420,7 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
         <div key={f.key}>
           <AutoComplete
             label={f.label}
+            hint={f.hint}
             required={f.required}
             value={v}
             onChange={set}
@@ -426,6 +436,7 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
         <div key={f.key}>
           <AutoComplete
             label={f.label}
+            hint={f.hint}
             required={f.required}
             value={v}
             onChange={set}
@@ -441,6 +452,7 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
         <div key={f.key}>
           <AutoComplete
             label={f.label}
+            hint={f.hint}
             required={f.required}
             value={v}
             onChange={set}
@@ -457,6 +469,7 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
         <div key={f.key}>
           <AutoComplete
             label={f.label}
+            hint={f.hint}
             required={f.required}
             value={v}
             onChange={set}
@@ -485,11 +498,12 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
     }
     return (
       <div className="ac-wrapper" key={f.key}>
-        <label className="ac-label">
+        <label className="ac-label" htmlFor={fieldId}>
           {f.label}
           {f.required && <span className="ac-required">*</span>}
         </label>
-        <input className="ac-input" value={v} onChange={(e) => set(e.target.value)} />
+        {f.hint && <span className="muted">{f.hint}</span>}
+        <input id={fieldId} className="ac-input" value={v} onChange={(e) => set(e.target.value)} />
         {renderCompletionHint(f.key)}
       </div>
     );
