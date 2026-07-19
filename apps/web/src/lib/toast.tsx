@@ -18,9 +18,11 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const notify = useCallback((kind: Toast["kind"], message: string) => {
     const id = Math.random().toString(36).slice(2);
     setToasts((t) => [...t, { id, kind, message }]);
+    // Errors linger long enough to read calmly; confirmations clear sooner.
+    const duration = kind === "error" ? 8000 : 3600;
     setTimeout(() => {
       setToasts((t) => t.filter((x) => x.id !== id));
-    }, 3200);
+    }, duration);
   }, []);
 
   return (

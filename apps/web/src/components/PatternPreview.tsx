@@ -1,3 +1,4 @@
+import { useId } from "react";
 import {
   detectShape,
   detectAspect,
@@ -33,10 +34,15 @@ const NAMED_GROUT_COLORS: Record<string, string> = {
   "urban putty": "#a8a298",
   "bright white": "#ffffff",
   "tobacco brown": "#5a4a36",
-  "rolling fog": "#b0b3b0",
+  "rolling fog": "#b3b1aa",
   "natural gray": "#9a9a9a",
   "oyster gray": "#a39e92",
   "sable brown": "#6b5240",
+  "new taupe": "#ab9d8c",
+  shadow: "#77736b",
+  linen: "#ded5c2",
+  // Seed-data spelling of "Linen" — kept verbatim so those entries resolve.
+  linene: "#ded5c2",
   "ash": "#9a958a",
   "bone": "#d6cbb8",
   charcoal: "#4a4a4a",
@@ -67,8 +73,22 @@ export function PatternPreview({
     forcedShape ?? detectShape({ style, color, notes, pattern });
   const groutFill = resolveGroutFill(groutColor);
   const placeholderFill = "#d8d2c4";
+  // SVG ids are document-global; a selections page mounts many previews at
+  // once, so clipPath ids must be unique per instance or images cross-clip.
+  // Mirrors the uid prefix in the server PDF renderer.
+  const uid = `${useId().replace(/:/g, "")}-`;
 
-  if (detectedShape === "penny round" || detectedShape === "mosaic" || detectedShape === "palladiana mosaic") {
+  if (detectedShape === "palladiana mosaic") {
+    return renderPalladiana({
+      imageUrl,
+      groutFill,
+      placeholderFill,
+      cols: cols + 1,
+      rows: rows + 1,
+      uid,
+    });
+  }
+  if (detectedShape === "penny round" || detectedShape === "mosaic") {
     return renderCircles({
       imageUrl,
       groutFill,
@@ -76,6 +96,7 @@ export function PatternPreview({
       cols: cols + 2,
       rows: rows + 2,
       tileWidth: tileWidth / 2,
+      uid,
     });
   }
   if (detectedShape === "hexagon") {
@@ -86,6 +107,7 @@ export function PatternPreview({
       cols: cols + 1,
       rows: rows + 1,
       size: tileWidth / 2,
+      uid,
     });
   }
   if (detectedShape === "picket") {
@@ -96,6 +118,7 @@ export function PatternPreview({
       cols,
       rows: rows + 2,
       tileWidth,
+      uid,
     });
   }
 
@@ -105,9 +128,9 @@ export function PatternPreview({
 
   switch (mode) {
     case "herringbone":
-      return renderHerringbone({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect });
+      return renderHerringbone({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect, uid });
     case "checkerboard-on-point":
-      return renderCheckerboardOnPoint({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth });
+      return renderCheckerboardOnPoint({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, uid });
     case "parquet":
       return renderParquet({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth });
     case "lattice":
@@ -116,6 +139,8 @@ export function PatternPreview({
       return renderStripesVertical({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect });
     case "random":
       return renderRandomRotation({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect });
+    case "alternating-rows":
+      return renderAlternatingRows({ imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect });
     default:
       return renderRectangleGrid({
         imageUrl,
@@ -133,6 +158,115 @@ export function PatternPreview({
 
 // ----- shape renderers -----
 
+/**
+ * Deterministic integer hash for palladiana jitter — web preview and PDF
+ * must produce the identical layout, so no Math.random. Mirrors shardHash
+ * in the server PDF renderer.
+ */
+function shardHash(i: number, j: number): number {
+  let h = (i * 374761393 + j * 668265263) | 0;
+  h = ((h ^ (h >>> 13)) * 1274126177) | 0;
+  return (h ^ (h >>> 16)) >>> 0;
+}
+
+function renderPalladiana(opts: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+  uid: string;
+}) {
+  const { imageUrl, groutFill, placeholderFill, cols, rows, uid } = opts;
+  // Palladiana / crazy paving — irregular broken-marble shards. A lattice of
+  // deterministically jittered points; each cell becomes a shard (about a
+  // third split into triangle pairs for variety), shrunk toward its centroid
+  // so the grout shows between shards. Mirrors renderPalladianaSvg in the
+  // server PDF renderer.
+  const cell = 56;
+  const jitter = 0.55;
+  const shrink = 0.9;
+  const totalW = cols * cell;
+  const totalH = rows * cell;
+  const pt = (i: number, j: number): [number, number] => {
+    const h = shardHash(i, j);
+    const dx = ((h & 0xff) / 255 - 0.5) * cell * jitter;
+    const dy = (((h >>> 8) & 0xff) / 255 - 0.5) * cell * jitter;
+    return [i * cell + dx, j * cell + dy];
+  };
+  const tiles: React.ReactElement[] = [];
+  let n = 0;
+  const pushShard = (poly: Array<[number, number]>) => {
+    const cx = poly.reduce((s, p) => s + p[0], 0) / poly.length;
+    const cy = poly.reduce((s, p) => s + p[1], 0) / poly.length;
+    const pts = poly
+      .map(([x, y]) => `${(cx + (x - cx) * shrink).toFixed(1)},${(cy + (y - cy) * shrink).toFixed(1)}`)
+      .join(" ");
+    const id = `${uid}pl-${n++}`;
+    if (imageUrl) {
+      const xs = poly.map((p) => p[0]);
+      const ys = poly.map((p) => p[1]);
+      const bx = Math.min(...xs);
+      const by = Math.min(...ys);
+      const bw = Math.max(...xs) - bx;
+      const bh = Math.max(...ys) - by;
+      tiles.push(
+        <g key={id}>
+          {/* Placeholder underlay so a failed image load still shows a shard. */}
+          <polygon points={pts} fill={placeholderFill} />
+          <defs>
+            <clipPath id={id}>
+              <polygon points={pts} />
+            </clipPath>
+          </defs>
+          <image
+            href={imageUrl}
+            x={bx}
+            y={by}
+            width={bw}
+            height={bh}
+            clipPath={`url(#${id})`}
+            preserveAspectRatio="xMidYMid slice"
+          />
+        </g>,
+      );
+    } else {
+      tiles.push(<polygon key={id} points={pts} fill={placeholderFill} />);
+    }
+  };
+  // One ring of shards beyond the frame so the crop never shows ragged edges.
+  for (let j = -1; j <= rows; j++) {
+    for (let i = -1; i <= cols; i++) {
+      const a = pt(i, j);
+      const b = pt(i + 1, j);
+      const c = pt(i + 1, j + 1);
+      const d = pt(i, j + 1);
+      const h = shardHash(i * 3 + 1, j * 7 + 2);
+      if (h % 3 === 0) {
+        if ((h >>> 2) & 1) {
+          pushShard([a, b, c]);
+          pushShard([a, c, d]);
+        } else {
+          pushShard([a, b, d]);
+          pushShard([b, c, d]);
+        }
+      } else {
+        pushShard([a, b, c, d]);
+      }
+    }
+  }
+  return (
+    <svg
+      viewBox={`0 0 ${totalW} ${totalH}`}
+      className="pattern-preview"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <rect x={-cell} y={-cell} width={totalW + 2 * cell} height={totalH + 2 * cell} fill={groutFill} />
+      {tiles}
+    </svg>
+  );
+}
+
 function renderCircles(opts: {
   imageUrl?: string | null;
   groutFill: string;
@@ -140,8 +274,9 @@ function renderCircles(opts: {
   cols: number;
   rows: number;
   tileWidth: number;
+  uid: string;
 }) {
-  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth } = opts;
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, uid } = opts;
   const r = tileWidth / 2;
   const gap = 2;
   const dx = 2 * r + gap;
@@ -156,9 +291,11 @@ function renderCircles(opts: {
       const cx = c * dx + r + offsetX;
       const cy = row * dy + r;
       if (imageUrl) {
-        const id = `clip-${row}-${c}`;
+        const id = `${uid}clip-${row}-${c}`;
         circles.push(
           <g key={`${row}-${c}`}>
+            {/* Placeholder underlay so a failed image load still shows the tile. */}
+            <circle cx={cx} cy={cy} r={r} fill={placeholderFill} />
             <defs>
               <clipPath id={id}>
                 <circle cx={cx} cy={cy} r={r} />
@@ -201,8 +338,9 @@ function renderHexagons(opts: {
   cols: number;
   rows: number;
   size: number;
+  uid: string;
 }) {
-  const { imageUrl, groutFill, placeholderFill, cols, rows, size } = opts;
+  const { imageUrl, groutFill, placeholderFill, cols, rows, size, uid } = opts;
   // Flat-top hex packing
   const w = size * 2;
   const h = size * Math.sqrt(3);
@@ -212,6 +350,11 @@ function renderHexagons(opts: {
   const totalH = rows * dy + h;
 
   const hexes: React.ReactElement[] = [];
+  // Hexagons tessellate flush at exact packing — draw each slightly smaller
+  // so a grout seam shows between neighbors. Proportional inset (not an
+  // absolute pixel amount) so the PDF renderer's smaller hexes get the same
+  // relative seam. Mirrors the server renderer.
+  const drawSize = size * 0.9625;
   for (let row = 0; row < rows; row++) {
     for (let c = 0; c < cols; c++) {
       const cx = c * dx + size;
@@ -219,13 +362,15 @@ function renderHexagons(opts: {
       const points = [0, 1, 2, 3, 4, 5]
         .map((i) => {
           const angle = (Math.PI / 3) * i;
-          return `${cx + size * Math.cos(angle)},${cy + size * Math.sin(angle)}`;
+          return `${cx + drawSize * Math.cos(angle)},${cy + drawSize * Math.sin(angle)}`;
         })
         .join(" ");
-      const id = `hex-${row}-${c}`;
+      const id = `${uid}hex-${row}-${c}`;
       if (imageUrl) {
         hexes.push(
           <g key={`${row}-${c}`}>
+            {/* Placeholder underlay so a failed image load still shows the tile. */}
+            <polygon points={points} fill={placeholderFill} />
             <defs>
               <clipPath id={id}>
                 <polygon points={points} />
@@ -266,8 +411,9 @@ function renderPicket(opts: {
   cols: number;
   rows: number;
   tileWidth: number;
+  uid: string;
 }) {
-  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth } = opts;
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, uid } = opts;
   const w = tileWidth;
   const h = tileWidth * 2;
   const gap = 2;
@@ -291,10 +437,12 @@ function renderPicket(opts: {
         `${x},${y + (h * 3) / 4}`,
         `${x},${y + h / 4}`,
       ].join(" ");
-      const id = `pick-${row}-${c}`;
+      const id = `${uid}pick-${row}-${c}`;
       if (imageUrl) {
         tiles.push(
           <g key={`${row}-${c}`}>
+            {/* Placeholder underlay so a failed image load still shows the tile. */}
+            <polygon points={points} fill={placeholderFill} />
             <defs>
               <clipPath id={id}>
                 <polygon points={points} />
@@ -336,58 +484,69 @@ function renderHerringbone(opts: {
   rows: number;
   tileWidth: number;
   aspect: number;
+  uid: string;
 }) {
-  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect } = opts;
-  // Each grid cell holds one rotated rectangle. Alternating ±45° per cell
-  // forms the classic single-weave herringbone — adjacent tiles meet at L-joints.
-  const tileW = tileWidth;
-  const tileH = tileWidth / aspect;
-  const cellSize = Math.max(tileW, tileH) * 0.75;
-  // Half-cell padding around the grid so corners of rotated tiles don't clip.
-  const pad = cellSize / 2;
-  const totalW = cols * cellSize + 2 * pad;
-  const totalH = rows * cellSize + 2 * pad;
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, uid } = opts;
+  void tileWidth;
+  void opts.aspect;
+  // True 2:1 domino herringbone, mirroring renderHerringboneSvg in the
+  // server PDF renderer. The plane is tiled by an H tile [0,2S]x[0,S] and
+  // its V partner [2S,3S]x[-S,S] repeated at every lattice translation
+  // (p+3q, p-q)·S — each tile's end abuts the side of its perpendicular
+  // neighbor, forming the interlocking L-joints. The whole field is rotated
+  // 45° for the classic point-up look Tamara's "1/2 x 1 herringbone"
+  // describes. The 2:1 ratio is inherent to the pattern, so the detected
+  // tile aspect is deliberately ignored.
+  const S = 26;
+  const inset = 1;
+  const totalW = cols * S * 1.6;
+  const totalH = rows * S * 1.6;
+  const cx = totalW / 2;
+  const cy = totalH / 2;
+  const reach = Math.ceil((totalW + totalH) / (2 * S)) + 2;
+  const radius = Math.sqrt(totalW * totalW + totalH * totalH) / 2 + 3 * S;
 
   const tiles: React.ReactElement[] = [];
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const cx = pad + c * cellSize + cellSize / 2;
-      const cy = pad + r * cellSize + cellSize / 2;
-      const angle = (r + c) % 2 === 0 ? 45 : -45;
-      const x = cx - tileW / 2;
-      const y = cy - tileH / 2;
-      const id = `hb-${r}-${c}`;
-      if (imageUrl) {
-        tiles.push(
-          <g key={`${r}-${c}`} transform={`rotate(${angle} ${cx} ${cy})`}>
-            <defs>
-              <clipPath id={id}>
-                <rect x={x} y={y} width={tileW} height={tileH} />
-              </clipPath>
-            </defs>
-            <image
-              href={imageUrl}
-              x={x}
-              y={y}
-              width={tileW}
-              height={tileH}
-              clipPath={`url(#${id})`}
-              preserveAspectRatio="xMidYMid slice"
-            />
-          </g>,
-        );
-      } else {
-        tiles.push(
-          <rect
-            key={`${r}-${c}`}
-            x={x}
-            y={y}
-            width={tileW}
-            height={tileH}
-            fill={placeholderFill}
-            transform={`rotate(${angle} ${cx} ${cy})`}
-          />,
-        );
+  let n = 0;
+  for (let p = -reach; p <= reach; p++) {
+    for (let q = -reach; q <= reach; q++) {
+      const ox = cx + (p + 3 * q) * S;
+      const oy = cy + (p - q) * S;
+      const dx = ox - cx;
+      const dy = oy - cy;
+      if (dx * dx + dy * dy > radius * radius) continue;
+      const rects = [
+        { x: ox + inset, y: oy + inset, w: 2 * S - 2 * inset, h: S - 2 * inset },
+        { x: ox + 2 * S + inset, y: oy - S + inset, w: S - 2 * inset, h: 2 * S - 2 * inset },
+      ];
+      for (const rct of rects) {
+        const id = `${uid}hb-${n++}`;
+        if (imageUrl) {
+          tiles.push(
+            <g key={id}>
+              {/* Placeholder underlay so a failed image load still shows the tile. */}
+              <rect x={rct.x} y={rct.y} width={rct.w} height={rct.h} fill={placeholderFill} />
+              <defs>
+                <clipPath id={id}>
+                  <rect x={rct.x} y={rct.y} width={rct.w} height={rct.h} />
+                </clipPath>
+              </defs>
+              <image
+                href={imageUrl}
+                x={rct.x}
+                y={rct.y}
+                width={rct.w}
+                height={rct.h}
+                clipPath={`url(#${id})`}
+                preserveAspectRatio="xMidYMid slice"
+              />
+            </g>,
+          );
+        } else {
+          tiles.push(
+            <rect key={id} x={rct.x} y={rct.y} width={rct.w} height={rct.h} fill={placeholderFill} />,
+          );
+        }
       }
     }
   }
@@ -398,7 +557,7 @@ function renderHerringbone(opts: {
       preserveAspectRatio="xMidYMid meet"
     >
       <rect x={0} y={0} width={totalW} height={totalH} fill={groutFill} />
-      {tiles}
+      <g transform={`rotate(45 ${cx} ${cy})`}>{tiles}</g>
     </svg>
   );
 }
@@ -410,42 +569,54 @@ function renderCheckerboardOnPoint(opts: {
   cols: number;
   rows: number;
   tileWidth: number;
+  uid: string;
 }) {
-  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth } = opts;
-  // "On point" = squares rotated 45° (diamonds). Alternate cells get a
-  // translucent grout-color tint to fake the classic two-tone contrast.
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, uid } = opts;
+  // A chessboard rotated 45°. Diamond centers within a row sit one full
+  // diagonal apart (touching at left/right points); each successive row
+  // drops half a diagonal and shifts half a diagonal, filling the gaps.
+  // Rotating a chessboard 45° makes its diagonals horizontal, and diagonals
+  // are monochrome — so the dim tint alternates BY ROW, giving every
+  // diamond four opposite-color edge neighbors. Mirrors
+  // renderCheckerboardOnPointSvg in the server PDF renderer.
   const side = tileWidth;
   const diag = side * Math.SQRT2;
-  const step = diag / 2;
-  const pad = step;
-  const totalW = cols * step + 2 * pad;
-  const totalH = rows * step + 2 * pad;
+  const half = diag / 2;
+  const pad = half;
+  const dcols = Math.max(2, Math.ceil(cols / 2));
+  const drows = rows * 2;
+  const totalW = dcols * diag + 2 * pad;
+  const totalH = drows * half + 2 * pad;
+  // Inset each drawn square slightly so a grout seam shows between diamonds.
+  const inset = 1.5;
+  const drawSide = side - 2 * inset;
 
   const tiles: React.ReactElement[] = [];
-  for (let r = 0; r < rows + 1; r++) {
-    for (let c = 0; c < cols + 1; c++) {
-      const cx = pad + c * step;
-      const cy = pad + r * step;
-      // Offset every other row by half-step → diamond tessellation.
-      const ox = r % 2 === 1 ? step : 0;
-      const x = cx + ox - side / 2;
-      const y = cy - side / 2;
-      const dimmed = (r + c) % 2 === 1;
-      const id = `cob-${r}-${c}`;
+  for (let r = 0; r <= drows; r++) {
+    const rowShift = r % 2 === 1 ? half : 0;
+    const dimmed = r % 2 === 1;
+    for (let c = 0; c <= dcols; c++) {
+      const ccx = pad + c * diag + rowShift;
+      const ccy = pad + r * half;
+      const x = ccx - drawSide / 2;
+      const y = ccy - drawSide / 2;
+      const id = `${uid}cob-${r}-${c}`;
       if (imageUrl) {
         tiles.push(
-          <g key={`img-${r}-${c}`} transform={`rotate(45 ${x + side / 2} ${y + side / 2})`}>
+          <g key={`img-${r}-${c}`} transform={`rotate(45 ${ccx} ${ccy})`}>
+            {/* Placeholder underlay so a failed image load still shows the tile. */}
+            <rect x={x} y={y} width={drawSide} height={drawSide} fill={placeholderFill} />
             <defs>
               <clipPath id={id}>
-                <rect x={x} y={y} width={side} height={side} />
+                <rect x={x} y={y} width={drawSide} height={drawSide} />
               </clipPath>
             </defs>
             <image
               href={imageUrl}
               x={x}
               y={y}
-              width={side}
-              height={side}
+              width={drawSide}
+              height={drawSide}
               clipPath={`url(#${id})`}
               preserveAspectRatio="xMidYMid slice"
             />
@@ -453,8 +624,8 @@ function renderCheckerboardOnPoint(opts: {
               <rect
                 x={x}
                 y={y}
-                width={side}
-                height={side}
+                width={drawSide}
+                height={drawSide}
                 fill={groutFill}
                 opacity={0.45}
               />
@@ -467,10 +638,10 @@ function renderCheckerboardOnPoint(opts: {
             key={`bg-${r}-${c}`}
             x={x}
             y={y}
-            width={side}
-            height={side}
+            width={drawSide}
+            height={drawSide}
             fill={dimmed ? groutFill : placeholderFill}
-            transform={`rotate(45 ${x + side / 2} ${y + side / 2})`}
+            transform={`rotate(45 ${ccx} ${ccy})`}
           />,
         );
       }
@@ -498,11 +669,13 @@ function renderParquet(opts: {
 }) {
   const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth } = opts;
   // Tamara's "4 vertical + 4 horizontal" — square parquet blocks of 4 tiles,
-  // alternating block orientation in a checkerboard arrangement.
+  // alternating block orientation in a checkerboard arrangement. Grout seams
+  // between the four strips of a block; flush strips render as one solid
+  // square. Mirrors renderParquetSvg in the server PDF renderer.
   const tileLong = tileWidth;
-  const tileShort = tileWidth / 4;
   const block = tileLong; // square block side = 4 short × 1 long
   const groutWidth = 2;
+  const stripShort = (tileLong - 3 * groutWidth) / 4;
   const bcols = Math.max(2, Math.ceil(cols / 2));
   const brows = Math.max(2, Math.ceil(rows / 2));
   const totalW = bcols * block + groutWidth * (bcols + 1);
@@ -515,21 +688,25 @@ function renderParquet(opts: {
       const y0 = br * block + groutWidth * (br + 1);
       const vertical = (br + bc) % 2 === 0; // alternate block orientation
       for (let i = 0; i < 4; i++) {
-        const x = vertical ? x0 + i * tileShort : x0;
-        const y = vertical ? y0 : y0 + i * tileShort;
-        const w = vertical ? tileShort : tileLong;
-        const h = vertical ? tileLong : tileShort;
+        const step = i * (stripShort + groutWidth);
+        const x = vertical ? x0 + step : x0;
+        const y = vertical ? y0 : y0 + step;
+        const w = vertical ? stripShort : tileLong;
+        const h = vertical ? tileLong : stripShort;
         if (imageUrl) {
           tiles.push(
-            <image
-              key={`p-${br}-${bc}-${i}`}
-              href={imageUrl}
-              x={x}
-              y={y}
-              width={w}
-              height={h}
-              preserveAspectRatio="xMidYMid slice"
-            />,
+            <g key={`p-${br}-${bc}-${i}`}>
+              {/* Placeholder underlay so a failed image load still shows the tile. */}
+              <rect x={x} y={y} width={w} height={h} fill={placeholderFill} />
+              <image
+                href={imageUrl}
+                x={x}
+                y={y}
+                width={w}
+                height={h}
+                preserveAspectRatio="xMidYMid slice"
+              />
+            </g>,
           );
         } else {
           tiles.push(
@@ -560,12 +737,15 @@ function renderLattice(opts: {
   tileWidth: number;
 }) {
   const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth } = opts;
-  // Basket weave — pairs of vertical strips interlocking with pairs of
-  // horizontal strips. Repeat unit is a 2x2 super-cell.
+  // Basket weave — super-cells alternate between a stacked horizontal pair
+  // and a side-by-side vertical pair, separated by an internal grout seam.
+  // Drawing both pairs in one cell just paints the later pair over the
+  // earlier one, so each cell draws only its winning pair. Mirrors
+  // renderLatticeSvg in the server PDF renderer.
   const long = tileWidth;
-  const short = tileWidth / 2;
   const cell = long; // super-cell side (one weave unit)
   const groutWidth = 2;
+  const stripShort = (long - groutWidth) / 2;
   const ucols = Math.max(2, Math.ceil(cols / 2));
   const urows = Math.max(2, Math.ceil(rows / 2));
   const totalW = ucols * cell + groutWidth * (ucols + 1);
@@ -576,37 +756,32 @@ function renderLattice(opts: {
     for (let uc = 0; uc < ucols; uc++) {
       const x0 = uc * cell + groutWidth * (uc + 1);
       const y0 = ur * cell + groutWidth * (ur + 1);
-      // Alternate per super-cell: even cells = vertical pair on left,
-      // horizontal pair on right; odd cells flip.
       const flip = (ur + uc) % 2 === 1;
-      const pieces = flip
+      const pair = flip
         ? [
-            { x: x0, y: y0, w: long, h: short },
-            { x: x0, y: y0 + short, w: long, h: short },
-            { x: x0, y: y0, w: short, h: long }, // overlap not visible, but kept for structure
-            { x: x0 + short, y: y0, w: short, h: long },
+            { x: x0, y: y0, w: long, h: stripShort },
+            { x: x0, y: y0 + stripShort + groutWidth, w: long, h: stripShort },
           ]
         : [
-            { x: x0, y: y0, w: short, h: long },
-            { x: x0 + short, y: y0, w: short, h: long },
-            { x: x0, y: y0, w: long, h: short },
-            { x: x0, y: y0 + short, w: long, h: short },
+            { x: x0, y: y0, w: stripShort, h: long },
+            { x: x0 + stripShort + groutWidth, y: y0, w: stripShort, h: long },
           ];
-      // First two pieces are the "under" strips; last two are the "over" pair.
-      const visible = flip ? pieces.slice(0, 2).concat(pieces.slice(2)) : pieces.slice(2).concat(pieces.slice(0, 2));
-      for (let i = 0; i < 4; i++) {
-        const p = visible[i]!;
+      for (let i = 0; i < pair.length; i++) {
+        const p = pair[i]!;
         if (imageUrl) {
           tiles.push(
-            <image
-              key={`l-${ur}-${uc}-${i}`}
-              href={imageUrl}
-              x={p.x}
-              y={p.y}
-              width={p.w}
-              height={p.h}
-              preserveAspectRatio="xMidYMid slice"
-            />,
+            <g key={`l-${ur}-${uc}-${i}`}>
+              {/* Placeholder underlay so a failed image load still shows the tile. */}
+              <rect x={p.x} y={p.y} width={p.w} height={p.h} fill={placeholderFill} />
+              <image
+                href={imageUrl}
+                x={p.x}
+                y={p.y}
+                width={p.w}
+                height={p.h}
+                preserveAspectRatio="xMidYMid slice"
+              />
+            </g>,
           );
         } else {
           tiles.push(
@@ -661,15 +836,18 @@ function renderStripesVertical(opts: {
       const darker = c % 2 === 1;
       if (imageUrl) {
         tiles.push(
-          <image
-            key={`img-${r}-${c}`}
-            href={imageUrl}
-            x={x}
-            y={y}
-            width={tileW}
-            height={tileH}
-            preserveAspectRatio="xMidYMid slice"
-          />,
+          <g key={`img-${r}-${c}`}>
+            {/* Placeholder underlay so a failed image load still shows the tile. */}
+            <rect x={x} y={y} width={tileW} height={tileH} fill={placeholderFill} />
+            <image
+              href={imageUrl}
+              x={x}
+              y={y}
+              width={tileW}
+              height={tileH}
+              preserveAspectRatio="xMidYMid slice"
+            />
+          </g>,
         );
         if (darker) {
           tiles.push(
@@ -722,8 +900,9 @@ function renderRandomRotation(opts: {
   const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect } = opts;
   // "6x6 set random, all vertical" — same square-ish tile per cell, but each
   // cell is rotated by one of {0, 90, 180, 270}° based on a deterministic
-  // pseudo-random seed so layouts are reproducible.
-  const side = Math.min(tileWidth, tileWidth / aspect) * 1.1;
+  // pseudo-random seed so layouts are reproducible. Tiles sit exactly on the
+  // cell pitch — oversizing them erases the grout between neighbors.
+  const side = Math.min(tileWidth, tileWidth / aspect);
   const groutWidth = 2;
   const totalW = cols * side + groutWidth * (cols + 1);
   const totalH = rows * side + groutWidth * (rows + 1);
@@ -741,16 +920,19 @@ function renderRandomRotation(opts: {
       const cy = y + side / 2;
       if (imageUrl) {
         tiles.push(
-          <image
-            key={`r-${r}-${c}`}
-            href={imageUrl}
-            x={x}
-            y={y}
-            width={side}
-            height={side}
-            transform={`rotate(${rot} ${cx} ${cy})`}
-            preserveAspectRatio="xMidYMid slice"
-          />,
+          <g key={`r-${r}-${c}`}>
+            {/* Placeholder underlay so a failed image load still shows the tile. */}
+            <rect x={x} y={y} width={side} height={side} fill={placeholderFill} />
+            <image
+              href={imageUrl}
+              x={x}
+              y={y}
+              width={side}
+              height={side}
+              transform={`rotate(${rot} ${cx} ${cy})`}
+              preserveAspectRatio="xMidYMid slice"
+            />
+          </g>,
         );
       } else {
         tiles.push(
@@ -766,6 +948,83 @@ function renderRandomRotation(opts: {
         );
       }
     }
+  }
+  return (
+    <svg
+      viewBox={`0 0 ${totalW} ${totalH}`}
+      className="pattern-preview"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <rect x={0} y={0} width={totalW} height={totalH} fill={groutFill} />
+      {tiles}
+    </svg>
+  );
+}
+
+function renderAlternatingRows(opts: {
+  imageUrl?: string | null;
+  groutFill: string;
+  placeholderFill: string;
+  cols: number;
+  rows: number;
+  tileWidth: number;
+  aspect: number;
+}) {
+  const { imageUrl, groutFill, placeholderFill, cols, rows, tileWidth, aspect } = opts;
+  // Tamara's "one row X + one row Y repeat" — courses alternate orientation:
+  // even courses are landscape tiles, odd courses portrait. Portrait courses
+  // are taller (tile long side vertical), so course heights differ and y is
+  // accumulated per course rather than derived from a fixed row pitch.
+  // Mirrors renderAlternatingRowsSvg in the server PDF renderer.
+  const landW = tileWidth;
+  const landH = tileWidth / aspect;
+  const portW = tileWidth / aspect;
+  const portH = tileWidth;
+  const groutWidth = 2;
+  const totalW = cols * landW + groutWidth * (cols + 1);
+  // Portrait courses need more (narrower) tiles across to fill totalW.
+  const portCols = Math.ceil(cols * aspect);
+  const landRows = Math.ceil(rows / 2);
+  const portRows = Math.floor(rows / 2);
+  const totalH = landRows * landH + portRows * portH + groutWidth * (rows + 1);
+
+  const tiles: React.ReactElement[] = [];
+  const pushTile = (key: string, x: number, y: number, w: number, h: number) => {
+    if (w < 1 || h < 1) return;
+    tiles.push(
+      imageUrl ? (
+        <g key={key}>
+          {/* Placeholder underlay so a failed image load still shows the tile. */}
+          <rect x={x} y={y} width={w} height={h} fill={placeholderFill} />
+          <image
+            href={imageUrl}
+            x={x}
+            y={y}
+            width={w}
+            height={h}
+            preserveAspectRatio="xMidYMid slice"
+          />
+        </g>
+      ) : (
+        <rect key={key} x={x} y={y} width={w} height={h} fill={placeholderFill} />
+      ),
+    );
+  };
+  let y = groutWidth;
+  for (let r = 0; r < rows; r++) {
+    const portrait = r % 2 === 1;
+    const tileW = portrait ? portW : landW;
+    const tileH = portrait ? portH : landH;
+    const rowCols = portrait ? portCols : cols;
+    for (let c = 0; c < rowCols; c++) {
+      const x = c * tileW + groutWidth * (c + 1);
+      if (x >= totalW) continue;
+      // Portrait courses overshoot totalW — clip the last tile like
+      // renderRectangleGrid.
+      const cw = Math.min(tileW, totalW - x - groutWidth);
+      pushTile(`${r}-${c}`, x, y, cw, tileH);
+    }
+    y += tileH + groutWidth;
   }
   return (
     <svg
@@ -803,37 +1062,49 @@ function renderRectangleGrid(opts: {
   const totalH = rows * tileH + groutWidth * (rows + 1);
 
   const tiles: React.ReactElement[] = [];
+  const pushTile = (key: string, x: number, y: number, w: number, h: number) => {
+    if (w < 1 || h < 1) return;
+    tiles.push(
+      imageUrl ? (
+        <g key={key}>
+          {/* Placeholder underlay so a failed image load still shows the tile. */}
+          <rect x={x} y={y} width={w} height={h} fill={placeholderFill} />
+          <image
+            href={imageUrl}
+            x={x}
+            y={y}
+            width={w}
+            height={h}
+            preserveAspectRatio="xMidYMid slice"
+          />
+        </g>
+      ) : (
+        <rect key={key} x={x} y={y} width={w} height={h} fill={placeholderFill} />
+      ),
+    );
+  };
   for (let r = 0; r < rows; r++) {
     const rowOffsetX = (mode === "staggered-horizontal" || mode === "30-70") ? (r % 2) * offsetX : 0;
+    // Offset rows start with a cut tile filling the leading gap, the way a
+    // real running-bond course starts against a wall. Mirrors the server
+    // renderer.
+    if (rowOffsetX > 0) {
+      const y = r * tileH + groutWidth * (r + 1);
+      pushTile(`cut-r${r}`, groutWidth, y, rowOffsetX - groutWidth, Math.min(tileH, totalH - y - groutWidth));
+    }
     for (let c = 0; c < cols; c++) {
       const colOffsetY = mode === "staggered-vertical" ? (c % 2) * offsetY : 0;
+      // Offset columns likewise get a leading cut tile at the top.
+      if (r === 0 && colOffsetY > 0) {
+        const cx = c * tileW + groutWidth * (c + 1);
+        pushTile(`cut-c${c}`, cx, groutWidth, Math.min(tileW, totalW - cx - groutWidth), colOffsetY - groutWidth);
+      }
       const x = c * tileW + groutWidth * (c + 1) + rowOffsetX;
       const y = r * tileH + groutWidth * (r + 1) + colOffsetY;
       if (x >= totalW || y >= totalH) continue;
       const clippedW = Math.min(tileW, totalW - x - groutWidth);
       const clippedH = Math.min(tileH, totalH - y - groutWidth);
-      tiles.push(
-        imageUrl ? (
-          <image
-            key={`${r}-${c}`}
-            href={imageUrl}
-            x={x}
-            y={y}
-            width={clippedW}
-            height={clippedH}
-            preserveAspectRatio="xMidYMid slice"
-          />
-        ) : (
-          <rect
-            key={`${r}-${c}`}
-            x={x}
-            y={y}
-            width={clippedW}
-            height={clippedH}
-            fill={placeholderFill}
-          />
-        ),
-      );
+      pushTile(`${r}-${c}`, x, y, clippedW, clippedH);
     }
   }
   return (

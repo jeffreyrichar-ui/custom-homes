@@ -19,3 +19,12 @@ export const ENTRY_TABLE_BY_TRADE = {
 } as const satisfies Record<TradeKind, string>;
 
 export type EntryTableName = (typeof ENTRY_TABLE_BY_TRADE)[TradeKind];
+
+/**
+ * Turn a stored snake_case token into a human label: "shower_walls" ->
+ * "Shower walls". Stored values stay snake_case; only display changes.
+ */
+export function humanizeToken(s: string): string {
+  const spaced = s.replace(/_/g, " ").trim();
+  return spaced ? spaced.charAt(0).toUpperCase() + spaced.slice(1) : spaced;
+}

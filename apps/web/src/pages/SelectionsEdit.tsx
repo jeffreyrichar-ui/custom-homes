@@ -24,6 +24,8 @@ export function SelectionsEdit() {
   const [tradePicker, setTradePicker] = useState<Record<string, TradeKind | null>>({});
   const [showAddRoom, setShowAddRoom] = useState(false);
   const [pendingRoomName, setPendingRoomName] = useState("");
+  const [duplicatingRoomId, setDuplicatingRoomId] = useState<string | null>(null);
+  const [pendingDuplicateName, setPendingDuplicateName] = useState("");
   const [editing, setEditing] = useState<EditingState>(null);
   const [viewMode, setViewMode] = useState<Record<string, "cards" | "shower">>({});
   const [renamingProject, setRenamingProject] = useState(false);
@@ -134,6 +136,30 @@ export function SelectionsEdit() {
       refresh();
       const targetRoom = rooms.find((r) => r.id === targetRoomId);
       notify("success", `Duplicated to ${targetRoom?.room_name ?? "room"}`);
+    } catch (err) {
+      notify("error", err instanceof Error ? err.message : String(err));
+    }
+  };
+
+  const handleDuplicateRoom = async (
+    e: React.FormEvent,
+    sourceRoomId: string,
+  ) => {
+    e.preventDefault();
+    const name = pendingDuplicateName.trim();
+    if (!name) return;
+    try {
+      const res = await api.duplicateRoom(id, sourceRoomId, name);
+      setDuplicatingRoomId(null);
+      setPendingDuplicateName("");
+      refresh();
+      const total = Object.values(res.copied).reduce((a, b) => a + b, 0);
+      notify(
+        "success",
+        total > 0
+          ? `Duplicated to "${name}" with ${total} ${total === 1 ? "entry" : "entries"}`
+          : `Duplicated to "${name}"`,
+      );
     } catch (err) {
       notify("error", err instanceof Error ? err.message : String(err));
     }
@@ -256,6 +282,20 @@ export function SelectionsEdit() {
 
       <PdfActions projectId={project.id} />
 
+      {rooms.length > 1 && (
+        <nav className="room-jump-nav" aria-label="Jump to room">
+          <ul>
+            {rooms.map((room) => (
+              <li key={room.id}>
+                <a href={`#room-${room.id}`} className="room-jump-pill">
+                  {room.room_name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
+
       {rooms.length === 0 && !showAddRoom && (
         <div className="empty-state-card">
           <div className="empty-state-card-icon" aria-hidden="true">
@@ -283,13 +323,26 @@ export function SelectionsEdit() {
           0,
         );
         return (
-          <div key={room.id} className="room-block">
+          <div key={room.id} id={`room-${room.id}`} className="room-block">
             <div className="room-header">
               <h2>{room.room_name}</h2>
               <div className="room-actions">
                 <span className="room-count">
                   {totalEntries} {totalEntries === 1 ? "entry" : "entries"}
                 </span>
+                {totalEntries > 0 && (
+                  <a
+                    href={api.roomPdfUrl(project.id, room.id)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="icon-link"
+                    aria-label={`Download PDF for ${room.room_name}`}
+                    title={`Download PDF for ${room.room_name}`}
+                  >
+                    <Icon name="download" />
+                    <span>PDF</span>
+                  </a>
+                )}
                 {allTileEntries.length > 1 && (
                   <button
                     type="button"
@@ -307,6 +360,7 @@ export function SelectionsEdit() {
                 {!tradePicker[room.id] && !editing && (
                   <select
                     className="ac-input"
+                    aria-label="Add trade"
                     style={{ width: "auto" }}
                     onChange={(e) => {
                       const v = e.target.value as TradeKind | "";
@@ -323,8 +377,52 @@ export function SelectionsEdit() {
                     ))}
                   </select>
                 )}
+                {duplicatingRoomId !== room.id && (
+                  <button
+                    type="button"
+                    className="link icon-link"
+                    onClick={() => {
+                      setPendingDuplicateName(`${room.room_name} copy`);
+                      setDuplicatingRoomId(room.id);
+                    }}
+                    aria-label={`Duplicate ${room.room_name}`}
+                    title="Duplicate room (copies all entries to a new room)"
+                  >
+                    <Icon name="duplicate" />
+                  </button>
+                )}
               </div>
             </div>
+
+            {duplicatingRoomId === room.id && (
+              <form
+                onSubmit={(e) => handleDuplicateRoom(e, room.id)}
+                className="add-room-form"
+              >
+                <input
+                  className="ac-input"
+                  placeholder="New room name (e.g. Powder Bath)"
+                  value={pendingDuplicateName}
+                  onChange={(e) => setPendingDuplicateName(e.target.value)}
+                  autoFocus
+                />
+                <button type="submit" className="icon-button">
+                  <Icon name="duplicate" />
+                  <span>Duplicate</span>
+                </button>
+                <button
+                  type="button"
+                  className="secondary icon-button"
+                  onClick={() => {
+                    setDuplicatingRoomId(null);
+                    setPendingDuplicateName("");
+                  }}
+                >
+                  <Icon name="x" />
+                  <span>Cancel</span>
+                </button>
+              </form>
+            )}
 
             {tradePicker[room.id] && !editing && (
               <div className="trade-form-block" ref={formScrollRef}>
@@ -355,15 +453,40 @@ export function SelectionsEdit() {
               <ShowerView room={room} />
             )}
 
-            {mode === "cards" && totalEntries === 0 && !tradePicker[room.id] && (
-              <div className="empty-state-soft">
-                <div className="empty-state-card-icon" aria-hidden="true">
-                  <Icon name="plus" size={20} />
+            {mode === "cards" && totalEntries === 0 && !tradePicker[room.id] && !editing && (
+              <div className="room-empty-state">
+                <h3>No selections yet for {room.room_name}</h3>
+                <p>Start with tile — paint and trim follow.</p>
+                <div className="room-empty-state-actions">
+                  <button
+                    type="button"
+                    className="icon-button"
+                    onClick={() =>
+                      setTradePicker((s) => ({ ...s, [room.id]: "tile" }))
+                    }
+                  >
+                    <Icon name="plus" />
+                    <span>Add tile</span>
+                  </button>
+                  <select
+                    className="ac-input"
+                    aria-label="Add trade"
+                    style={{ width: "auto" }}
+                    onChange={(e) => {
+                      const v = e.target.value as TradeKind | "";
+                      if (v) setTradePicker((s) => ({ ...s, [room.id]: v }));
+                      e.currentTarget.value = "";
+                    }}
+                    defaultValue=""
+                  >
+                    <option value="">+ Add trade…</option>
+                    {TRADE_KINDS.map((t) => (
+                      <option key={t} value={t}>
+                        {t}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <p>No selections in this room yet.</p>
-                <p className="empty-hint">
-                  Press the <strong>+ Add trade</strong> button above to start with tile.
-                </p>
               </div>
             )}
 

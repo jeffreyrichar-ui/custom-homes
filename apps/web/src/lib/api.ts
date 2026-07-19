@@ -39,12 +39,28 @@ async function request<T>(
     /* leave as null */
   }
   if (!res.ok) {
-    const message =
-      (data as { error?: string } | null)?.error ?? `HTTP ${res.status}`;
+    const body = data as
+      | { error?: string; errors?: unknown[]; summary?: unknown }
+      | null;
+    // Import endpoints return a structured ImportResult with a 4xx status
+    // when the payload is malformed — hand it to the caller so the errors
+    // panel renders, instead of collapsing to an opaque "HTTP 400".
+    if (body && Array.isArray(body.errors) && body.summary) {
+      return data as T;
+    }
+    const message = body?.error ?? `HTTP ${res.status}`;
     throw new Error(message);
   }
   return data as T;
 }
+
+export type RecentActivityItem = {
+  when: string;
+  kind: "project" | "room" | "entry";
+  label: string;
+  project_id: string;
+  project_name: string;
+};
 
 export type ProjectSummary = {
   id: string;
@@ -52,6 +68,8 @@ export type ProjectSummary = {
   address: string | null;
   created_at: string;
   room_count: number;
+  entry_count: number;
+  top_brand: string | null;
 };
 
 export type ProjectDetailResponse = {
@@ -81,6 +99,7 @@ export const api = {
       top_brands: { brand: string; count: number }[];
       top_vendors: { vendor: string; count: number }[];
       novel_entries: number;
+      recent_activity: RecentActivityItem[];
     }>("/api/stats"),
   getProject: (id: string) =>
     request<ProjectDetailResponse>(`/api/projects/${id}`),
@@ -128,6 +147,14 @@ export const api = {
     request<{ sku: string | null }>(
       `/api/suggest/sku-for-color?trade=${encodeURIComponent(trade)}&brand=${encodeURIComponent(brand)}&color=${encodeURIComponent(color)}`,
     ),
+  suggestComplete: (trade: string, partial: Record<string, string | null | undefined>) =>
+    request<{
+      suggestions: Record<string, { value: string | null; confidence: number }>;
+      candidate_count: number;
+    }>("/api/suggest/complete", {
+      method: "POST",
+      body: { trade, partial },
+    }),
 
   // Phase 2 — selections writes
   createProject: (name: string, address?: string) =>
@@ -139,6 +166,14 @@ export const api = {
     request<{ id: string; room_name: string; project_id: string }>(
       `/api/selections/projects/${projectId}/rooms`,
       { method: "POST", body: { room_name }, admin: true },
+    ),
+  duplicateRoom: (projectId: string, roomId: string, new_room_name: string) =>
+    request<{
+      room: { id: string; room_name: string; project_id: string };
+      copied: Record<string, number>;
+    }>(
+      `/api/selections/projects/${projectId}/rooms/${roomId}/duplicate`,
+      { method: "POST", body: { new_room_name }, admin: true },
     ),
   saveEntry: (roomId: string, entry: Record<string, unknown>) =>
     request<{ id: string; trade: string; is_new_entry: boolean }>(
@@ -209,6 +244,10 @@ export const api = {
       `/api/pdfs/projects/${projectId}/trade/${trade}`,
       { method: "POST", admin: true },
     ),
+  // Per-room PDF: the endpoint streams the PDF directly, so the UI opens this
+  // URL in a new tab rather than going through fetch().
+  roomPdfUrl: (projectId: string, roomId: string) =>
+    `/api/pdfs/projects/${projectId}/rooms/${roomId}`,
 
   // Phase 6 — auth
   authMe: () =>

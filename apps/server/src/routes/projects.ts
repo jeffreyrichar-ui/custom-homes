@@ -22,6 +22,52 @@ export function makeProjectsRouter(getDbi: () => Dbi): Router {
          GROUP BY p.id, p.name, p.address, p.created_at
          ORDER BY p.created_at DESC`,
       );
+
+      // Entry count per project — UNION ALL over all six trade tables
+      // joined through rooms, grouped by project. Single query, no N+1.
+      const entryTables = TRADE_KINDS.map((k) => ENTRY_TABLE_BY_TRADE[k]);
+      const entryUnionSql = entryTables
+        .map((t) => `SELECT room_id FROM ${t}`)
+        .join(" UNION ALL ");
+      const entryCountRows = await dbi.query<{
+        project_id: string;
+        n: number | string;
+      }>(
+        `SELECT r.project_id AS project_id, COUNT(*) AS n
+         FROM (${entryUnionSql}) e
+         JOIN rooms r ON r.id = e.room_id
+         GROUP BY r.project_id`,
+      );
+      const entryCountByProject = new Map<string, number>(
+        entryCountRows.map((r) => [r.project_id, Number(r.n)]),
+      );
+
+      // Top brand per project — mode of brand across tile_entries, scoped per
+      // project. Use a window-free pattern that works in both SQLite and
+      // Postgres: aggregate brand counts per project, then DISTINCT ON-style
+      // pick via correlated MAX in a wrapper. The portable form is a join on
+      // (project_id, max_count) against the per-project max.
+      const brandRows = await dbi.query<{
+        project_id: string;
+        brand: string;
+        n: number | string;
+      }>(
+        `SELECT r.project_id AS project_id, t.brand AS brand, COUNT(*) AS n
+         FROM tile_entries t
+         JOIN rooms r ON r.id = t.room_id
+         WHERE t.brand IS NOT NULL AND t.brand != ''
+         GROUP BY r.project_id, t.brand
+         ORDER BY r.project_id, n DESC, t.brand ASC`,
+      );
+      const topBrandByProject = new Map<string, string>();
+      for (const row of brandRows) {
+        // brandRows are ordered by (project_id, n DESC, brand ASC), so the
+        // first row seen per project_id is the top brand.
+        if (!topBrandByProject.has(row.project_id)) {
+          topBrandByProject.set(row.project_id, row.brand);
+        }
+      }
+
       res.json({
         projects: rows.map((r) => ({
           id: r.id,
@@ -29,6 +75,8 @@ export function makeProjectsRouter(getDbi: () => Dbi): Router {
           address: r.address,
           created_at: r.created_at,
           room_count: Number(r.room_count),
+          entry_count: entryCountByProject.get(r.id) ?? 0,
+          top_brand: topBrandByProject.get(r.id) ?? null,
         })),
       });
     } catch (err) {

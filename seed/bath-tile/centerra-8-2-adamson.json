@@ -195,15 +195,15 @@
         },
         {
           "trade": "tile",
-          "brand": "Unknown",
-          "style": "Lana ZL 07",
-          "color": null,
+          "brand": "Marazzi",
+          "style": "Zellige Neo",
+          "color": "Lana ZL 07",
           "sku": null,
           "grout_color": null,
           "edge_profile": null,
           "pattern": null,
           "location_in_room": "vanity_backsplash",
-          "notes": "AMBIGUOUS: portal listed only 'Color Number: Lana ZL 07' (slab material), no brand. Updated 4.23.26. Confirm brand with Tamara.",
+          "notes": "Updated 4.23.26. | RESOLVED: Marazzi Zellige Neo (ZL series); resolved from sibling shower-wall entry",
           "vendor": null
         },
         {

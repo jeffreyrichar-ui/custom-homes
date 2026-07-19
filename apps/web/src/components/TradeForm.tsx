@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { TAMARA_PATTERN_OPTIONS, type TradeKind } from "@custom-homes/shared";
+import { useEffect, useId, useMemo, useState } from "react";
+import { TAMARA_PATTERN_OPTIONS, type TradeKind, humanizeToken } from "@custom-homes/shared";
 import { api } from "../lib/api.js";
 import { AutoComplete, type Suggestion } from "./AutoComplete.js";
 import { PatternPreview } from "./PatternPreview.js";
@@ -20,12 +20,16 @@ type FieldDef = {
   kind: FieldKind;
   required?: boolean;
   options?: string[];
+  /** Tiny helper line under the label. */
+  hint?: string;
 };
 
 const TRADE_FIELDS: Record<TradeKind, FieldDef[]> = {
   tile: [
-    { key: "vendor", label: "Vendor", kind: "ac-vendor" },
-    { key: "brand", label: "Brand", kind: "ac-brand", required: true },
+    // Brand first — designers type "Daltile" before the vendor. Display order
+    // only; payload keys and suggest fetchers are keyed, not positional.
+    { key: "brand", label: "Brand", kind: "ac-brand", required: true, hint: "Who makes it" },
+    { key: "vendor", label: "Vendor", kind: "ac-vendor", hint: "Where you buy it" },
     { key: "style", label: "Style", kind: "ac-style" },
     { key: "color", label: "Color", kind: "ac-color" },
     { key: "sku", label: "SKU", kind: "ac-sku" },
@@ -135,6 +139,8 @@ type Props = {
 
 export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
   const fields = TRADE_FIELDS[trade];
+  // useId emits colons (":r0:"), invalid in CSS selectors — strip for DOM ids.
+  const fieldIdBase = useId().replace(/:/g, "");
   const [values, setValues] = useState<Record<string, string>>(() => {
     const v: Record<string, string> = {};
     for (const f of fields) {
@@ -153,6 +159,76 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
   const colorKey = trade === "paint" ? "color_name" : "color";
   const style = values[styleKey] ?? "";
   const color = values[colorKey] ?? "";
+
+  // Cross-field completion suggestions. Logical field name (matches the
+  // server's contract: brand/style/color/sku/pattern/edge_profile) → most
+  // likely value + confidence over the candidate set. We map style/color
+  // back to the trade's physical form key (species/material/color_name)
+  // when rendering and applying.
+  const [completions, setCompletions] = useState<Record<string, { value: string; confidence: number }>>({});
+  const COMPLETION_THRESHOLD = 0.5;
+  const logicalToFormKey: Record<string, string> = {
+    brand: "brand",
+    style: styleKey,
+    color: colorKey,
+    sku: "sku",
+    pattern: "pattern",
+    edge_profile: "edge_profile",
+  };
+
+  // Debounced call: whenever the user fills in at least one of the lookup
+  // fields, ask the server what the empty fields most likely should be.
+  useEffect(() => {
+    const partial: Record<string, string> = {
+      brand: values.brand?.trim() ?? "",
+      style: values[styleKey]?.trim() ?? "",
+      color: values[colorKey]?.trim() ?? "",
+      sku: values.sku?.trim() ?? "",
+      pattern: values.pattern?.trim() ?? "",
+      edge_profile: values.edge_profile?.trim() ?? "",
+    };
+    const anyFilled = Object.values(partial).some((v) => v !== "");
+    if (!anyFilled) {
+      setCompletions({});
+      return;
+    }
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      api
+        .suggestComplete(trade, partial)
+        .then((res) => {
+          if (cancelled) return;
+          const next: Record<string, { value: string; confidence: number }> = {};
+          for (const [field, s] of Object.entries(res.suggestions ?? {})) {
+            if (!s?.value) continue;
+            if (s.confidence < COMPLETION_THRESHOLD) continue;
+            const formKey = logicalToFormKey[field];
+            if (!formKey) continue;
+            // Don't suggest something the user already typed.
+            const current = values[formKey]?.trim() ?? "";
+            if (current && current.toLowerCase() === s.value.toLowerCase()) continue;
+            next[formKey] = { value: s.value, confidence: s.confidence };
+          }
+          setCompletions(next);
+        })
+        .catch(() => {
+          /* ignore network/404 errors — completion hints are best-effort */
+        });
+    }, 400);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    trade,
+    values.brand,
+    values[styleKey],
+    values[colorKey],
+    values.sku,
+    values.pattern,
+    values.edge_profile,
+  ]);
 
   // Fetch the cached manufacturer image whenever brand+sku change (tile only).
   useEffect(() => {
@@ -277,20 +353,46 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
     [trade, brand, color],
   );
 
+  const renderCompletionHint = (key: string) => {
+    const c = completions[key];
+    const current = values[key]?.trim() ?? "";
+    if (!c || current) return null;
+    const pct = Math.round(c.confidence * 100);
+    return (
+      <div className="suggest-hint">
+        Suggest: <strong>{c.value}</strong>{" "}
+        <button
+          type="button"
+          className="link"
+          onClick={() => setValues((vv) => ({ ...vv, [key]: c.value }))}
+        >
+          Apply
+        </button>
+        <span className="suggest-hint__conf"> ({pct}% match)</span>
+      </div>
+    );
+  };
+
   const renderField = (f: FieldDef) => {
     const set = (v: string) => setValues((vv) => ({ ...vv, [f.key]: v }));
     const v = values[f.key] ?? "";
+    const fieldId = `tf-${fieldIdBase}-${f.key}`;
     if (f.kind === "select") {
       return (
         <div className="ac-wrapper" key={f.key}>
-          <label className="ac-label">
+          <label className="ac-label" htmlFor={fieldId}>
             {f.label}
             {f.required && <span className="ac-required">*</span>}
           </label>
-          <select className="ac-input" value={v} onChange={(e) => set(e.target.value)}>
+          {f.hint && <span className="muted">{f.hint}</span>}
+          <select id={fieldId} className="ac-input" value={v} onChange={(e) => set(e.target.value)}>
             {(f.options ?? []).map((opt) => (
               <option key={opt} value={opt}>
-                {opt || "(none)"}
+                {opt
+                  ? f.key === "pattern"
+                    ? opt
+                    : humanizeToken(opt)
+                  : "Not selected"}
               </option>
             ))}
           </select>
@@ -299,55 +401,67 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
     }
     if (f.kind === "ac-vendor") {
       return (
-        <AutoComplete
-          key={f.key}
-          label={f.label}
-          required={f.required}
-          value={v}
-          onChange={set}
-          fetchSuggestions={fetchVendors}
-          fetchKey={fetchVendorsKey}
-        />
+        <div key={f.key}>
+          <AutoComplete
+            label={f.label}
+            hint={f.hint}
+            required={f.required}
+            value={v}
+            onChange={set}
+            fetchSuggestions={fetchVendors}
+            fetchKey={fetchVendorsKey}
+          />
+          {renderCompletionHint(f.key)}
+        </div>
       );
     }
     if (f.kind === "ac-brand") {
       return (
-        <AutoComplete
-          key={f.key}
-          label={f.label}
-          required={f.required}
-          value={v}
-          onChange={set}
-          fetchSuggestions={fetchBrands}
-          fetchKey={fetchBrandsKey}
-        />
+        <div key={f.key}>
+          <AutoComplete
+            label={f.label}
+            hint={f.hint}
+            required={f.required}
+            value={v}
+            onChange={set}
+            fetchSuggestions={fetchBrands}
+            fetchKey={fetchBrandsKey}
+          />
+          {renderCompletionHint(f.key)}
+        </div>
       );
     }
     if (f.kind === "ac-style") {
       return (
-        <AutoComplete
-          key={f.key}
-          label={f.label}
-          required={f.required}
-          value={v}
-          onChange={set}
-          fetchSuggestions={fetchStyles}
-          fetchKey={fetchStylesKey}
-        />
+        <div key={f.key}>
+          <AutoComplete
+            label={f.label}
+            hint={f.hint}
+            required={f.required}
+            value={v}
+            onChange={set}
+            fetchSuggestions={fetchStyles}
+            fetchKey={fetchStylesKey}
+          />
+          {renderCompletionHint(f.key)}
+        </div>
       );
     }
     if (f.kind === "ac-color") {
       return (
-        <AutoComplete
-          key={f.key}
-          label={f.label}
-          required={f.required}
-          value={v}
-          onChange={set}
-          fetchSuggestions={fetchColors}
-          fetchKey={fetchColorsKey}
-          showImage
-        />
+        <div key={f.key}>
+          <AutoComplete
+            label={f.label}
+            hint={f.hint}
+            required={f.required}
+            value={v}
+            onChange={set}
+            fetchSuggestions={fetchColors}
+            fetchKey={fetchColorsKey}
+            showImage
+          />
+          {renderCompletionHint(f.key)}
+        </div>
       );
     }
     if (f.kind === "ac-sku") {
@@ -355,6 +469,7 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
         <div key={f.key}>
           <AutoComplete
             label={f.label}
+            hint={f.hint}
             required={f.required}
             value={v}
             onChange={set}
@@ -377,16 +492,19 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
               </button>
             </div>
           )}
+          {renderCompletionHint(f.key)}
         </div>
       );
     }
     return (
       <div className="ac-wrapper" key={f.key}>
-        <label className="ac-label">
+        <label className="ac-label" htmlFor={fieldId}>
           {f.label}
           {f.required && <span className="ac-required">*</span>}
         </label>
-        <input className="ac-input" value={v} onChange={(e) => set(e.target.value)} />
+        {f.hint && <span className="muted">{f.hint}</span>}
+        <input id={fieldId} className="ac-input" value={v} onChange={(e) => set(e.target.value)} />
+        {renderCompletionHint(f.key)}
       </div>
     );
   };
@@ -414,7 +532,7 @@ export function TradeForm({ trade, initial, onCancel, onSave }: Props) {
           {!previewImage && (
             <small className="hint">
               No cached image for {values.brand} {values.sku} yet — preview shows pattern
-              + grout only. Save the entry to trigger a scrape, or upload the product
+              + grout only. Save the entry to look up the product photo, or upload the product
               image from the entry card.
             </small>
           )}

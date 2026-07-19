@@ -38,7 +38,7 @@ export function Login({ onLoggedIn }: Props) {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? `HTTP ${res.status}`);
+        setError(data.error ?? "Something went wrong — please try again.");
         return;
       }
       onLoggedIn(data.user);
@@ -63,7 +63,7 @@ export function Login({ onLoggedIn }: Props) {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? `HTTP ${res.status}`);
+        setError(data.error ?? "Something went wrong — please try again.");
         return;
       }
       onLoggedIn(data.user);
@@ -83,7 +83,7 @@ export function Login({ onLoggedIn }: Props) {
         <span className="auth-brand-mark" />
         <span className="auth-brand-name">Custom Homes</span>
       </div>
-      <h1>{mode === "login" ? "Welcome back" : "First-time setup"}</h1>
+      <h1>{mode === "login" ? "Welcome back" : "Create an account"}</h1>
       <p className="subtle" style={{ marginTop: -8, marginBottom: 24 }}>
         {mode === "login"
           ? "Sign in to access your projects."
@@ -92,8 +92,9 @@ export function Login({ onLoggedIn }: Props) {
       <form onSubmit={mode === "login" ? submitLogin : submitBootstrap}>
         {mode === "bootstrap" && (
           <div className="ac-wrapper">
-            <label className="ac-label">Name</label>
+            <label className="ac-label" htmlFor="login-name">Name</label>
             <input
+              id="login-name"
               className="ac-input"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -102,8 +103,9 @@ export function Login({ onLoggedIn }: Props) {
           </div>
         )}
         <div className="ac-wrapper">
-          <label className="ac-label">Email<span className="ac-required">*</span></label>
+          <label className="ac-label" htmlFor="login-email">Email<span className="ac-required">*</span></label>
           <input
+            id="login-email"
             className="ac-input"
             type="email"
             value={email}
@@ -113,8 +115,9 @@ export function Login({ onLoggedIn }: Props) {
           />
         </div>
         <div className="ac-wrapper">
-          <label className="ac-label">Password<span className="ac-required">*</span></label>
+          <label className="ac-label" htmlFor="login-password">Password<span className="ac-required">*</span></label>
           <input
+            id="login-password"
             className="ac-input"
             type="password"
             value={password}
@@ -135,7 +138,7 @@ export function Login({ onLoggedIn }: Props) {
               setError(null);
             }}
           >
-            {mode === "login" ? "First-time setup" : "Have an account?"}
+            {mode === "login" ? "Create an account" : "Have an account? Sign in"}
           </button>
         </div>
       </form>

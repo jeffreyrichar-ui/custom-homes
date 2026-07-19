@@ -47,6 +47,10 @@ export function detectShape(input: ShapeInput): TileShape {
     { pat: /\bpalladiana\b/, label: "palladiana mosaic" },
     { pat: /\bmosaic\b/, label: "mosaic" },
     { pat: /\bfan(\s+undulated)?\b/, label: "fan" },
+    // Literal shape words — product lines like "Remedy Zen Rectangle
+    // Fluted" name the shape without giving dimensions.
+    { pat: /\bsquare\b/, label: "square" },
+    { pat: /\brectangl(?:e|es|ular)\b/, label: "rectangle" },
   ];
   for (const { pat, label } of namedShapes) {
     if (pat.test(haystack)) return label;
@@ -66,7 +70,15 @@ export function detectShape(input: ShapeInput): TileShape {
   return "unknown";
 }
 
-/** Extract a tile aspect ratio (width / height) from notes when present. */
+/**
+ * Extract a tile aspect ratio from notes when present, as the long-side /
+ * short-side ratio (always >= 1). Tile dimensions are conventionally written
+ * small-side-first ("3x6 subway", "12x24") but either order appears in
+ * Tamara's notes — the written order must not change how a tile renders.
+ * Orientation is decided by the pattern's render mode, not the dimension
+ * string: horizontal modes lay the long side flat, vertical modes stand it
+ * upright.
+ */
 export function detectAspect(input: ShapeInput): number {
   const haystack = [input.notes, input.size].filter(Boolean).join(" ");
   const dim = haystack.match(/(\d+(?:\.\d+)?)\s*[x×]\s*(\d+(?:\.\d+)?)/);
@@ -74,5 +86,5 @@ export function detectAspect(input: ShapeInput): number {
   const a = parseFloat(dim[1]!);
   const b = parseFloat(dim[2]!);
   if (!Number.isFinite(a) || !Number.isFinite(b) || a === 0 || b === 0) return 2;
-  return a / b;
+  return Math.max(a, b) / Math.min(a, b);
 }

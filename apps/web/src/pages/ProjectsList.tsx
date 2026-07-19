@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, type ProjectSummary } from "../lib/api.js";
 import { StatsStrip } from "../components/StatsStrip.js";
+import { RecentActivity } from "../components/RecentActivity.js";
 import { Icon } from "../components/Icon.js";
 
 type Sort = "recent" | "name" | "rooms";
@@ -13,6 +14,7 @@ export function ProjectsList() {
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<Sort>("recent");
+  const [brand, setBrand] = useState<string>("");
   const [totalEntries, setTotalEntries] = useState<number | null>(null);
   const [bannerDismissed, setBannerDismissed] = useState<boolean>(() => {
     try {
@@ -33,6 +35,15 @@ export function ProjectsList() {
       .catch(() => setTotalEntries(0));
   }, []);
 
+  const brandOptions = useMemo(() => {
+    if (!projects) return [] as string[];
+    const set = new Set<string>();
+    for (const p of projects) {
+      if (p.top_brand) set.add(p.top_brand);
+    }
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [projects]);
+
   const filtered = useMemo(() => {
     if (!projects) return null;
     const q = query.trim().toLowerCase();
@@ -43,6 +54,9 @@ export function ProjectsList() {
             (p.address ?? "").toLowerCase().includes(q),
         )
       : [...projects];
+    if (brand) {
+      out = out.filter((p) => p.top_brand === brand);
+    }
     if (sort === "name") {
       out.sort((a, b) => a.name.localeCompare(b.name));
     } else if (sort === "rooms") {
@@ -54,7 +68,7 @@ export function ProjectsList() {
       );
     }
     return out;
-  }, [projects, query, sort]);
+  }, [projects, query, sort, brand]);
 
   const dismissBanner = () => {
     try {
@@ -126,6 +140,8 @@ export function ProjectsList() {
 
       <StatsStrip />
 
+      {projects.length > 0 && <RecentActivity />}
+
       {projects.length === 0 ? (
         <div className="empty-state-card">
           <div className="empty-state-card-icon" aria-hidden="true">
@@ -155,6 +171,22 @@ export function ProjectsList() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
+            {brandOptions.length > 1 && (
+              <select
+                className="ac-input"
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+                style={{ width: "auto" }}
+                aria-label="Filter by brand"
+              >
+                <option value="">All brands</option>
+                {brandOptions.map((b) => (
+                  <option key={b} value={b}>
+                    {b}
+                  </option>
+                ))}
+              </select>
+            )}
             <select
               className="ac-input"
               value={sort}
@@ -168,7 +200,13 @@ export function ProjectsList() {
           </div>
 
           {filtered && filtered.length === 0 ? (
-            <p className="subtle">No projects match "{query}".</p>
+            <p className="subtle">
+              {query
+                ? `No projects match "${query}".`
+                : brand
+                  ? `No projects use ${brand}.`
+                  : "No projects match the current filters."}
+            </p>
           ) : (
             <div className="project-grid">
               {filtered?.map((p) => (
@@ -183,6 +221,18 @@ export function ProjectsList() {
                     <span>
                       {p.room_count} {p.room_count === 1 ? "room" : "rooms"}
                     </span>
+                    {p.entry_count > 0 && (
+                      <>
+                        <span className="dot">·</span>
+                        <span>{p.entry_count} selections</span>
+                      </>
+                    )}
+                    {p.top_brand && (
+                      <>
+                        <span className="dot">·</span>
+                        <span>Top {p.top_brand}</span>
+                      </>
+                    )}
                     <span className="dot">·</span>
                     <span>
                       Added {new Date(p.created_at).toLocaleDateString()}

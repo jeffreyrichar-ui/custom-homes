@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import Fuse from "fuse.js";
 
 export type Suggestion = {
@@ -15,6 +15,8 @@ type Props = {
   /** Refetch trigger key — when this changes, suggestions reload. */
   fetchKey: string;
   placeholder?: string;
+  /** Tiny helper line rendered under the label, e.g. "Who makes it". */
+  hint?: string;
   showImage?: boolean;
   required?: boolean;
 };
@@ -26,9 +28,12 @@ export function AutoComplete({
   fetchSuggestions,
   fetchKey,
   placeholder,
+  hint,
   showImage,
   required,
 }: Props) {
+  // useId emits colons (":r0:"), invalid in CSS selectors — strip for the DOM id.
+  const inputId = `ac-${useId().replace(/:/g, "")}`;
   const [items, setItems] = useState<Suggestion[]>([]);
   const [open, setOpen] = useState(false);
   const [highlight, setHighlight] = useState(0);
@@ -88,11 +93,13 @@ export function AutoComplete({
 
   return (
     <div className="ac-wrapper" ref={wrapperRef}>
-      <label className="ac-label">
+      <label className="ac-label" htmlFor={inputId}>
         {label}
         {required && <span className="ac-required">*</span>}
       </label>
+      {hint && <span className="muted">{hint}</span>}
       <input
+        id={inputId}
         className="ac-input"
         value={value}
         placeholder={placeholder}

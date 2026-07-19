@@ -174,7 +174,7 @@ function tradeRoomPageHtml(
       <div class="room-eyebrow">${esc(prettyTrade(trade))} selections</div>
       <h2>${esc(room.room_name)}</h2>
       <div class="chips">${chips}</div>
-      <div class="surfaces">${entries.length} ${trade} ${entries.length === 1 ? "entry" : "entries"} &middot; surfaces: ${Array.from(surfaces).join(", ")}</div>
+      <div class="surfaces">${entries.length} ${trade} ${entries.length === 1 ? "entry" : "entries"} &middot; surfaces: ${esc(Array.from(surfaces).join(", "))}</div>
     </header>
     <div class="entries">${entries.map((e) => entryCardHtml(trade, e, imageByBrandSku)).join("")}</div>
   </section>`;
@@ -188,11 +188,12 @@ function coverPageHtml(opts: {
   entryCount: number;
   generatedAt: Date;
   subtitle: string | null;
+  badgeLabel?: string;
 }): string {
   const { project, tradeFilter, roomCount, entryCount, generatedAt, subtitle } = opts;
-  const badge = tradeFilter
-    ? `${prettyTrade(tradeFilter)} schedule`
-    : "Full Selections";
+  const badge =
+    opts.badgeLabel ??
+    (tradeFilter ? `${prettyTrade(tradeFilter)} schedule` : "Full Selections");
   const summary = tradeFilter
     ? `${roomCount} ${roomCount === 1 ? "room" : "rooms"} &middot; ${entryCount} ${tradeFilter} ${entryCount === 1 ? "selection" : "selections"}`
     : `${roomCount} ${roomCount === 1 ? "room" : "rooms"} &middot; ${entryCount} ${entryCount === 1 ? "selection" : "selections"}`;
@@ -246,12 +247,48 @@ function tocHtml(rooms: Room[], trade: TradeKind): string {
   </section>`;
 }
 
+// Full-project sibling of tocHtml — same markup/classes, but counts span all
+// trades and zero-entry rooms stay listed (muted) so the book shows the
+// whole house.
+function fullTocHtml(rooms: Room[]): string {
+  if (rooms.length < 2) return ""; // Only show TOC for multi-room PDFs.
+
+  const rows = rooms
+    .map((r) => {
+      const count = TRADE_KINDS.reduce(
+        (acc, trade) => acc + (r.entries_by_trade[trade] ?? []).length,
+        0,
+      );
+      const inner = `<span class="toc-room">${esc(r.room_name)}</span>
+          <span class="toc-dots"></span>
+          <span class="toc-count">${count} ${count === 1 ? "entry" : "entries"}</span>`;
+      // Zero-entry rooms render no body section, so there is no anchor to
+      // link to — show them muted and unlinked rather than as a dead link.
+      return count === 0
+        ? `<li class="toc-row muted"><span class="toc-link">${inner}</span></li>`
+        : `<li class="toc-row">
+        <a class="toc-link" href="#room-${esc(r.id)}">
+          ${inner}
+        </a>
+      </li>`;
+    })
+    .join("");
+
+  return `<section class="toc-page">
+    <div class="toc-eyebrow">Contents</div>
+    <h2 class="toc-title">Rooms in this document</h2>
+    <ol class="toc-list">${rows}</ol>
+  </section>`;
+}
+
 export function renderProjectHtml(opts: {
   project: Project;
   rooms: Room[];
   tradeFilter?: TradeKind;
   imageByBrandSku: Map<string, string>;
   generatedAt: Date;
+  /** Cover badge override — the per-room PDF shows the room name. */
+  badgeLabel?: string;
 }): string {
   const { project, rooms, tradeFilter, imageByBrandSku, generatedAt } = opts;
   const trades: TradeKind[] = tradeFilter ? [tradeFilter] : [...TRADE_KINDS];
@@ -320,12 +357,13 @@ export function renderProjectHtml(opts: {
     entryCount: totalEntries,
     generatedAt,
     subtitle: null,
+    badgeLabel: opts.badgeLabel,
   });
 
   return wrap({
     title: project.name,
     cover,
-    toc: "",
+    toc: fullTocHtml(rooms),
     body: sections || "<p><em>No entries.</em></p>",
     perRoomPaging: false,
   });
@@ -565,6 +603,14 @@ function wrap(opts: {
     color: var(--text-3);
     letter-spacing: 0.04em;
     text-transform: uppercase;
+  }
+  /* Zero-entry rooms in the full-project TOC: listed but muted. */
+  .toc-row.muted .toc-room,
+  .toc-row.muted .toc-count {
+    color: var(--text-3);
+  }
+  .toc-row.muted .toc-room {
+    font-style: italic;
   }
 
   /* ----- Full-project layout ----- */

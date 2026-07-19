@@ -66,7 +66,7 @@ export function EntryImage({ brand, sku }: Props) {
         kind: "missing",
       });
       window.alert(
-        `No scraper registered for ${brand}. Upload the product image manually.`,
+        `No automatic photo source for ${brand} yet — upload a photo instead.`,
       );
     } else {
       setState({ kind: "missing" });
@@ -85,7 +85,7 @@ export function EntryImage({ brand, sku }: Props) {
         <div className="entry-image-placeholder">Loading…</div>
       )}
       {state.kind === "scraping" && (
-        <div className="entry-image-placeholder">Trying auto-fetch…</div>
+        <div className="entry-image-placeholder">Looking up product photo…</div>
       )}
       {state.kind === "missing" && (
         <div className="entry-image-placeholder">
@@ -101,7 +101,7 @@ export function EntryImage({ brand, sku }: Props) {
             onClick={handleScrape}
             title="Best-effort fetch from manufacturer site. Often fails — manual upload is the reliable path."
           >
-            try auto-fetch (experimental)
+            Fetch product photo
           </button>
         </div>
       )}

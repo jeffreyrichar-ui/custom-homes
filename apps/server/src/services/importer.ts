@@ -138,9 +138,18 @@ async function upsertEntry(
   const usePrimary = primary.values.every((v) => v !== null && v !== undefined);
   const key = usePrimary ? primary : meta.fallbackKey(validatedEntry as never);
 
-  const lookupParams: unknown[] = [roomId, ...key.values];
+  // Null-safe key matching: `col = NULL` is never true in SQL, so a plain
+  // equality lookup misses existing rows whose key fields are null (e.g. a
+  // tile entry with no color) and every re-import duplicates them. Null key
+  // values compare with IS NULL; params renumber around them.
+  const lookupParams: unknown[] = [roomId];
   const whereClauses = key.columns
-    .map((c, i) => `${c} = $${i + 2}`)
+    .map((c, i) => {
+      const v = key.values[i];
+      if (v === null || v === undefined) return `${c} IS NULL`;
+      lookupParams.push(v);
+      return `${c} = $${lookupParams.length}`;
+    })
     .join(" AND ");
   const found = await tx.query<{ id: string }>(
     `SELECT id FROM ${meta.table} WHERE room_id = $1 AND ${whereClauses} LIMIT 1`,
